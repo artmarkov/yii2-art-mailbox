@@ -1,0 +1,22 @@
+{
+  "name": "artsoft/yii2-art-mailbox",
+  "description": "HTML Mailbox Module For Art CMS",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Artur Markov",
+      "email": "artmarkov@mail.ru"
+    }
+  ],
+  "require": {
+    "artsoft/yii2-art-core": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "artsoft\\mailbox\\": ""
+    }
+  },
+  "extra": {
+        "bootstrap": "artsoft\\mailbox\\Bootstrap"
+	}
+}
