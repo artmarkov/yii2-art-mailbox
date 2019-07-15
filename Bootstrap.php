@@ -1,5 +1,5 @@
 <?php
-namespace artmarkov\mailbox;
+namespace artsoft\mailbox;
 
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -23,7 +23,7 @@ class Bootstrap implements \yii\base\BootstrapInterface
 		$mailbox = ArrayHelper::merge(
 			$app->getModules()['mailbox'],
 			[
-				'class' => 'artmarkov\mailbox\MailboxModule',		
+				'class' => 'artsoft\mailbox\MailboxModule',		
 			]
 		);
 		
@@ -34,7 +34,7 @@ class Bootstrap implements \yii\base\BootstrapInterface
 		if (!empty($app->getModules()['mailbox']['view'])){
 			$view = $app->getView();
 			$pathMap=[];		
-			$pathMap['@artmarkov/mailbox/views/default'] = $app->getModules()['mailbox']['view'];		
+			$pathMap['@artsoft/mailbox/views/default'] = $app->getModules()['mailbox']['view'];		
 			if (!empty($pathMap)) {
 				$view->theme = Yii::createObject([
 					'class' => 'yii\base\Theme',

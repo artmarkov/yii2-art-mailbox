@@ -14,5 +14,6 @@ class MailboxModule extends \yii\base\Module
     const VERSION = '0.1.0';
 
     public $controllerNamespace = 'artsoft\mailbox\controllers';
+    public $view;
 
 }
