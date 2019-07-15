@@ -11,12 +11,12 @@
   "require": {
     "artsoft/yii2-art-core": "dev-master"
   },
+  "extra": {
+        "bootstrap": "artsoft\\mailbox\\Bootstrap"
+	},
   "autoload": {
     "psr-4": {
       "artsoft\\mailbox\\": ""
     }
-  },
-  "extra": {
-        "bootstrap": "artsoft\\mailbox\\Bootstrap"
-	}
+  }
 }
