@@ -6,8 +6,6 @@ use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use artsoft\models\User;
-use voskobovich\linker\LinkerBehavior;
-use voskobovich\linker\updaters\OneToManyUpdater;
 
 /**
  * This is the model class for table "{{%mailbox}}".
@@ -28,7 +26,7 @@ use voskobovich\linker\updaters\OneToManyUpdater;
  */
 class Mailbox extends \artsoft\db\ActiveRecord
 {
-    public $receivers_ids;
+    
     /**
      * {@inheritdoc}
      */
@@ -43,22 +41,16 @@ class Mailbox extends \artsoft\db\ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::className(),            
             'blameable' => [
                 'class' => BlameableBehavior::className(),
                 'createdByAttribute' => 'sender_id',
                 'updatedByAttribute' => NULL,
             ],
             [
-                'class' => LinkerBehavior::className(),
+                'class' => \artsoft\behaviors\ManyHasManyBehavior::className(),
                 'relations' => [
-                    'receivers_ids' => [
-                        'receivers',
-                        'updater' => [
-                            'class' => OneToManyUpdater::className(),
-                            
-                        ]
-                    ],
+                    'receivers' => 'receivers_ids',
                 ],
             ],
         ];
@@ -69,9 +61,9 @@ class Mailbox extends \artsoft\db\ActiveRecord
     public function rules()
     {
         return [
-            ['title', 'required'],
+            [['title'], 'required'],
             [['draft_flag', 'remote_flag', 'posted_at', 'remoted_at'], 'integer'],
-            [['sender_id', 'created_at', 'updated_at'], 'safe'],
+            [['sender_id', 'created_at', 'updated_at', 'receivers_ids'], 'safe'],
             ['receivers_ids', 'each', 'rule' => ['integer']],
             [['content'], 'string'],
             [['title'], 'string', 'max' => 255],
@@ -87,6 +79,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
         return [
             'id' => Yii::t('art', 'ID'),
             'sender_id' => Yii::t('art/mailbox', 'Sender ID'),
+            'receivers_ids' => Yii::t('art/mailbox', 'Receivers'),
             'title' => Yii::t('art', 'Title'),
             'content' => Yii::t('art', 'Content'),
             'draft_flag' => Yii::t('art/mailbox', 'Draft Flag'),
@@ -113,7 +106,8 @@ class Mailbox extends \artsoft\db\ActiveRecord
      */
     public function getReceivers()
     {
-        return $this->hasMany(MailboxReceiver::className(), ['mailbox_id' => 'id']);
+        return $this->hasMany(User::className(), ['id' => 'receiver_id'])       
+                ->viaTable('mailbox_receiver', ['mailbox_id' => 'id']);
     }
      /**
      * @return \yii\db\ActiveQuery
@@ -183,4 +177,5 @@ class Mailbox extends \artsoft\db\ActiveRecord
     {
         return "{$this->updatedDate} {$this->updatedTime}";
     }
+    
 }

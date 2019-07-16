@@ -36,7 +36,7 @@ class MailboxReceiver extends \artsoft\db\ActiveRecord
     public function rules()
     {
         return [
-            //[['mailbox_id', 'receiver_id'], 'required'],
+            [['mailbox_id', 'receiver_id'], 'required'],
             [['mailbox_id', 'receiver_id', 'read_flag', 'remote_flag', 'created_at', 'reading_at', 'remoted_at'], 'integer'],
             [['receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['receiver_id' => 'id']],
         ];
