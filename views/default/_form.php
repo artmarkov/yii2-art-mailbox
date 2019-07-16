@@ -2,6 +2,7 @@
 
 use artsoft\widgets\ActiveForm;
 use artsoft\mailbox\models\Mailbox;
+use artsoft\models\User;
 use artsoft\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -22,9 +23,15 @@ use artsoft\helpers\Html;
         <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    
-                    <?= $form->field($model, 'sender_id')->textInput() ?>
 
+                     <?php
+                    echo $form->field($model, 'receivers_ids')->widget(\nex\chosen\Chosen::className(), [
+                        'items' => User::getUsersList(),
+                        'multiple' => true,
+                        'placeholder' => Yii::t('art/mailbox', 'Select Receivers...'),
+                    ])->label(Yii::t('art/mailbox', 'Receivers'));
+                    ?>
+                    
                     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
                     <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
@@ -33,13 +40,7 @@ use artsoft\helpers\Html;
 
                     <?= $form->field($model, 'remote_flag')->textInput() ?>
 
-                    <?= $form->field($model, 'created_at')->textInput() ?>
-
-                    <?= $form->field($model, 'updated_at')->textInput() ?>
-
-                    <?= $form->field($model, 'posted_at')->textInput() ?>
-
-                    <?= $form->field($model, 'remoted_at')->textInput() ?>
+                   
 
                 </div>
             </div>
@@ -61,14 +62,6 @@ use artsoft\helpers\Html;
                         <div class="form-group clearfix">
                             <label class="control-label" style="float: left; padding-right: 5px;"><?=  $model->attributeLabels()['updated_at'] ?>: </label>
                             <span><?=  $model->updatedDatetime ?></span>
-                        </div>
-                        <div class="form-group clearfix">
-                            <label class="control-label" style="float: left; padding-right: 5px;"><?=  $model->attributeLabels()['created_by'] ?>: </label>
-                            <span><?=  $model->createdBy->username ?></span>
-                        </div>
-                        <div class="form-group clearfix">
-                            <label class="control-label" style="float: left; padding-right: 5px;"><?=  $model->attributeLabels()['updated_by'] ?>: </label>
-                            <span><?=  $model->updatedBy->username ?></span>
                         </div>
                         <?php endif; ?>
                         <div class="form-group">
