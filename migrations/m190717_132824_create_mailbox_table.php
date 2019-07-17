@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m190716_134457_create_mailbox_table extends Migration
+class m190717_132824_create_mailbox_table extends Migration
 {
     public function up()
     {
@@ -16,8 +16,7 @@ class m190716_134457_create_mailbox_table extends Migration
             'sender_id' => $this->integer()->notNull(),
             'title' => $this->string()->notNull(),
             'content' => $this->text(),
-            'draft_flag' => $this->tinyInteger()->notNull()->defaultValue('0'),
-            'remote_flag' => $this->tinyInteger()->notNull()->defaultValue('0'),
+            'folder' => $this->tinyInteger()->notNull()->defaultValue('0'),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'posted_at' => $this->integer(),
@@ -27,13 +26,12 @@ class m190716_134457_create_mailbox_table extends Migration
         $this->createIndex('sender_id', '{{%mailbox}}', 'sender_id');
         $this->addForeignKey('mailbox_ibfk_1', '{{%mailbox}}', 'sender_id', '{{%user}}', 'id', 'RESTRICT', 'RESTRICT');
         
-        $this->createTable('{{%mailbox_receiver}}', [
+       $this->createTable('{{%mailbox_receiver}}', [
             'id' => $this->primaryKey(),
             'mailbox_id' => $this->integer()->notNull(),
             'receiver_id' => $this->integer()->notNull(),
-            'read_flag' => $this->tinyInteger()->defaultValue('0'),
-            'remote_flag' => $this->tinyInteger()->defaultValue('0'),
-            'created_at' => $this->integer(),
+            'folder' => $this->tinyInteger()->defaultValue('0'),
+            'status' => $this->tinyInteger()->defaultValue('0'),
             'reading_at' => $this->integer(),
             'remoted_at' => $this->integer(),
         ], $tableOptions);

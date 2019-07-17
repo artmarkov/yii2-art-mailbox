@@ -36,10 +36,7 @@ use artsoft\helpers\Html;
 
                     <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
 
-                    <?= $form->field($model, 'draft_flag')->textInput() ?>
-
-                    <?= $form->field($model, 'remote_flag')->textInput() ?>
-
+                    <?= $form->field($model, 'folder')->textInput() ?>
                    
 
                 </div>

@@ -18,8 +18,9 @@ class MailboxReceiverSearch extends MailboxReceiver
     public function rules()
     {
         return [
-            [['id', 'mailbox_id', 'receiver_id', 'created_at', 'reading_at', 'remoted_at'], 'integer'],
-            [['read_flag', 'remote_flag'], 'safe'],
+            [['id', 'mailbox_id', 'receiver_id', 'reading_at', 'remoted_at', 'folder', 'status'], 'integer'],
+            [['mailboxTitle', 'mailboxContent'], 'string'],
+            ['mailboxSenderId', 'integer'],
         ];
     }
 
@@ -55,6 +56,27 @@ class MailboxReceiverSearch extends MailboxReceiver
             ],
         ]);
 
+        $dataProvider->setSort([
+            'attributes' => [
+                
+                 'mailboxSenderId' => [
+                    'asc' => ['mailbox.sender_id' => SORT_ASC],
+                    'desc' => ['mailbox.sender_id' => SORT_DESC],
+                ],
+                              
+                'mailboxTitle' => [
+                    'asc' => ['mailbox.title' => SORT_ASC],
+                    'desc' => ['mailbox.title' => SORT_DESC],
+                ],
+                
+                'mailboxContent' => [
+                    'asc' => ['mailbox.content' => SORT_ASC],
+                    'desc' => ['mailbox.content' => SORT_DESC],
+                ],
+                
+                'status',
+            ]
+        ]);
         $this->load($params);
 
         if (!$this->validate()) {
@@ -62,19 +84,29 @@ class MailboxReceiverSearch extends MailboxReceiver
             // $query->where('0=1');
             return $dataProvider;
         }
-
+//        жадная загрузка
+        $query->joinWith(['mailbox']);
+        
         $query->andFilterWhere([
             'id' => $this->id,
             'mailbox_id' => $this->mailbox_id,
             'receiver_id' => $this->receiver_id,
-            'created_at' => $this->created_at,
             'reading_at' => $this->reading_at,
             'remoted_at' => $this->remoted_at,
+            'folder' => $this->folder,
+            'status' => $this->status,
         ]);
 
-        $query->andFilterWhere(['like', 'read_flag', $this->read_flag])
-            ->andFilterWhere(['like', 'remote_flag', $this->remote_flag]);
-
+        $query->joinWith(['mailbox' => function ($q) {
+            $q->where('mailbox.title LIKE "%' . $this->mailboxTitle . '%"');
+        }]);
+        $query->joinWith(['mailbox' => function ($q) {
+            $q->where('mailbox.content LIKE "%' . $this->mailboxContent . '%"');
+        }]);
+        $query->joinWith(['mailbox' => function ($q) {
+            $q->andFilterWhere(['mailbox.sender_id' => $this->mailboxSenderId]);
+        }]);
+        
         return $dataProvider;
     }
 }

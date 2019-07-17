@@ -4,6 +4,7 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 use artsoft\grid\GridView;
 use artsoft\grid\GridQuickLinks;
+use artsoft\mailbox\models\Mailbox;
 use artsoft\mailbox\models\MailboxReceiver;
 use artsoft\helpers\Html;
 use artsoft\grid\GridPageSize;
@@ -31,10 +32,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-sm-6">
                     <?php 
                     /* Uncomment this to activate GridQuickLinks */
-                    /* echo GridQuickLinks::widget([
+                     echo GridQuickLinks::widget([
                         'model' => MailboxReceiver::className(),
                         'searchModel' => $searchModel,
-                    ])*/
+                         'options' => [
+                            ['label' => Yii::t('art/mailbox', 'Receiver'), 'filterWhere' => ['folder' => Mailbox::FOLDER_RECEIVER]],
+                            ['label' => Yii::t('art/mailbox', 'Trash'),  'filterWhere' => ['folder' => Mailbox::FOLDER_TRASH]],
+                        ] 
+                    ])
                     ?>
                 </div>
 
@@ -61,21 +66,34 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     ['class' => 'artsoft\grid\CheckboxColumn', 'options' => ['style' => 'width:10px']],
                     [
-                        'attribute' => 'id',
+                        'attribute' => 'mailboxSenderId',
+                        'label' => Yii::t('art/mailbox', 'Sender'), 
+                        'filter' => artsoft\models\User::getUsersList(),
                         'class' => 'artsoft\grid\columns\TitleActionColumn',
                         'controller' => '/mailbox-receiver/default',
                         'title' => function(MailboxReceiver $model) {
-                            return Html::a($model->id, ['view', 'id' => $model->id], ['data-pjax' => 0]);
+                            return Html::a($model->mailbox->senderName, ['view', 'id' => $model->id], ['data-pjax' => 0]);
                         },
+                        'options' => ['style' => 'width:350px'],
                         'buttonsTemplate' => '{view} {delete}',
+                    ],    
+                    [
+                        'attribute' => 'mailboxTitle',
+                        'value' => 'mailbox.title',
+                        'label' => Yii::t('art', 'Title'),                        
                     ],
-
-            'id',
-            'mailbox_id',
-            'receiver_id',
-            'read_flag',
-            'remote_flag',
-            // 'created_at',
+                    [
+                        'attribute' => 'mailboxContent',
+                        'value' => 'mailbox.shortContent',
+                        'label' => Yii::t('art', 'Content'),                        
+                    ],
+                    [
+                        'attribute' => 'receiver_id',
+                        'value' => 'receiver.username',
+                        'label' => Yii::t('art/mailbox', 'Receiver'), 
+                        'filter' => artsoft\models\User::getUsersList(),                        
+                    ],
+            'status',
             // 'reading_at',
             // 'remoted_at',
 

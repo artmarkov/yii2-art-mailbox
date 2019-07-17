@@ -11,9 +11,8 @@ use artsoft\models\User;
  * @property int $id
  * @property int $mailbox_id
  * @property int $receiver_id
- * @property int $read_flag
- * @property int $remote_flag
- * @property int $created_at
+ * @property int $folder
+ * @property int $status
  * @property int $reading_at
  * @property int $remoted_at
  *
@@ -21,7 +20,11 @@ use artsoft\models\User;
  * @property Mailbox $mailbox
  */
 class MailboxReceiver extends \artsoft\db\ActiveRecord
-{
+{    
+    public $mailboxSenderId;    
+    public $mailboxTitle;    
+    public $mailboxContent;    
+    
     /**
      * {@inheritdoc}
      */
@@ -37,7 +40,7 @@ class MailboxReceiver extends \artsoft\db\ActiveRecord
     {
         return [
             [['mailbox_id', 'receiver_id'], 'required'],
-            [['mailbox_id', 'receiver_id', 'read_flag', 'remote_flag', 'created_at', 'reading_at', 'remoted_at'], 'integer'],
+            [['mailbox_id', 'receiver_id', 'folder', 'status', 'reading_at', 'remoted_at'], 'integer'],
             [['receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['receiver_id' => 'id']],
         ];
     }
@@ -51,9 +54,8 @@ class MailboxReceiver extends \artsoft\db\ActiveRecord
             'id' => Yii::t('art', 'ID'),
             'mailbox_id' => Yii::t('art/mailbox', 'Mailbox ID'),
             'receiver_id' => Yii::t('art/mailbox', 'Receiver ID'),
-            'read_flag' => Yii::t('art/mailbox', 'Read Flag'),
-            'remote_flag' => Yii::t('art/mailbox', 'Remote Flag'),
-            'created_at' => Yii::t('art', 'Created'),
+            'status' => Yii::t('art', 'Status'),
+            'folder' => Yii::t('art', 'Folder'),
             'reading_at' => Yii::t('art/mailbox', 'Reading At'),
             'remoted_at' => Yii::t('art/mailbox', 'Remoted At'),
         ];

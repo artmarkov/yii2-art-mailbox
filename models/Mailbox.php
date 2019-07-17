@@ -6,6 +6,8 @@ use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use artsoft\models\User;
+use yii\helpers\HtmlPurifier;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "{{%mailbox}}".
@@ -14,8 +16,7 @@ use artsoft\models\User;
  * @property int $sender_id
  * @property string $title
  * @property string $content
- * @property int $draft_flag
- * @property int $remote_flag
+ * @property int $folder
  * @property int $created_at
  * @property int $updated_at
  * @property int $posted_at
@@ -27,6 +28,15 @@ use artsoft\models\User;
 class Mailbox extends \artsoft\db\ActiveRecord
 {
     
+    public $gridReceiverSearch;
+    
+    const FOLDER_DRAFT = 0;   // черновик
+    const FOLDER_POSTED = 1;  // отправленные
+    const FOLDER_RECEIVER = 2; // Приняты
+    const FOLDER_TRASH = 5;   // в корзине   
+    
+    const STATUS_NOREAD = 0; // не прочитано
+    const STATUS_READ = 1;   // прочитано 
     /**
      * {@inheritdoc}
      */
@@ -62,7 +72,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
     {
         return [
             [['title'], 'required'],
-            [['draft_flag', 'remote_flag', 'posted_at', 'remoted_at'], 'integer'],
+            [['folder', 'posted_at', 'remoted_at'], 'integer'],
             [['sender_id', 'created_at', 'updated_at', 'receivers_ids'], 'safe'],
             ['receivers_ids', 'each', 'rule' => ['integer']],
             [['content'], 'string'],
@@ -82,12 +92,12 @@ class Mailbox extends \artsoft\db\ActiveRecord
             'receivers_ids' => Yii::t('art/mailbox', 'Receivers'),
             'title' => Yii::t('art', 'Title'),
             'content' => Yii::t('art', 'Content'),
-            'draft_flag' => Yii::t('art/mailbox', 'Draft Flag'),
-            'remote_flag' => Yii::t('art/mailbox', 'Remote Flag'),
+            'folder' => Yii::t('art/mailbox', 'Folder'),
             'created_at' => Yii::t('art', 'Created'),
             'updated_at' => Yii::t('art', 'Updated'),
             'posted_at' => Yii::t('art/mailbox', 'Posted At'),
             'remoted_at' => Yii::t('art/mailbox', 'Remoted At'),
+            'gridReceiverSearch' => Yii::t('art/mailbox', 'Receivers'),
         ];
     }
 
@@ -117,7 +127,18 @@ class Mailbox extends \artsoft\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'sender_id']);
     }
+    
+     /* Геттер для имени отправителя */
+    public function getSenderName()
+    {
+        return $this->sender->username;
+    }
    
+    public function getShortContent($length = 64)
+    {
+        return HtmlPurifier::process(mb_substr(Html::encode($this->content), 0, $length, "UTF-8")) . ((strlen($this->content) > $length) ? '...' : '');
+    }
+    
     public function getPostedDate()
     {
         return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $this->posted_at);

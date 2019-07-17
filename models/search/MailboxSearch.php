@@ -18,8 +18,9 @@ class MailboxSearch extends Mailbox
     public function rules()
     {
         return [
-            [['id', 'sender_id', 'created_at', 'updated_at', 'posted_at', 'remoted_at'], 'integer'],
-            [['title', 'content', 'draft_flag', 'remote_flag'], 'safe'],
+            [['id', 'sender_id', 'created_at', 'updated_at', 'posted_at', 'remoted_at', 'folder'], 'integer'],
+            [['title', 'content'], 'safe'],
+            ['gridReceiverSearch', 'string']
         ];
     }
 
@@ -63,6 +64,14 @@ class MailboxSearch extends Mailbox
             return $dataProvider;
         }
 
+        
+//        жадная загрузка
+        $query->with(['receivers']);
+        
+         if ($this->gridReceiverSearch) {
+            $query->joinWith(['receivers']);
+        }
+        
         $query->andFilterWhere([
             'id' => $this->id,
             'sender_id' => $this->sender_id,
@@ -70,12 +79,12 @@ class MailboxSearch extends Mailbox
             'updated_at' => $this->updated_at,
             'posted_at' => $this->posted_at,
             'remoted_at' => $this->remoted_at,
+            'folder' => $this->folder,
+            'mailbox_receiver.receiver_id' => $this->gridReceiverSearch,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'content', $this->content])
-            ->andFilterWhere(['like', 'draft_flag', $this->draft_flag])
-            ->andFilterWhere(['like', 'remote_flag', $this->remote_flag]);
+            ->andFilterWhere(['like', 'content', $this->content]);
 
         return $dataProvider;
     }

@@ -7,6 +7,7 @@ use artsoft\grid\GridQuickLinks;
 use artsoft\mailbox\models\Mailbox;
 use artsoft\helpers\Html;
 use artsoft\grid\GridPageSize;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel artsoft\mailbox\models\search\MailboxSearch */
@@ -31,10 +32,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-sm-6">
                     <?php 
                     /* Uncomment this to activate GridQuickLinks */
-                    /* echo GridQuickLinks::widget([
+                      echo GridQuickLinks::widget([
                         'model' => Mailbox::className(),
                         'searchModel' => $searchModel,
-                    ])*/
+                          'options' => [
+                            ['label' => Yii::t('art/mailbox', 'Posted'), 'filterWhere' => ['folder' => Mailbox::FOLDER_POSTED]],
+                            ['label' => Yii::t('art/mailbox', 'Draft'),  'filterWhere' => ['folder' => Mailbox::FOLDER_DRAFT]],
+                            ['label' => Yii::t('art/mailbox', 'Trash'),  'filterWhere' => ['folder' => Mailbox::FOLDER_TRASH]],
+                        ]
+                    ]) 
                     ?>
                 </div>
 
@@ -61,21 +67,32 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     ['class' => 'artsoft\grid\CheckboxColumn', 'options' => ['style' => 'width:10px']],
                     [
-                        'attribute' => 'id',
+                        'attribute' => 'gridReceiverSearch',
+                        'filter' => artsoft\models\User::getUsersList(),
                         'class' => 'artsoft\grid\columns\TitleActionColumn',
                         'controller' => '/mailbox/default',
-                        'title' => function(Mailbox $model) {
-                            return Html::a($model->id, ['view', 'id' => $model->id], ['data-pjax' => 0]);
+                        'title' => function (Mailbox  $model) {
+                            return implode(', ',
+                                ArrayHelper::map($model->receivers, 'id', 'username'));
                         },
+                        'options' => ['style' => 'width:350px'],
+                        'format' => 'raw',
                         'buttonsTemplate' => '{update} {view} {delete}',
                     ],
-
-            'id',
-            'sender_id',
-            'title',
-            'content:ntext',
-            'draft_flag',
-            // 'remote_flag',
+                    
+            'title',           
+                    [
+                        'attribute' => 'content',
+                        'value' => 'shortContent',
+                    ],
+//                    [
+//                        'attribute' => 'sender_id',
+//                        'label' => Yii::t('art/mailbox', 'Sender'),
+//                        'value' => function (Mailbox  $model) {
+//                                        return $model->senderName;
+//                                    },
+//                        'filter' =>  artsoft\models\User::getUsersList(),
+//                    ],
             // 'created_at',
             // 'updated_at',
             // 'posted_at',
