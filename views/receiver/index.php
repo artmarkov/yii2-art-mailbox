@@ -25,83 +25,106 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <div class="panel panel-default">
-        <div class="panel-body">
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <?php 
-                    /* Uncomment this to activate GridQuickLinks */
-                     echo GridQuickLinks::widget([
-                        'model' => MailboxReceiver::className(),
-                        'searchModel' => $searchModel,
-                         'options' => [
-                            ['label' => Yii::t('art/mailbox', 'Receiver'), 'filterWhere' => ['folder' => Mailbox::FOLDER_RECEIVER]],
-                            ['label' => Yii::t('art/mailbox', 'Trash'),  'filterWhere' => ['folder' => Mailbox::FOLDER_TRASH]],
-                        ] 
-                    ])
-                    ?>
-                </div>
-
-                <div class="col-sm-6 text-right">
-                    <?=  GridPageSize::widget(['pjaxId' => 'mailbox-receiver-grid-pjax']) ?>
+   <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">                   
+    
+                        <?= $this->render('../_menu', compact('model')) ?>
+                  
                 </div>
             </div>
+        </div>
+	<div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-body">
 
-            <?php 
-            Pjax::begin([
-                'id' => 'mailbox-receiver-grid-pjax',
-            ])
-            ?>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <?php
+                            /* Uncomment this to activate GridQuickLinks */
+                            echo GridQuickLinks::widget([
+                                'model' => MailboxReceiver::className(),
+                                'searchModel' => $searchModel,
+                                'options' => [
+                                    ['label' => Yii::t('art/mailbox', 'All Letters'), 'filterWhere' => []],
+                                    ['label' => Yii::t('art/mailbox', 'New Letters'), 'filterWhere' => ['status' => Mailbox::STATUS_NEW]],
+                                ]
+                            ])
+                            ?>
+                        </div>
 
-            <?= 
-            GridView::widget([
-                'id' => 'mailbox-receiver-grid',
-                'dataProvider' => $dataProvider,
-                'filterModel' => $searchModel,
-                'bulkActionOptions' => [
-                    'gridId' => 'mailbox-receiver-grid',
-                    'actions' => [ Url::to(['bulk-delete']) => 'Delete'] //Configure here you bulk actions
-                ],
-                'columns' => [
-                    ['class' => 'artsoft\grid\CheckboxColumn', 'options' => ['style' => 'width:10px']],
-                    [
-                        'attribute' => 'mailboxSenderId',
-                        'label' => Yii::t('art/mailbox', 'Sender'), 
-                        'filter' => artsoft\models\User::getUsersList(),
-                        'class' => 'artsoft\grid\columns\TitleActionColumn',
-                        'controller' => '/mailbox-receiver/default',
-                        'title' => function(MailboxReceiver $model) {
-                            return Html::a($model->mailbox->senderName, ['view', 'id' => $model->id], ['data-pjax' => 0]);
-                        },
-                        'options' => ['style' => 'width:350px'],
-                        'buttonsTemplate' => '{view} {delete}',
-                    ],    
-                    [
-                        'attribute' => 'mailboxTitle',
-                        'value' => 'mailbox.title',
-                        'label' => Yii::t('art', 'Title'),                        
-                    ],
-                    [
-                        'attribute' => 'mailboxContent',
-                        'value' => 'mailbox.shortContent',
-                        'label' => Yii::t('art', 'Content'),                        
-                    ],
-                    [
-                        'attribute' => 'receiver_id',
-                        'value' => 'receiver.username',
-                        'label' => Yii::t('art/mailbox', 'Receiver'), 
-                        'filter' => artsoft\models\User::getUsersList(),                        
-                    ],
-            'status',
-            // 'reading_at',
-            // 'remoted_at',
+                        <div class="col-sm-6 text-right">
+                            <?= GridPageSize::widget(['pjaxId' => 'mailbox-receiver-grid-pjax']) ?>
+                        </div>
+                    </div>
 
-                ],
-            ]);
-            ?>
+                    <?php
+                    Pjax::begin([
+                        'id' => 'mailbox-receiver-grid-pjax',
+                    ])
+                    ?>
 
-            <?php Pjax::end() ?>
+                    <?=
+                    GridView::widget([
+                        'id' => 'mailbox-receiver-grid',
+                        'dataProvider' => $dataProvider,
+                        'filterModel' => $searchModel,
+                        'bulkActionOptions' => [
+                            'gridId' => 'mailbox-receiver-grid',
+                            'actions' => [Url::to(['bulk-delete']) => 'Delete'] //Configure here you bulk actions
+                        ],
+                        'columns' => [
+                            ['class' => 'artsoft\grid\CheckboxColumn', 'options' => ['style' => 'width:10px']],
+                            [
+                                'attribute' => 'mailboxSenderId',
+                                'label' => Yii::t('art/mailbox', 'Sender'),
+                                'filter' => artsoft\models\User::getUsersList(),
+                                'class' => 'artsoft\grid\columns\TitleActionColumn',
+                                'controller' => '/mailbox/receiver',
+                                'title' => function(MailboxReceiver $model) {
+                                    return Html::a($model->mailbox->senderName, ['/mailbox/receiver/view', 'id' => $model->id], ['data-pjax' => 0]);
+                                },
+                                'options' => ['style' => 'width:350px'],
+                                'buttonsTemplate' => '{view} {delete}',
+                            ],
+                            [
+                                'attribute' => 'mailboxTitle',
+                                'value' => 'mailbox.title',
+                                'label' => Yii::t('art', 'Title'),
+                            ],
+                            [
+                                'attribute' => 'mailboxContent',
+                                'value' => 'mailbox.shortContent',
+                                'label' => Yii::t('art', 'Content'),
+                            ],
+                            [
+                                'attribute' => 'receiver_id',
+                                'value' => 'receiver.username',
+                                'label' => Yii::t('art/mailbox', 'Receiver'),
+                                'filter' => artsoft\models\User::getUsersList(),
+                            ],
+                            [
+                                'attribute' => 'mailboxPostedDate',
+                                'value' => 'mailbox.postedDate',
+                                'label' => Yii::t('art/mailbox', 'Posted At'),
+                                'format' => 'raw',
+                            ],
+                            [
+                                'class' => 'artsoft\grid\columns\StatusColumn',
+                                'attribute' => 'status',
+                                'optionsArray' => Mailbox::getStatusOptionsList(),
+                                'options' => ['style' => 'width:60px'],
+                            ],
+                        // 'reading_at',
+                        // 'remoted_at',
+                        ],
+                    ]);
+                    ?>
+
+                    <?php Pjax::end() ?>
+                </div>
+            </div>
         </div>
     </div>
 </div>

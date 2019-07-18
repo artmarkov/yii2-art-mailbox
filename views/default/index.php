@@ -21,34 +21,38 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-sm-12">
             <h3 class="lte-hide-title page-title"><?=  Html::encode($this->title) ?></h3>
-            <?= Html::a(Yii::t('art', 'Add New'), ['/mailbox/default/create'], ['class' => 'btn btn-sm btn-success']) ?>
+            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/create'], ['class' => 'btn btn-sm btn-success']) ?>
         </div>
     </div>
-
-    <div class="panel panel-default">
-        <div class="panel-body">
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <?php 
-                    /* Uncomment this to activate GridQuickLinks */
-                      echo GridQuickLinks::widget([
-                        'model' => Mailbox::className(),
-                        'searchModel' => $searchModel,
-                          'options' => [
-                            ['label' => Yii::t('art/mailbox', 'Posted'), 'filterWhere' => ['folder' => Mailbox::FOLDER_POSTED]],
-                            ['label' => Yii::t('art/mailbox', 'Draft'),  'filterWhere' => ['folder' => Mailbox::FOLDER_DRAFT]],
-                            ['label' => Yii::t('art/mailbox', 'Trash'),  'filterWhere' => ['folder' => Mailbox::FOLDER_TRASH]],
-                        ]
-                    ]) 
-                    ?>
-                </div>
-
-                <div class="col-sm-6 text-right">
-                    <?=  GridPageSize::widget(['pjaxId' => 'mailbox-grid-pjax']) ?>
+    
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">                   
+    
+                        <?= $this->render('../_menu', compact('model')) ?>
+                  
                 </div>
             </div>
+        </div>
+	<div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <?php 
+                            /* Uncomment this to activate GridQuickLinks */
+                            /*  echo GridQuickLinks::widget([
+                                'model' => Mailbox::className(),
+                                'searchModel' => $searchModel,                                 
+                            ]) */
+                            ?>
+                        </div>
 
+                        <div class="col-sm-6 text-right">
+                            <?=  GridPageSize::widget(['pjaxId' => 'mailbox-grid-pjax']) ?>
+                        </div>
+                    </div>
             <?php 
             Pjax::begin([
                 'id' => 'mailbox-grid-pjax',
@@ -80,7 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'buttonsTemplate' => '{update} {view} {delete}',
                     ],
                     
-            'title',           
+                    'title',           
                     [
                         'attribute' => 'content',
                         'value' => 'shortContent',
@@ -103,8 +107,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ?>
 
             <?php Pjax::end() ?>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
-

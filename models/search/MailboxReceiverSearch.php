@@ -20,7 +20,7 @@ class MailboxReceiverSearch extends MailboxReceiver
         return [
             [['id', 'mailbox_id', 'receiver_id', 'reading_at', 'remoted_at', 'folder', 'status'], 'integer'],
             [['mailboxTitle', 'mailboxContent'], 'string'],
-            ['mailboxSenderId', 'integer'],
+            [['mailboxSenderId', 'mailboxPostedDate'], 'integer'],
         ];
     }
 
@@ -59,7 +59,7 @@ class MailboxReceiverSearch extends MailboxReceiver
         $dataProvider->setSort([
             'attributes' => [
                 
-                 'mailboxSenderId' => [
+                'mailboxSenderId' => [
                     'asc' => ['mailbox.sender_id' => SORT_ASC],
                     'desc' => ['mailbox.sender_id' => SORT_DESC],
                 ],
@@ -74,7 +74,13 @@ class MailboxReceiverSearch extends MailboxReceiver
                     'desc' => ['mailbox.content' => SORT_DESC],
                 ],
                 
+                'mailboxPostedDate' => [
+                    'asc' => ['mailbox.posted_at' => SORT_ASC],
+                    'desc' => ['mailbox.posted_at' => SORT_DESC],
+                ],
+                  
                 'status',
+                'receiver_id',
             ]
         ]);
         $this->load($params);
@@ -105,6 +111,9 @@ class MailboxReceiverSearch extends MailboxReceiver
         }]);
         $query->joinWith(['mailbox' => function ($q) {
             $q->andFilterWhere(['mailbox.sender_id' => $this->mailboxSenderId]);
+        }]);
+         $query->joinWith(['mailbox' => function ($q) {
+            $q->andFilterWhere(['mailbox.posted_at' => $this->mailboxPostedDate]);
         }]);
         
         return $dataProvider;

@@ -19,11 +19,7 @@ use artsoft\helpers\Html;
         ])
     ?>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="panel panel-default">
-                <div class="panel-body">
-
+  
                      <?php
                     echo $form->field($model, 'receivers_ids')->widget(\nex\chosen\Chosen::className(), [
                         'items' => User::getUsersList(),
@@ -39,13 +35,6 @@ use artsoft\helpers\Html;
                     <?= $form->field($model, 'folder')->textInput() ?>
                    
 
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-body">
                     <div class="record-info">
                         <div class="form-group clearfix">
                             <label class="control-label" style="float: left; padding-right: 5px;"><?=  $model->attributeLabels()['id'] ?>: </label>
@@ -78,17 +67,8 @@ use artsoft\helpers\Html;
                             <?php endif; ?>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    
-                    <!-- other form-->
-                    
-                </div>
-            </div>
-        </div>
-    </div>
+                
+           
 
     <?php  ActiveForm::end(); ?>
 

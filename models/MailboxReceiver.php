@@ -24,6 +24,7 @@ class MailboxReceiver extends \artsoft\db\ActiveRecord
     public $mailboxSenderId;    
     public $mailboxTitle;    
     public $mailboxContent;    
+    public $mailboxPostedDate;    
     
     /**
      * {@inheritdoc}

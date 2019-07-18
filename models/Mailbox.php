@@ -30,13 +30,13 @@ class Mailbox extends \artsoft\db\ActiveRecord
     
     public $gridReceiverSearch;
     
-    const FOLDER_DRAFT = 0;   // черновик
-    const FOLDER_POSTED = 1;  // отправленные
+    const FOLDER_DRAFT = 0;    // черновик
+    const FOLDER_POSTED = 1;   // отправленные
     const FOLDER_RECEIVER = 2; // Приняты
-    const FOLDER_TRASH = 5;   // в корзине   
+    const FOLDER_TRASH = -1;   // в корзине   
     
-    const STATUS_NOREAD = 0; // не прочитано
-    const STATUS_READ = 1;   // прочитано 
+    const STATUS_NEW = 0;      // не прочитано
+    const STATUS_READ = 1;     // прочитано 
     /**
      * {@inheritdoc}
      */
@@ -137,6 +137,29 @@ class Mailbox extends \artsoft\db\ActiveRecord
     public function getShortContent($length = 64)
     {
         return HtmlPurifier::process(mb_substr(Html::encode($this->content), 0, $length, "UTF-8")) . ((strlen($this->content) > $length) ? '...' : '');
+    }
+    
+    /**
+     * getStatusList
+     * @return array
+     */
+    public static function getStatusList()
+    {
+        return array(
+            self::STATUS_NEW => Yii::t('art/mailbox', 'New'),
+            self::STATUS_READ => Yii::t('art/mailbox', 'Read'),
+        );
+    }
+     /**
+     * getStatusOptionsList
+     * @return array
+     */
+    public static function getStatusOptionsList()
+    {
+        return [
+            [self::STATUS_NEW, Yii::t('art/mailbox', 'New'), 'success'],
+            [self::STATUS_READ, Yii::t('art/mailbox', 'Read'), 'default']
+        ];
     }
     
     public function getPostedDate()
