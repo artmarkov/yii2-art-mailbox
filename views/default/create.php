@@ -11,6 +11,23 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="mailbox-create">
-    <h3 class="lte-hide-title"><?=  Html::encode($this->title) ?></h3>
-    <?=  $this->render('_form', compact('model')) ?>
+    <h3 class="lte-hide-title"><?= Html::encode($this->title) ?></h3>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">                   
+
+                    <?= $this->render('../_menu', compact('model')) ?>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <?= $this->render('_form', compact('model')) ?>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

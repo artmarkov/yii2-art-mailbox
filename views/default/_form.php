@@ -2,6 +2,7 @@
 
 use artsoft\widgets\ActiveForm;
 use artsoft\mailbox\models\Mailbox;
+use artsoft\media\widgets\TinyMce;
 use artsoft\models\User;
 use artsoft\helpers\Html;
 
@@ -30,7 +31,7 @@ use artsoft\helpers\Html;
                     
                     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-                    <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
+                    <?= $form->field($model, 'content')->widget(TinyMce::className()); ?>
 
                     <?= $form->field($model, 'folder')->textInput() ?>
                    
@@ -50,21 +51,26 @@ use artsoft\helpers\Html;
                             <span><?=  $model->updatedDatetime ?></span>
                         </div>
                         <?php endif; ?>
-                        <div class="form-group">
-                            <?php  if ($model->isNewRecord): ?>
-                                <?= Html::submitButton(Yii::t('art', 'Create'), ['class' => 'btn btn-primary']) ?>
-                                <?= Html::a(Yii::t('art', 'Cancel'), ['/mailbox/default/index'], ['class' => 'btn btn-default']) ?>
-                            <?php  else: ?>
-                                <?= Html::submitButton(Yii::t('art', 'Save'), ['class' => 'btn btn-primary']) ?>
-                                <?= Html::a(Yii::t('art', 'Delete'),
-                                    ['/mailbox/default/delete', 'id' => $model->id], [
-                                    'class' => 'btn btn-danger',
-                                    'data' => [
-                                        'confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                                        'method' => 'post',
-                                    ],
-                                ]) ?>
-                            <?php endif; ?>
+                        <div class="panel-footer">
+                            <div class="form-group">
+                                <div class="pull-right">
+                                <?= Html::a(Yii::t('art', 'Draft'), ['/mailbox/default/draft'], ['class' => 'btn btn-default']) ?>          
+                                <?= Html::submitButton(Yii::t('art', 'Send'), ['class' => 'btn btn-primary']) ?>
+               
+                                </div>
+                                <?= Html::a(Yii::t('art', 'Discard'), ['/mailbox/default/index'], ['class' => 'btn btn-default']) ?>                           
+                                <?php if (!$model->isNewRecord): ?>                           
+                                    <?=
+                                    Html::a(Yii::t('art', 'Delete'), ['/mailbox/default/delete', 'id' => $model->id], [
+                                        'class' => 'btn btn-danger',
+                                        'data' => [
+                                            'confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                            'method' => 'post',
+                                        ],
+                                    ])
+                                    ?>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 

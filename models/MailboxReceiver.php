@@ -56,7 +56,7 @@ class MailboxReceiver extends \artsoft\db\ActiveRecord
             'mailbox_id' => Yii::t('art/mailbox', 'Mailbox ID'),
             'receiver_id' => Yii::t('art/mailbox', 'Receiver ID'),
             'status' => Yii::t('art', 'Status'),
-            'folder' => Yii::t('art', 'Folder'),
+            'folder' => Yii::t('art/mailbox', 'Folder'),
             'reading_at' => Yii::t('art/mailbox', 'Reading At'),
             'remoted_at' => Yii::t('art/mailbox', 'Remoted At'),
         ];
