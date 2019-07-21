@@ -15,23 +15,30 @@ use yii\helpers\ArrayHelper;
 
 $this->title = Yii::t('art/mailbox', 'Mailboxes');
 $this->params['breadcrumbs'][] = $this->title;
+
+artsoft\mailbox\MailboxAssetsBundle::register($this);
 ?>
 <div class="mailbox-index">
 
     <div class="row">
         <div class="col-sm-12">
-            <h3 class="lte-hide-title page-title"><?=  Html::encode($this->title) ?></h3>
-            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/create'], ['class' => 'btn btn-sm btn-success']) ?>
+            <h3 class="page-title"><?=  Html::encode($this->title) ?></h3>
         </div>
     </div>
     
     <div class="row">
         <div class="col-md-3">
+            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/create'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
+         
             <div class="panel panel-default">
-                <div class="panel-body">                   
-    
-                        <?= $this->render('../_menu', compact('model')) ?>
-                  
+            <div class="box-header with-border">
+                <h3 class="box-title">Folders</h3>
+            </div>
+                
+                <div class="box-body no-padding">                   
+
+                    <?= $this->render('../_menu', compact('model')) ?>
+
                 </div>
             </div>
         </div>
