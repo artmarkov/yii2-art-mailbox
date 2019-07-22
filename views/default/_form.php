@@ -25,16 +25,13 @@ use artsoft\helpers\Html;
                     echo $form->field($model, 'receivers_ids')->widget(\nex\chosen\Chosen::className(), [
                         'items' => User::getUsersList(),
                         'multiple' => true,
-                        'placeholder' => Yii::t('art/mailbox', 'Select Receivers...'),
+                        'placeholder' => Yii::t('art/mailbox', 'To:'),
                     ])->label(Yii::t('art/mailbox', 'Receivers'));
                     ?>
                     
                     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
                     <?= $form->field($model, 'content')->widget(TinyMce::className()); ?>
-
-                    <?= $form->field($model, 'folder')->textInput() ?>
-                   
 
                     <div class="record-info">
                         <div class="form-group clearfix">
@@ -54,7 +51,7 @@ use artsoft\helpers\Html;
                         <div class="panel-footer">
                             <div class="form-group">
                                 <div class="pull-right">
-                                <?= Html::a(Yii::t('art', 'Draft'), ['/mailbox/default/draft'], ['class' => 'btn btn-default']) ?>          
+                                <?= Html::submitButton(Yii::t('art', 'Draft'), ['class' => 'btn btn-default', 'name' => 'draft']) ?>          
                                 <?= Html::submitButton(Yii::t('art', 'Send'), ['class' => 'btn btn-primary']) ?>
                
                                 </div>

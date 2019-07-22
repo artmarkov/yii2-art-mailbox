@@ -16,7 +16,6 @@ use yii\helpers\ArrayHelper;
 $this->title = Yii::t('art/mailbox', 'Mailboxes');
 $this->params['breadcrumbs'][] = $this->title;
 
-artsoft\mailbox\MailboxAssetsBundle::register($this);
 ?>
 <div class="mailbox-index">
 
@@ -28,7 +27,7 @@ artsoft\mailbox\MailboxAssetsBundle::register($this);
     
     <div class="row">
         <div class="col-md-3">
-            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/create'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
+            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/compose'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
          
             <div class="panel panel-default">
             <div class="box-header with-border">
@@ -95,6 +94,13 @@ artsoft\mailbox\MailboxAssetsBundle::register($this);
                     [
                         'attribute' => 'content',
                         'value' => 'shortContent',
+                        'format' => 'html',
+                    ],
+                    [
+                        'attribute' => 'posted_at',
+                        'value' => 'postedDate',
+                        'label' => Yii::t('art/mailbox', 'Posted At'),
+                        'format' => 'raw',
                     ],
 //                    [
 //                        'attribute' => 'sender_id',

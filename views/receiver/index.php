@@ -16,7 +16,6 @@ use artsoft\grid\GridPageSize;
 $this->title = Yii::t('art/mailbox', 'Mailbox Receivers');
 $this->params['breadcrumbs'][] = $this->title;
 
-artsoft\mailbox\MailboxAssetsBundle::register($this);
 ?>
 <div class="mailbox-receiver-index">
 
@@ -28,7 +27,7 @@ artsoft\mailbox\MailboxAssetsBundle::register($this);
 
    <div class="row">
         <div class="col-md-3">
-            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/create'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
+            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/compose'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
          
             <div class="panel panel-default">
             <div class="box-header with-border">
@@ -79,7 +78,11 @@ artsoft\mailbox\MailboxAssetsBundle::register($this);
                         'filterModel' => $searchModel,
                         'bulkActionOptions' => [
                             'gridId' => 'mailbox-receiver-grid',
-                            'actions' => [Url::to(['bulk-delete']) => 'Delete'] //Configure here you bulk actions
+                            'actions' => [
+                                Url::to(['bulk-mark-as-read']) => Yii::t('art/mailbox', 'Mark as read'),                       
+                                Url::to(['bulk-mark-unread']) => Yii::t('art/mailbox', 'Mark unread'),                       
+                                Url::to(['bulk-delete']) => Yii::t('art', 'Delete'),                   
+                            ] //Configure here you bulk actions
                         ],
                         'columns' => [
                             ['class' => 'artsoft\grid\CheckboxColumn', 'options' => ['style' => 'width:10px']],
@@ -104,6 +107,7 @@ artsoft\mailbox\MailboxAssetsBundle::register($this);
                                 'attribute' => 'mailboxContent',
                                 'value' => 'mailbox.shortContent',
                                 'label' => Yii::t('art', 'Content'),
+                                'format' => 'html',
                             ],
                             [
                                 'attribute' => 'receiver_id',

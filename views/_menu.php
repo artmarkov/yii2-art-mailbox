@@ -1,6 +1,8 @@
 <?php
 
 use artsoft\widgets\Nav;
+
+artsoft\mailbox\MailboxAssetsBundle::register($this);
 ?>
 
 <div class="mailbox-nav">

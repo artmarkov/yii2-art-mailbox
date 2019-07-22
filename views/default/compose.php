@@ -5,14 +5,13 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model artsoft\mailbox\models\Mailbox */
 
-$this->title = Yii::t('art', 'Create');
+$this->title = Yii::t('art', 'Compose');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('art/mailbox', 'Mailboxes'), 'url' => ['default/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
-artsoft\mailbox\MailboxAssetsBundle::register($this);
 ?>
 
-<div class="mailbox-create">
+<div class="mailbox-compose">
     <div class="row">
         <div class="col-sm-12">
             <h3 class="page-title"><?=  Html::encode($this->title) ?></h3>            

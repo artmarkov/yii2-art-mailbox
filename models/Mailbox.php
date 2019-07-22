@@ -134,9 +134,10 @@ class Mailbox extends \artsoft\db\ActiveRecord
         return $this->sender->username;
     }
    
-    public function getShortContent($length = 64)
+    public function getShortContent($length = 64, $allowableTags = '')
     {
-        return HtmlPurifier::process(mb_substr(Html::encode($this->content), 0, $length, "UTF-8")) . ((strlen($this->content) > $length) ? '...' : '');
+        $content =  strip_tags($this->content, $allowableTags);
+        return HtmlPurifier::process(mb_substr(Html::encode($content), 0, $length, "UTF-8")) . ((strlen($content) > $length) ? '...' : '');
     }
     
     /**

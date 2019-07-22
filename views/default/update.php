@@ -10,7 +10,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('art/mailbox', 'Mailboxes'),
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['default/view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 
-artsoft\mailbox\MailboxAssetsBundle::register($this);
 ?>
 <div class="mailbox-update">
    <div class="row">
@@ -20,7 +19,7 @@ artsoft\mailbox\MailboxAssetsBundle::register($this);
    </div>
    <div class="row">
         <div class="col-md-3">
-            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/create'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
+            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/compose'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
          
             <div class="panel panel-default">
             <div class="box-header with-border">

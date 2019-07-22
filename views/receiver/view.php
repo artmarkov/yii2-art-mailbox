@@ -10,7 +10,6 @@ $this->title = Yii::t('art/mailbox', 'Read mail');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('art/mailbox', 'Mailbox Receivers'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
-artsoft\mailbox\MailboxAssetsBundle::register($this);
 ?>
 <div class="mailbox-receiver-view">
 
@@ -21,7 +20,7 @@ artsoft\mailbox\MailboxAssetsBundle::register($this);
     </div>
     <div class="row">
         <div class="col-md-3">
-            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/create'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
+            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/compose'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
          
             <div class="panel panel-default">
             <div class="box-header with-border">
