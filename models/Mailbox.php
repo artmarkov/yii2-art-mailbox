@@ -30,9 +30,9 @@ class Mailbox extends \artsoft\db\ActiveRecord
     
     public $gridReceiverSearch;
     
-    const FOLDER_DRAFT = 0;    // черновик
     const FOLDER_POSTED = 1;   // отправленные
     const FOLDER_RECEIVER = 2; // Приняты
+    const FOLDER_DRAFT = 3;    // черновик
     const FOLDER_TRASH = -1;   // в корзине   
     
     const STATUS_NEW = 0;      // не прочитано
@@ -110,8 +110,28 @@ class Mailbox extends \artsoft\db\ActiveRecord
     {
         return new MailboxQuery(get_called_class());
     }
-    
-     /**
+    /**
+     * 
+     * @param type $folder
+     * @return $this
+     */
+    public function send($folder) {
+        $this->folder = $folder;
+
+        if ($folder == $this::FOLDER_POSTED) {
+
+            $this->posted_at = time();
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been posted.'));
+            
+        } elseif ($folder == $this::FOLDER_DRAFT) {
+            
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your email has been moved to the drafts folder.'));
+            
+        }
+        return $this;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getReceivers()

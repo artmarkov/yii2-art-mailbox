@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'actions' => [
                                 Url::to(['bulk-mark-as-read']) => Yii::t('art/mailbox', 'Mark as read'),                       
                                 Url::to(['bulk-mark-unread']) => Yii::t('art/mailbox', 'Mark unread'),                       
-                                Url::to(['bulk-delete']) => Yii::t('art', 'Delete'),                   
+                                Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Trash'),                   
                             ] //Configure here you bulk actions
                         ],
                         'columns' => [

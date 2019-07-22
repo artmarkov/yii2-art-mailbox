@@ -17,7 +17,11 @@ use artsoft\helpers\Html;
     $form = ActiveForm::begin([
             'id' => 'mailbox-form',
             'validateOnBlur' => false,
-        ])
+           // 'type' => ActiveForm::TYPE_INLINE, 
+           // 'method' => 'GET',
+            //'action' => Url::to(['/mailbox/default/compose']), 
+            'enableClientScript' => true, // default
+            ])
     ?>
 
   
@@ -51,11 +55,12 @@ use artsoft\helpers\Html;
                         <div class="panel-footer">
                             <div class="form-group">
                                 <div class="pull-right">
-                                <?= Html::submitButton(Yii::t('art', 'Draft'), ['class' => 'btn btn-default', 'name' => 'draft']) ?>          
-                                <?= Html::submitButton(Yii::t('art', 'Send'), ['class' => 'btn btn-primary']) ?>
+                               
+                                <?= Html::submitButton(Yii::t('art', 'Draft'), ['class' => 'btn btn-default', 'name' => 'folder', 'value' => $model::FOLDER_DRAFT, 'data-pjax' => 0]) ?>          
+                                <?= Html::submitButton(Yii::t('art', 'Send'), ['class' => 'btn btn-primary', 'name' => 'folder', 'value' => $model::FOLDER_POSTED, 'data-pjax' => 0]) ?>          
                
                                 </div>
-                                <?= Html::a(Yii::t('art', 'Discard'), ['/mailbox/default/index'], ['class' => 'btn btn-default']) ?>                           
+                                <?= Html::a(Yii::t('art', 'Discard'), ['/mailbox/receiver/index'], ['class' => 'btn btn-default']) ?>                           
                                 <?php if (!$model->isNewRecord): ?>                           
                                     <?=
                                     Html::a(Yii::t('art', 'Delete'), ['/mailbox/default/delete', 'id' => $model->id], [

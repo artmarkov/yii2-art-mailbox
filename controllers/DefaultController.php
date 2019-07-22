@@ -4,6 +4,12 @@ namespace artsoft\mailbox\controllers;
 
 use Yii;
 use artsoft\controllers\admin\BaseController;
+use yii\web\NotFoundHttpException;
+use artsoft\helpers\ArtHelper;
+use artsoft\models\OwnerAccess;
+use yii\helpers\StringHelper;
+use yii\helpers\ArrayHelper;
+use yii\filters\VerbFilter;
 
 /**
  * Controller implements the CRUD actions for Block model.
@@ -26,29 +32,146 @@ class DefaultController extends BaseController
                 return parent::getRedirectPage($action, $model);
         }
     }
-     /**
-     * Creates a new model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     public function behaviors()
+    {
+        return ArrayHelper::merge(parent::behaviors(), [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    //'update' => ['post'],
+                    'delete' => ['post'],
+                ],
+            ],
+        ]);
+    }
+    /**
+     * Lists all models.
      * @return mixed
      */
-    public function actionCompose()
+    public function actionIndex()
     {
+        $modelClass = $this->modelClass;
+        $searchModel =  new $this->modelSearchClass;
+        $restrictAccess = (ArtHelper::isImplemented($modelClass, OwnerAccess::CLASSNAME)
+            && !User::hasPermission($modelClass::getFullAccessPermission()));
+
+        if ($searchModel) {
+            $searchName = StringHelper::basename($searchModel::className());
+            $params = Yii::$app->request->getQueryParams();
+
+            if ($restrictAccess) {
+                $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
+            }
+                $params[$searchName]['folder'] = $modelClass::FOLDER_POSTED;
+
+            $dataProvider = $searchModel->search($params);
+        } else {
+            $restrictParams = ($restrictAccess) ? [$modelClass::getOwnerField() => Yii::$app->user->identity->id] : [];
+            $dataProvider = new ActiveDataProvider(['query' => $modelClass::find()->where($restrictParams)]);
+        }
+
+        return $this->renderIsAjax('index', compact('dataProvider', 'searchModel'));
+    }
+     /**
+     * Lists all models.
+     * @return mixed
+     */
+    public function actionDraft()
+    {
+        $modelClass = $this->modelClass;
+        $searchModel =  new $this->modelSearchClass;
+        $restrictAccess = (ArtHelper::isImplemented($modelClass, OwnerAccess::CLASSNAME)
+            && !User::hasPermission($modelClass::getFullAccessPermission()));
+
+        if ($searchModel) {
+            $searchName = StringHelper::basename($searchModel::className());
+            $params = Yii::$app->request->getQueryParams();
+
+            if ($restrictAccess) {
+                $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
+            }
+                $params[$searchName]['folder'] = $modelClass::FOLDER_DRAFT;
+
+            $dataProvider = $searchModel->search($params);
+        } else {
+            $restrictParams = ($restrictAccess) ? [$modelClass::getOwnerField() => Yii::$app->user->identity->id] : [];
+            $dataProvider = new ActiveDataProvider(['query' => $modelClass::find()->where($restrictParams)]);
+        }
+
+        return $this->renderIsAjax('draft', compact('dataProvider', 'searchModel'));
+    }
+     /**
+     * Lists all models.
+     * @return mixed
+     */
+    public function actionTrash()
+    {
+        $modelClass = $this->modelClass;
+        $searchModel =  new $this->modelSearchClass;
+        $restrictAccess = (ArtHelper::isImplemented($modelClass, OwnerAccess::CLASSNAME)
+            && !User::hasPermission($modelClass::getFullAccessPermission()));
+
+        if ($searchModel) {
+            $searchName = StringHelper::basename($searchModel::className());
+            $params = Yii::$app->request->getQueryParams();
+
+            if ($restrictAccess) {
+                $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
+            }
+                $params[$searchName]['folder'] = $modelClass::FOLDER_TRASH;
+
+            $dataProvider = $searchModel->search($params);
+        } else {
+            $restrictParams = ($restrictAccess) ? [$modelClass::getOwnerField() => Yii::$app->user->identity->id] : [];
+            $dataProvider = new ActiveDataProvider(['query' => $modelClass::find()->where($restrictParams)]);
+        }
+
+        return $this->renderIsAjax('trash', compact('dataProvider', 'searchModel'));
+    }
+    
+     /**
+     * Creates a new model.
+     * If creation is successful, the browser will be redirected to the 'index' page.
+     * @return mixed
+     */
+     public function actionCompose() {
         /* @var $model \artsoft\db\ActiveRecord */
         $model = new $this->modelClass;
-        
-        if (isset(Yii::$app->request->post('draft'))) {
 
-        }
-        else {
+        if ($model->load(Yii::$app->request->post())) {
+            $folder = Yii::$app->request->post('folder');
 
+            if (empty($folder)) {
+                throw new NotFoundHttpException(Yii::t('art/mailbox', 'Required Folder parameter is missing.'));
+            }
+            if ($model->send($folder) && $model->save()) {
+//                 echo '<pre>' . print_r($model, true) . '</pre>';                
+                return $this->redirect($this->getRedirectPage('index', $model));
+            }
         }
-        
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('crudMessage', Yii::t('art', 'Your item has been created.'));
-            return $this->redirect($this->getRedirectPage('compose', $model));
-        }
-
-        return $this->renderIsAjax('compose', compact('model'));
+            return $this->renderIsAjax('compose', compact('model'));
     }
-     
+    /**
+     * 
+     * @param type $id
+     * @return type
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post())) {
+            $folder = Yii::$app->request->post('folder');
+
+            if (empty($folder)) {
+                throw new NotFoundHttpException(Yii::t('art/mailbox', 'Required Folder parameter is missing.'));
+            }
+            if ($model->send($folder) && $model->save()) {
+//                 echo '<pre>' . print_r($model, true) . '</pre>';                
+                return $this->redirect($this->getRedirectPage('index', $model));
+            }
+        }
+            return $this->renderIsAjax('update', compact('model'));
+    }
 }

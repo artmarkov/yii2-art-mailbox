@@ -22,12 +22,12 @@ artsoft\mailbox\MailboxAssetsBundle::register($this);
         [
             'encode' => false,
             'label' => '<i class="fa fa-file-text-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Draft'),
-            'url' => ['draft']
+            'url' => ['default/draft']
         ],
         [
             'encode' => false,
             'label' => '<i class="fa fa-trash-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Trash'),
-            'url' => ['trash']
+            'url' => ['default/trash']
         ],
     ];
     echo Nav::widget([
