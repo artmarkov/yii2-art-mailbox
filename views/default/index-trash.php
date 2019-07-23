@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'bulkActionOptions' => [
                     'gridId' => 'mailbox-grid',
                     'actions' => [          
-                        Url::to(['bulk-delete']) => Yii::t('art', 'Delete'),  
+                       Url::to(['bulk-truncate']) => Yii::t('art/mailbox', 'Truncate'),  
                     ] //Configure here you bulk actions
                 ],
                 'columns' => [

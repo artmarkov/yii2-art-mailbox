@@ -74,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'gridId' => 'mailbox-grid',
                     'actions' => [                   
                         Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Move to Trash'),                   
-                        Url::to(['bulk-delete']) => Yii::t('art', 'Delete'),  
+                        Url::to(['bulk-truncate']) => Yii::t('art/mailbox', 'Truncate'),  
                     ] //Configure here you bulk actions
                 ],
                 'columns' => [
@@ -85,8 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'class' => 'artsoft\grid\columns\TitleActionColumn',
                         'controller' => '/mailbox/default',
                         'title' => function (Mailbox  $model) {
-                            return implode(', ',
-                                ArrayHelper::map($model->receivers, 'id', 'username'));
+                            return count($model->receivers) != 0 ? implode(', ', ArrayHelper::map($model->receivers, 'id', 'username')) : '<span class="not-set">(not set)</span>';
                         },
                         'options' => ['style' => 'width:350px'],
                         'format' => 'raw',

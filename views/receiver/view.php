@@ -1,6 +1,5 @@
 <?php
 
-use yii\widgets\DetailView;
 use artsoft\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -20,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="row">
         <div class="col-md-3">
-            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/compose'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
+            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/receiver/compose'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
          
             <div class="panel panel-default">
             <div class="box-header with-border">
@@ -55,27 +54,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>   
                 <div class="mailbox-controls with-border text-center">
                     <div class="btn-group">
-                        <div class="btn-group">
-                  
-                </div>
-                        <?=
-                        Html::a('<i class="fa fa-trash-o"></i>', ['/mailbox/receiver/trash', 'id' => $model->id], [
-                            'class' => 'btn btn-default btn-sm', 
-                            'data-toggle' => 'tooltip', 
-                            'data-container' => 'body', 
-                            'title' => '', 
-                            'data-original-title' => Yii::t('art/mailbox', 'Trash'),
-                            'data' => [
-                                'confirm' => Yii::t('art/mailbox', 'Are you sure you want to trash this mail?'),
-                                'method' => 'post',
-                            ],
-                        ])
-                        ?>
-                        <?= Html::a('<i class="fa fa-reply"></i>', ['/mailbox/receiver/reply'], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Reply']) ?>
-                        <?= Html::a('<i class="fa fa-share"></i>', ['/mailbox/receiver/forward'], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Forward']) ?>
+                        
+                        <?= Html::a('<i class="fa fa-trash-o"></i>', ['/mailbox/receiver/trash', 'id' => $model->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => Yii::t('art/mailbox', 'Trash')]) ?>
+                        <?= Html::a('<i class="fa fa-reply"></i>', ['/mailbox/receiver/reply', 'id' => $model->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Reply']) ?>
+                        <?= Html::a('<i class="fa fa-share"></i>', ['/mailbox/receiver/forward', 'id' => $model->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Forward']) ?>
 
                     </div>
-                    <?= Html::a('<i class="fa fa-print"></i>', ['/mailbox/receiver/print'], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Print']) ?>                         
+                    <?= Html::a('<i class="fa fa-print"></i>', ['/mailbox/receiver/print', 'id' => $model->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Print']) ?>                         
 
                 </div>
                            
@@ -91,33 +76,23 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <div class="box-footer">
                     
-                        <div class="pull-right">
+                    <div class="pull-right">
 
-                            <?= Html::a('<i class="fa fa-reply" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Reply'), ['/mailbox/receiver/reply'], ['class' => 'btn btn-default']) ?>          
-                            <?= Html::a('<i class="fa fa-share" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Forward'), ['/mailbox/receiver/forward'], ['class' => 'btn btn-default']) ?>
+                        <?= Html::a('<i class="fa fa-reply" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Reply'), ['/mailbox/receiver/reply', 'id' => $model->id], ['class' => 'btn btn-default']) ?>          
+                        <?= Html::a('<i class="fa fa-share" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Forward'), ['/mailbox/receiver/forward', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
 
+                    </div>                                
 
-                        </div>                                
-
-                        <?=
-                        Html::a(Yii::t('art', 'Delete'), ['/mailbox/default/delete', 'id' => $model->id], [
+                        <?=  Html::a(Yii::t('art/mailbox', 'Truncate'), ['/mailbox/receiver/truncate', 'id' => $model->id], [
                             'class' => 'btn btn-danger',
                             'data' => [
-                                'confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                'confirm' => Yii::t('yii', 'Are you sure you want to truncaye this mail?'),
                                 'method' => 'post',
                             ],
                         ])
                         ?>
-                        <?=
-                        Html::a('<i class="fa fa-trash-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Trash'), ['/mailbox/default/trash', 'id' => $model->id], [
-                            'class' => 'btn btn-default',
-                            'data' => [
-                                'confirm' => Yii::t('art/mailbox', 'Are you sure you want to trash this mail?'),
-                                'method' => 'post',
-                            ],
-                        ])
-                        ?>
-                        <?= Html::a('<i class="fa fa-print" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Print'), ['/mailbox/receiver/print'], ['class' => 'btn btn-default']) ?>                           
+                        <?= Html::a('<i class="fa fa-trash-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Trash'), ['/mailbox/receiver/trash', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
+                        <?= Html::a('<i class="fa fa-print" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Print'), ['/mailbox/receiver/print', 'id' => $model->id], ['class' => 'btn btn-default']) ?>                           
 
                  
                 </div>

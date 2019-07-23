@@ -27,7 +27,7 @@ class DefaultController extends BaseController {
                     'verbs' => [
                         'class' => VerbFilter::className(),
                         'actions' => [
-                            'trash' => ['post'],
+                            'truncate' => ['post'],
                             'delete' => ['post'],
                         ],
                     ],
@@ -145,9 +145,9 @@ class DefaultController extends BaseController {
             $folder = Yii::$app->request->post('folder');
             if (empty($folder))
             {
-                throw new NotFoundHttpException(Yii::t('art/mailbox', 'Required Folder parameter is missing.'));
+                throw new NotFoundHttpException('Required Folder parameter is missing.');
             }
-            $model->getData($folder);
+            $model->getComposeData($folder);
 
             if ($model->save())
             {
@@ -174,9 +174,9 @@ class DefaultController extends BaseController {
 
             if (empty($folder))
             {
-                throw new NotFoundHttpException(Yii::t('art/mailbox', 'Required Folder parameter is missing.'));
+                throw new NotFoundHttpException('Required Folder parameter is missing.');
             }
-            $model->getData($folder);
+            $model->getComposeData($folder);
 
             if ($model->save())
             {
@@ -185,5 +185,73 @@ class DefaultController extends BaseController {
             }
         }
         return $this->renderIsAjax('update', compact('model'));
+    }
+    /**
+     * 
+     * @param type $id
+     * @return type
+     * @throws NotFoundHttpException
+     */
+     public function actionReply($id)
+    {
+         
+        $model_reply = self::findModel($id);
+        
+        $model = new $this->modelClass;
+        
+        $model->getReplyData($model_reply);
+        
+
+        if ($model->load(Yii::$app->request->post()))
+        {
+            $folder = Yii::$app->request->post('folder');
+
+            if (empty($folder))
+            {
+                throw new NotFoundHttpException('Required Folder parameter is missing.');
+            }
+            $model->getComposeData($folder);
+
+            if ($model->save())
+            {
+                Yii::$app->session->setFlash('crudMessage', $model::getMessage($folder));
+                return $this->redirect($this->getRedirectPage('index', $model));
+            }
+        }
+        return $this->renderIsAjax('compose', compact('model'));
+    }
+    /**
+     * 
+     * @param type $id
+     * @return type
+     * @throws NotFoundHttpException
+     */
+     public function actionForward($id)
+    {
+         
+        $model_reply = self::findModel($id);
+        
+        $model = new $this->modelClass;
+        
+        $model->getForwardData($model_reply);
+        
+
+        if ($model->load(Yii::$app->request->post()))
+        {
+            $folder = Yii::$app->request->post('folder');
+
+            if (empty($folder))
+            {
+                throw new NotFoundHttpException('Required Folder parameter is missing.');
+            }
+            $model->getComposeData($folder);
+
+            if ($model->save())
+            {
+                Yii::$app->session->setFlash('crudMessage', $model::getMessage($folder));
+                return $this->redirect($this->getRedirectPage('index', $model));
+            }
+        }
+        return $this->renderIsAjax('compose', compact('model'));
     }
 }

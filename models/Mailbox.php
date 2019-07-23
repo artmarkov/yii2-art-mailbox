@@ -34,7 +34,8 @@ class Mailbox extends \artsoft\db\ActiveRecord
     const FOLDER_POSTED = 1;   // отправленные
     const FOLDER_RECEIVER = 2; // Приняты
     const FOLDER_DRAFT = 3;    // черновик
-    const FOLDER_TRASH = -1;   // в корзине   
+    const FOLDER_TRASH = 4;    // в корзине   
+    const FOLDER_TRUNCATE = -1;  // удалено в скрытую папку   
     
     const STATUS_NEW = 0;      // не прочитано
     const STATUS_READ = 1;     // прочитано 
@@ -117,7 +118,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
      * @param type $folder
      * @return $this
      */
-    public function getData($folder)
+    public function getComposeData($folder)
     {
         $this->folder = $folder;
 
@@ -136,6 +137,10 @@ class Mailbox extends \artsoft\db\ActiveRecord
                     $this->remoted_at = time();
                 }
                 break;
+            case self::FOLDER_TRUNCATE : {
+                    $this->remoted_at = time();
+                }
+                break;
             default: break;
         }
 
@@ -143,17 +148,57 @@ class Mailbox extends \artsoft\db\ActiveRecord
     }
     /**
      * 
+     * @param type $model
+     * @return $this
+     */
+    public function getReplyData($model)
+    {
+        
+        $this->title = "Re:" . $model->title;
+        $this->content = $this->getReplyContent($model);
+        $this->receivers_ids = [
+            $model->sender_id
+        ];
+        return $this;
+    } 
+    /* 
+     * @param type $model
+     * @return $this
+     */
+    public function getForwardData($model)
+    {
+        
+        $this->title = "Fwd:" . $model->title;
+        $this->content = $this->getReplyContent($model);
+       
+        return $this;
+    }
+    /**
+     * 
+     * @param type $model
+     * @return type string
+     */
+    public function getReplyContent($model)
+    {
+        return "<blockquote>" . $model->postedDatetime . Yii::t('art/mailbox', '&nbsp;from&nbsp;') . $model->senderName . ":<br><br>" . $model->content . "</blockquote>";
+       
+    }
+
+    /**
+     * 
      * @param type $folder
-     * @return type
+     * @return type string
      */
     public static function getMessage($folder){
        switch ($folder) {
             case self::FOLDER_POSTED :
                 return Yii::t('art/mailbox', 'Your mail has been posted.');
             case self::FOLDER_DRAFT :
-                return Yii::t('art/mailbox', 'Your email has been moved to the drafts folder.');
+                return Yii::t('art/mailbox', 'Your mail has been moved to the drafts folder.');
             case self::FOLDER_TRASH :
-                return Yii::t('art/mailbox', 'Your email has been moved to the trash folder.');
+                return Yii::t('art/mailbox', 'Your mail has been moved to the trash folder.');
+            case self::FOLDER_TRUNCATE :
+                return Yii::t('art/mailbox', 'Your mail has been deleted.');
             default:
                 return NULL;
         } 

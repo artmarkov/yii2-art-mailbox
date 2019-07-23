@@ -60,7 +60,7 @@ use artsoft\helpers\Html;
                                 <?= Html::submitButton(Yii::t('art/mailbox', 'Send'), ['class' => 'btn btn-primary', 'name' => 'folder', 'value' => $model::FOLDER_POSTED, 'data-pjax' => 0]) ?>          
                
                                 </div>
-                                <?= Html::a(Yii::t('art', 'Discard'), ['/mailbox/receiver/index'], ['class' => 'btn btn-default']) ?>                           
+                                <?= Html::a(Yii::t('art/mailbox', 'Discard'), ['/mailbox/receiver/index'], ['class' => 'btn btn-default']) ?>                           
                                 <?php if (!$model->isNewRecord): ?>                           
                                 <?= Html::submitButton(Yii::t('art/mailbox', 'Trash'), [
                                         'class' => 'btn btn-default',  
