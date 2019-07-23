@@ -59,10 +59,14 @@ $this->params['breadcrumbs'][] = $this->title;
                   
                 </div>
                         <?=
-                        Html::a('<i class="fa fa-trash-o"></i>', ['/mailbox/receiver/delete', 'id' => $model->id], [
-                            'class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Delete',
+                        Html::a('<i class="fa fa-trash-o"></i>', ['/mailbox/receiver/trash', 'id' => $model->id], [
+                            'class' => 'btn btn-default btn-sm', 
+                            'data-toggle' => 'tooltip', 
+                            'data-container' => 'body', 
+                            'title' => '', 
+                            'data-original-title' => Yii::t('art/mailbox', 'Trash'),
                             'data' => [
-                                'confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                'confirm' => Yii::t('art/mailbox', 'Are you sure you want to trash this mail?'),
                                 'method' => 'post',
                             ],
                         ])
@@ -96,10 +100,19 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>                                
 
                         <?=
-                        Html::a('<i class="fa fa-trash-o" style="margin-right: 5px;"></i>' . Yii::t('art', 'Delete'), ['/mailbox/receiver/delete', 'id' => $model->id], [
+                        Html::a(Yii::t('art', 'Delete'), ['/mailbox/default/delete', 'id' => $model->id], [
                             'class' => 'btn btn-danger',
                             'data' => [
                                 'confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                'method' => 'post',
+                            ],
+                        ])
+                        ?>
+                        <?=
+                        Html::a('<i class="fa fa-trash-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Trash'), ['/mailbox/default/trash', 'id' => $model->id], [
+                            'class' => 'btn btn-default',
+                            'data' => [
+                                'confirm' => Yii::t('art/mailbox', 'Are you sure you want to trash this mail?'),
                                 'method' => 'post',
                             ],
                         ])

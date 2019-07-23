@@ -75,7 +75,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
             [['title'], 'required'],
             ['receivers_ids', 'required', 'on' => self::SCENARIO_COMPOSE, 'enableClientValidation' => false],
             [['folder', 'posted_at', 'remoted_at'], 'integer'],
-            [['sender_id', 'created_at', 'updated_at', 'receivers_ids'], 'safe'],
+            [['sender_id', 'created_at', 'updated_at'], 'safe'],
             ['receivers_ids', 'each', 'rule' => ['integer']],
             [['content'], 'string'],
             [['title'], 'string', 'max' => 255],
@@ -117,20 +117,46 @@ class Mailbox extends \artsoft\db\ActiveRecord
      * @param type $folder
      * @return $this
      */
-    public function send($folder) {
+    public function getData($folder)
+    {
         $this->folder = $folder;
 
-        if ($folder == $this::FOLDER_POSTED) {
-            //$this->scenario = $this::SCENARIO_COMPOSE;
-            $this->posted_at = time();
-            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been posted.'));
-            
-        } elseif ($folder == $this::FOLDER_DRAFT) {
-            
-            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your email has been moved to the drafts folder.'));
-            
+        switch ($folder)
+        {
+            case self::FOLDER_POSTED : {
+                    $this->scenario = self::SCENARIO_COMPOSE;
+                    $this->posted_at = time();
+                }
+                break;
+            case self::FOLDER_DRAFT : {
+                    $this->remoted_at = NULL;
+                }
+                break;
+            case self::FOLDER_TRASH : {
+                    $this->remoted_at = time();
+                }
+                break;
+            default: break;
         }
+
         return $this;
+    }
+    /**
+     * 
+     * @param type $folder
+     * @return type
+     */
+    public static function getMessage($folder){
+       switch ($folder) {
+            case self::FOLDER_POSTED :
+                return Yii::t('art/mailbox', 'Your mail has been posted.');
+            case self::FOLDER_DRAFT :
+                return Yii::t('art/mailbox', 'Your email has been moved to the drafts folder.');
+            case self::FOLDER_TRASH :
+                return Yii::t('art/mailbox', 'Your email has been moved to the trash folder.');
+            default:
+                return NULL;
+        } 
     }
 
     /**

@@ -72,7 +72,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterModel' => $searchModel,
                 'bulkActionOptions' => [
                     'gridId' => 'mailbox-grid',
-                    'actions' => [ Url::to(['bulk-delete']) => 'Delete'] //Configure here you bulk actions
+                    'actions' => [                   
+                        Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Move to Trash'),                   
+                        Url::to(['bulk-delete']) => Yii::t('art', 'Delete'),  
+                    ] //Configure here you bulk actions
                 ],
                 'columns' => [
                     ['class' => 'artsoft\grid\CheckboxColumn', 'options' => ['style' => 'width:10px']],

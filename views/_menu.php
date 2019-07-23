@@ -21,13 +21,13 @@ artsoft\mailbox\MailboxAssetsBundle::register($this);
         ],
         [
             'encode' => false,
-            'label' => '<i class="fa fa-file-text-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Draft'),
-            'url' => ['default/draft']
+            'label' => '<i class="fa fa-file-text-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Drafts'),
+            'url' => ['default/index-draft']
         ],
         [
             'encode' => false,
             'label' => '<i class="fa fa-trash-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Trash'),
-            'url' => ['default/trash']
+            'url' => ['default/index-trash']
         ],
     ];
     echo Nav::widget([

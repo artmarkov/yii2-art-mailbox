@@ -56,17 +56,19 @@ use artsoft\helpers\Html;
                             <div class="form-group">
                                 <div class="pull-right">
                                
-                                <?= Html::submitButton(Yii::t('art', 'Draft'), ['class' => 'btn btn-default', 'name' => 'folder', 'value' => $model::FOLDER_DRAFT, 'data-pjax' => 0]) ?>          
-                                <?= Html::submitButton(Yii::t('art', 'Send'), ['class' => 'btn btn-primary', 'name' => 'folder', 'value' => $model::FOLDER_POSTED, 'data-pjax' => 0]) ?>          
+                                <?= Html::submitButton(Yii::t('art/mailbox', 'Draft'), ['class' => 'btn btn-default', 'name' => 'folder', 'value' => $model::FOLDER_DRAFT, 'data-pjax' => 0]) ?>          
+                                <?= Html::submitButton(Yii::t('art/mailbox', 'Send'), ['class' => 'btn btn-primary', 'name' => 'folder', 'value' => $model::FOLDER_POSTED, 'data-pjax' => 0]) ?>          
                
                                 </div>
                                 <?= Html::a(Yii::t('art', 'Discard'), ['/mailbox/receiver/index'], ['class' => 'btn btn-default']) ?>                           
                                 <?php if (!$model->isNewRecord): ?>                           
-                                    <?=
-                                    Html::a(Yii::t('art', 'Delete'), ['/mailbox/default/delete', 'id' => $model->id], [
-                                        'class' => 'btn btn-danger',
+                                <?= Html::submitButton(Yii::t('art/mailbox', 'Trash'), [
+                                        'class' => 'btn btn-default',  
+                                        'name' => 'folder', 
+                                        'value' => $model::FOLDER_TRASH, 
+                                        'data-pjax' => 0,
                                         'data' => [
-                                            'confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                            'confirm' => Yii::t('art/mailbox', 'Are you sure you want to trash this mail?'),
                                             'method' => 'post',
                                         ],
                                     ])

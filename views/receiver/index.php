@@ -13,7 +13,7 @@ use artsoft\grid\GridPageSize;
 /* @var $searchModel artsoft\mailbox\models\search\MailboxReceiverSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('art/mailbox', 'Mailbox Receivers');
+$this->title = Yii::t('art/mailbox', 'Inbox');
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
@@ -80,8 +80,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             'gridId' => 'mailbox-receiver-grid',
                             'actions' => [
                                 Url::to(['bulk-mark-as-read']) => Yii::t('art/mailbox', 'Mark as read'),                       
-                                Url::to(['bulk-mark-unread']) => Yii::t('art/mailbox', 'Mark unread'),                       
-                                Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Trash'),                   
+                                Url::to(['bulk-mark-unread']) => Yii::t('art/mailbox', 'Mark unread'),  
+                                Url::to(['bulk-draft']) => Yii::t('art/mailbox', 'Move to Draft'),             
+                                Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Move to Trash'),                   
+                                Url::to(['bulk-delete']) => Yii::t('art', 'Delete'),                   
                             ] //Configure here you bulk actions
                         ],
                         'columns' => [

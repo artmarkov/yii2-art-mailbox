@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model artsoft\mailbox\models\Mailbox */
 
-$this->title = Yii::t('art', 'Update "{item}"', ['item' => $model->id]);
+$this->title = Yii::t('art/mailbox', 'Compose');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('art/mailbox', 'Mailboxes'), 'url' => ['default/index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['default/view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
