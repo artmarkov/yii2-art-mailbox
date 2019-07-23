@@ -19,19 +19,21 @@ class DefaultController extends BaseController
     public $modelClass = 'artsoft\mailbox\models\Mailbox';
     public $modelSearchClass = 'artsoft\mailbox\models\search\MailboxSearch';
 
-    protected function getRedirectPage($action, $model = null)
-    {
-        switch ($action) {
-            case 'update':
-                return ['update', 'id' => $model->id];
-                break;
-            case 'compose':
-                return ['index', 'id' => $model->id];
-                break;
-            default:
-                return parent::getRedirectPage($action, $model);
-        }
-    }
+    public $enableOnlyActions = ['index', 'draft', 'trash', 'update', 'compose'];
+     
+//    protected function getRedirectPage($action, $model = null)
+//    {
+//        switch ($action) {
+//            case 'update':
+//                return ['update', 'id' => $model->id];
+//                break;
+//            case 'compose':
+//                return ['update', 'id' => $model->id];
+//                break;
+//            default:
+//                return parent::getRedirectPage($action, $model);
+//        }
+//    }
      public function behaviors()
     {
         return ArrayHelper::merge(parent::behaviors(), [
@@ -136,16 +138,28 @@ class DefaultController extends BaseController
      */
      public function actionCompose() {
         /* @var $model \artsoft\db\ActiveRecord */
-        $model = new $this->modelClass;
-
+        $model = new $this->modelClass;        
+        
         if ($model->load(Yii::$app->request->post())) {
             $folder = Yii::$app->request->post('folder');
-
             if (empty($folder)) {
                 throw new NotFoundHttpException(Yii::t('art/mailbox', 'Required Folder parameter is missing.'));
             }
-            if ($model->send($folder) && $model->save()) {
-//                 echo '<pre>' . print_r($model, true) . '</pre>';                
+            
+            $model->folder = $folder;
+            
+            if ($folder == $model::FOLDER_POSTED) {
+                $model->scenario = $model::SCENARIO_COMPOSE;
+                $model->posted_at = time();
+            }
+            
+            if ($model->save()) {
+//                 echo '<pre>' . print_r($model, true) . '</pre>'; 
+                if ($folder == $model::FOLDER_POSTED) {                   
+                    Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been posted.'));
+                } elseif ($folder == $model::FOLDER_DRAFT) {
+                    Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your email has been moved to the drafts folder.'));
+                }
                 return $this->redirect($this->getRedirectPage('index', $model));
             }
         }

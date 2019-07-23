@@ -27,8 +27,9 @@ use yii\helpers\Html;
  */
 class Mailbox extends \artsoft\db\ActiveRecord
 {
-    
     public $gridReceiverSearch;
+    
+    const SCENARIO_COMPOSE = 'compose';
     
     const FOLDER_POSTED = 1;   // отправленные
     const FOLDER_RECEIVER = 2; // Приняты
@@ -72,6 +73,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
     {
         return [
             [['title'], 'required'],
+            ['receivers_ids', 'required', 'on' => self::SCENARIO_COMPOSE, 'enableClientValidation' => false],
             [['folder', 'posted_at', 'remoted_at'], 'integer'],
             [['sender_id', 'created_at', 'updated_at', 'receivers_ids'], 'safe'],
             ['receivers_ids', 'each', 'rule' => ['integer']],
@@ -119,7 +121,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
         $this->folder = $folder;
 
         if ($folder == $this::FOLDER_POSTED) {
-
+            //$this->scenario = $this::SCENARIO_COMPOSE;
             $this->posted_at = time();
             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been posted.'));
             
