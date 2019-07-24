@@ -20,7 +20,7 @@ class MailboxReceiverSearch extends MailboxReceiver
         return [
             [['id', 'mailbox_id', 'receiver_id', 'reading_at', 'remoted_at', 'folder', 'status'], 'integer'],
             [['mailboxTitle', 'mailboxContent'], 'string'],
-            [['mailboxSenderId', 'mailboxPostedDate'], 'integer'],
+            [['mailboxSenderId', 'mailboxPostedDate', 'mailboxFolder'], 'integer'],
         ];
     }
 
@@ -49,14 +49,17 @@ class MailboxReceiverSearch extends MailboxReceiver
             'pagination' => [
                 'pageSize' => Yii::$app->request->cookies->getValue('_grid_page_size', 20),
             ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ],
-            ],
+//            'sort' => [
+//                'defaultOrder' => [
+//                    'mailbox.posted_at' => SORT_DESC,
+//                ],
+//            ],
         ]);
 
         $dataProvider->setSort([
+            'defaultOrder' => [
+                    'mailboxPostedDate' => SORT_DESC,
+               ],
             'attributes' => [
                 
                 'mailboxSenderId' => [
@@ -78,7 +81,7 @@ class MailboxReceiverSearch extends MailboxReceiver
                     'asc' => ['mailbox.posted_at' => SORT_ASC],
                     'desc' => ['mailbox.posted_at' => SORT_DESC],
                 ],
-                  
+                'id',
                 'status',
                 'receiver_id',
             ]
@@ -99,6 +102,9 @@ class MailboxReceiverSearch extends MailboxReceiver
             'receiver_id' => $this->receiver_id,
             'reading_at' => $this->reading_at,
             'remoted_at' => $this->remoted_at,
+            'mailbox.posted_at' => $this->mailboxPostedDate,
+            'mailbox.sender_id' => $this->mailboxSenderId,
+            'mailbox.folder' => $this->mailboxFolder,
             'mailbox_receiver.folder' => $this->folder,
             'status' => $this->status,
         ]);
@@ -108,12 +114,6 @@ class MailboxReceiverSearch extends MailboxReceiver
         }]);
         $query->joinWith(['mailbox' => function ($q) {
             $q->where('mailbox.content LIKE "%' . $this->mailboxContent . '%"');
-        }]);
-        $query->joinWith(['mailbox' => function ($q) {
-            $q->andFilterWhere(['mailbox.sender_id' => $this->mailboxSenderId]);
-        }]);
-         $query->joinWith(['mailbox' => function ($q) {
-            $q->andFilterWhere(['mailbox.posted_at' => $this->mailboxPostedDate]);
         }]);
         
         return $dataProvider;

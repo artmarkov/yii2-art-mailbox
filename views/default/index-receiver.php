@@ -49,14 +49,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="col-sm-6">
                             <?php
                             /* Uncomment this to activate GridQuickLinks */
-                            echo GridQuickLinks::widget([
-                                'model' => MailboxReceiver::className(),
-                                'searchModel' => $searchModel,
-                                'options' => [
-                                    ['label' => Yii::t('art/mailbox', 'All Letters'), 'filterWhere' => ['mailbox_receiver.folder' => Mailbox::FOLDER_RECEIVER]],
-                                    ['label' => Yii::t('art/mailbox', 'New Letters'), 'filterWhere' => ['mailbox_receiver.folder' => Mailbox::FOLDER_RECEIVER, 'status' => Mailbox::STATUS_NEW]],
-                                ]
-                            ])
+                            /*  echo GridQuickLinks::widget([
+                                'model' => Mailbox::className(),
+                                'searchModel' => $searchModel,                                 
+                            ]) */
                             ?>
                         </div>
 
@@ -95,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'class' => 'artsoft\grid\columns\TitleActionColumn',
                                 'controller' => '/mailbox/receiver',
                                 'title' => function(MailboxReceiver $model) {
-                                    return Html::a($model->mailbox->senderName, ['/mailbox/receiver/view', 'id' => $model->id], ['data-pjax' => 0]);
+                                    return Html::a($model->mailbox->senderName, ['/mailbox/default/view-receiver', 'id' => $model->id], ['data-pjax' => 0]);
                                 },
                                 'options' => ['style' => 'width:350px'],
                                 'buttonsTemplate' => '{view} {delete}',
@@ -121,23 +117,23 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label' => Yii::t('art', 'Content'),
                                 'format' => 'html',
                             ],
-                            [
-                                'attribute' => 'receiver_id',
-                                'value' => 'receiver.username',
-                                'label' => Yii::t('art/mailbox', 'Receiver'),
-                                'filter' => artsoft\models\User::getUsersList(),
-                            ],
-                            [
-                                'attribute' => 'mailboxPostedDate',
-                                'value' => 'mailbox.postedDate',
-                                'label' => Yii::t('art/mailbox', 'Posted At'),
-                                'format' => 'raw',
-                            ],
+//                            [
+//                                'attribute' => 'receiver_id',
+//                                'value' => 'receiver.username',
+//                                'label' => Yii::t('art/mailbox', 'Receiver'),
+//                                'filter' => artsoft\models\User::getUsersList(),
+//                            ],
                             [
                                 'class' => 'artsoft\grid\columns\StatusColumn',
                                 'attribute' => 'status',
                                 'optionsArray' => Mailbox::getStatusOptionsList(),
                                 'options' => ['style' => 'width:60px'],
+                            ],
+                            [
+                                'attribute' => 'mailboxPostedDate',
+                                'value' => 'mailbox.postedDatetime',
+                                'label' => Yii::t('art/mailbox', 'Posted At'),
+                                'format' => 'raw',
                             ],
                         // 'reading_at',
                         // 'remoted_at',

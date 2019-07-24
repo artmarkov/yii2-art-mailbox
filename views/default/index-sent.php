@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel artsoft\mailbox\models\search\MailboxSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('art/mailbox', 'Mailboxes');
+$this->title = Yii::t('art/mailbox', 'Inbox');
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
@@ -113,7 +113,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'posted_at',
-                        'value' => 'postedDate',
+                        'value' => 'postedDatetime',
                         'label' => Yii::t('art/mailbox', 'Posted At'),
                         'format' => 'raw',
                     ],

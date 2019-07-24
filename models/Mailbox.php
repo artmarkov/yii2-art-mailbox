@@ -222,7 +222,10 @@ class Mailbox extends \artsoft\db\ActiveRecord
     {
         return $this->sender->username;
     }
-   
+   public function getMailboxFolder()
+    {
+        return $this->folder;
+    }
     public function getShortContent($length = 64, $allowableTags = '')
     {
         $content =  strip_tags($this->content, $allowableTags);

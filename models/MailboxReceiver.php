@@ -24,7 +24,9 @@ class MailboxReceiver extends \artsoft\db\ActiveRecord
     public $mailboxSenderId;    
     public $mailboxTitle;    
     public $mailboxContent;    
-    public $mailboxPostedDate;    
+    public $mailboxPostedDate;  
+    public $mailboxFolder;  
+    
     
     /**
      * {@inheritdoc}
@@ -77,7 +79,7 @@ class MailboxReceiver extends \artsoft\db\ActiveRecord
     {
         return $this->hasOne(Mailbox::className(), ['id' => 'mailbox_id']);
     }
-
+ 
 
     /**
      * {@inheritdoc}

@@ -51,7 +51,7 @@ class MailboxSearch extends Mailbox
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'id' => SORT_DESC,
+                    'posted_at' => SORT_DESC,
                 ],
             ],
         ]);

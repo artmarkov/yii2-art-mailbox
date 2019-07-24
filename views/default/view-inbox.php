@@ -82,15 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= Html::a('<i class="fa fa-share" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Forward'), ['/mailbox/default/forward', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
 
                     </div>                                
-
-                        <?=  Html::a(Yii::t('art/mailbox', 'Truncate'), ['/mailbox/default/truncate', 'id' => $model->id], [
-                            'class' => 'btn btn-danger',
-                            'data' => [
-                                'confirm' => Yii::t('art/mailbox', 'Are you sure you want to truncate this mail?'),
-                                'method' => 'post',
-                            ],
-                        ])
-                        ?>
+                    
                         <?= Html::a('<i class="fa fa-trash-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Trash'), ['/mailbox/default/trash', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
                         <?= Html::a('<i class="fa fa-print" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Print'), ['/mailbox/default/print', 'id' => $model->id], ['class' => 'btn btn-default']) ?>                           
 

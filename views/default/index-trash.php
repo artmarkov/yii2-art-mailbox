@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel artsoft\mailbox\models\search\MailboxSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('art/mailbox', 'Mailboxes');
+$this->title = Yii::t('art/mailbox', 'Trash');
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
@@ -90,6 +90,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         'options' => ['style' => 'width:350px'],
                         'format' => 'raw',
                         'buttonsTemplate' => '{update} {view} {delete}',
+                        'buttons' => [
+                            'view' => function ($url, $model, $key) {
+                                return Html::a(Yii::t('yii', 'View'),
+                                    Url::to(['view-inbox', 'id' => $model->id]), [
+                                        'title' => Yii::t('yii', 'View'),
+                                        'data-pjax' => '0'
+                                    ]
+                                );
+                            }
+                        ],
                     ],
                     
                     'title',           
@@ -100,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'remoted_at',
-                        'value' => 'remotedDate',
+                        'value' => 'remotedDatetime',
                         'label' => Yii::t('art/mailbox', 'Remoted At'),
                         'format' => 'raw',
                     ],

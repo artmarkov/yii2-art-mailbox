@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="row">
         <div class="col-md-3">
-            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/receiver/compose'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
+            <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/compose'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
          
             <div class="panel panel-default">
             <div class="box-header with-border">
@@ -81,22 +81,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= Html::a('<i class="fa fa-reply" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Reply'), ['/mailbox/default/reply', 'id' => $model->mailbox->id], ['class' => 'btn btn-default']) ?>          
                         <?= Html::a('<i class="fa fa-share" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Forward'), ['/mailbox/default/forward', 'id' => $model->mailbox->id], ['class' => 'btn btn-default']) ?>
 
-                    </div>                                
-
-                        <?=  Html::a(Yii::t('art/mailbox', 'Truncate'), ['/mailbox/receiver/truncate', 'id' => $model->id], [
-                            'class' => 'btn btn-danger',
-                            'data' => [
-                                'confirm' => Yii::t('art/mailbox', 'Are you sure you want to truncate this mail?'),
-                                'method' => 'post',
-                            ],
-                        ])
-                        ?>
+                    </div> 
+                    
                         <?= Html::a('<i class="fa fa-trash-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Trash'), ['/mailbox/receiver/trash', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
                         <?= Html::a('<i class="fa fa-print" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Print'), ['/mailbox/default/print', 'id' => $model->mailbox->id], ['class' => 'btn btn-default']) ?>                           
 
-                 
                 </div>
-
             </div>
         </div>
     </div>

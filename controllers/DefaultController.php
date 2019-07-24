@@ -66,7 +66,7 @@ class DefaultController extends BaseController {
             $dataProvider = new ActiveDataProvider(['query' => $modelClass::find()->where($restrictParams)]);
         }
 
-        return $this->renderIsAjax('index', compact('dataProvider', 'searchModel'));
+        return $this->renderIsAjax('index-sent', compact('dataProvider', 'searchModel'));
     }
     
     /**
@@ -89,7 +89,8 @@ class DefaultController extends BaseController {
                 $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
             }
             $params[$searchName]['folder'] = $this->modelClass::FOLDER_RECEIVER;
-
+            $params[$searchName]['mailboxFolder'] = $this->modelClass::FOLDER_POSTED;
+                //echo '<pre>' . print_r($params, true) . '</pre>';
             $dataProvider = $searchModel->search($params);
         }
         else
