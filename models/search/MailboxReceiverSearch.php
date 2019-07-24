@@ -99,7 +99,7 @@ class MailboxReceiverSearch extends MailboxReceiver
             'receiver_id' => $this->receiver_id,
             'reading_at' => $this->reading_at,
             'remoted_at' => $this->remoted_at,
-            'folder' => $this->folder,
+            'mailbox_receiver.folder' => $this->folder,
             'status' => $this->status,
         ]);
 

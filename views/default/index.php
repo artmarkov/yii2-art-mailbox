@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 
                 <div class="box-body no-padding">                   
 
-                    <?= $this->render('../_menu', compact('model')) ?>
+                    <?= $this->render('_menu', compact('model')) ?>
 
                 </div>
             </div>
@@ -93,6 +93,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         'options' => ['style' => 'width:350px'],
                         'format' => 'raw',
                         'buttonsTemplate' => '{view} {delete}',
+                        'buttons' => [
+                            'view' => function ($url, $model, $key) {
+                                return Html::a(Yii::t('yii', 'View'),
+                                    Url::to(['view-inbox', 'id' => $model->id]), [
+                                        'title' => Yii::t('yii', 'View'),
+                                        'data-pjax' => '0'
+                                    ]
+                                );
+                            }
+                        ],
                     ],
                     
                     'title',           

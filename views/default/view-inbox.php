@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 
                 <div class="box-body no-padding">                   
 
-                    <?= $this->render('../_menu', compact('model')) ?>
+                    <?= $this->render('_menu', compact('model')) ?>
 
                 </div>
             </div>
@@ -86,7 +86,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?=  Html::a(Yii::t('art/mailbox', 'Truncate'), ['/mailbox/default/truncate', 'id' => $model->id], [
                             'class' => 'btn btn-danger',
                             'data' => [
-                                'confirm' => Yii::t('yii', 'Are you sure you want to truncaye this mail?'),
+                                'confirm' => Yii::t('art/mailbox', 'Are you sure you want to truncate this mail?'),
                                 'method' => 'post',
                             ],
                         ])

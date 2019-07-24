@@ -11,13 +11,13 @@ artsoft\mailbox\MailboxAssetsBundle::register($this);
         [
             'encode' => false,
             'label' => '<i class="fa fa-inbox" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Inbox') . '<span class="label label-success pull-right">12</span>',
-            'url' => ['receiver/index'],
+            'url' => ['default/index'],
             'active' => true
         ],
         [
             'encode' => false,
             'label' => '<i class="fa fa-envelope-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Sent'),
-            'url' => ['default/index']
+            'url' => ['default/index-sent']
         ],
         [
             'encode' => false,

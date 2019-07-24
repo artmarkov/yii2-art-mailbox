@@ -19,6 +19,9 @@ class DefaultController extends BaseController {
     public $modelClass = 'artsoft\mailbox\models\Mailbox';
     public $modelSearchClass = 'artsoft\mailbox\models\search\MailboxSearch';
     
+    public $modelViaClass       = 'artsoft\mailbox\models\MailboxReceiver';
+    public $modelViaSearchClass = 'artsoft\mailbox\models\search\MailboxReceiverSearch';
+    
     public $enableOnlyActions = ['index', 'indexDraft', 'indexTrash', 'update', 'compose', 'view', 'delete'];
 
     public function behaviors()
@@ -38,7 +41,7 @@ class DefaultController extends BaseController {
      * Lists all models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndexSent()
     {
         $modelClass = $this->modelClass;
         $searchModel = new $this->modelSearchClass;
@@ -65,7 +68,71 @@ class DefaultController extends BaseController {
 
         return $this->renderIsAjax('index', compact('dataProvider', 'searchModel'));
     }
+    
+    /**
+     * Lists all models.
+     * @return mixed
+     */
+    public function actionIndex()
+    {
+        $modelClass = $this->modelViaClass;
+        $searchModel = new $this->modelViaSearchClass;
+        $restrictAccess = (ArtHelper::isImplemented($modelClass, OwnerAccess::CLASSNAME) && !User::hasPermission($modelClass::getFullAccessPermission()));
 
+        if ($searchModel)
+        {
+            $searchName = StringHelper::basename($searchModel::className());
+            $params = Yii::$app->request->getQueryParams();
+
+            if ($restrictAccess)
+            {
+                $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
+            }
+            $params[$searchName]['folder'] = $this->modelClass::FOLDER_RECEIVER;
+
+            $dataProvider = $searchModel->search($params);
+        }
+        else
+        {
+            $restrictParams = ($restrictAccess) ? [$modelClass::getOwnerField() => Yii::$app->user->identity->id] : [];
+            $dataProvider = new ActiveDataProvider(['query' => $modelClass::find()->where($restrictParams)]);
+        }
+
+        return $this->renderIsAjax('index-receiver', compact('dataProvider', 'searchModel'));
+    }
+    
+    /**
+     * Displays a single model.
+     *
+     * @param integer $id
+     *
+     * @return mixed
+     */
+    public function actionViewInbox($id)
+    {
+        $model = $this->modelClass::findOne($id);
+        
+        return $this->renderIsAjax('view-inbox', [
+            'model' => $model,
+        ]);
+    } 
+    /**
+     * Displays a single model.
+     *
+     * @param integer $id
+     *
+     * @return mixed
+     */
+    public function actionViewReceiver($id)
+    {
+        $model = $this->modelViaClass::findOne($id);
+        $model->status = $this->modelClass::STATUS_READ;
+        $model->save(false);
+        
+        return $this->renderIsAjax('view-receiver', [
+            'model' => $model,
+        ]);
+    }
     /**
      * Lists all models.
      * @return mixed

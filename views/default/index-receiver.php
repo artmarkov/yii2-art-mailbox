@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 
                 <div class="box-body no-padding">                   
 
-                    <?= $this->render('../_menu', compact('model')) ?>
+                    <?= $this->render('_menu', compact('model')) ?>
 
                 </div>
             </div>
@@ -53,8 +53,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'model' => MailboxReceiver::className(),
                                 'searchModel' => $searchModel,
                                 'options' => [
-                                    ['label' => Yii::t('art/mailbox', 'All Letters'), 'filterWhere' => []],
-                                    ['label' => Yii::t('art/mailbox', 'New Letters'), 'filterWhere' => ['status' => Mailbox::STATUS_NEW]],
+                                    ['label' => Yii::t('art/mailbox', 'All Letters'), 'filterWhere' => ['mailbox_receiver.folder' => Mailbox::FOLDER_RECEIVER]],
+                                    ['label' => Yii::t('art/mailbox', 'New Letters'), 'filterWhere' => ['mailbox_receiver.folder' => Mailbox::FOLDER_RECEIVER, 'status' => Mailbox::STATUS_NEW]],
                                 ]
                             ])
                             ?>
@@ -99,6 +99,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                 },
                                 'options' => ['style' => 'width:350px'],
                                 'buttonsTemplate' => '{view} {delete}',
+                                'buttons' => [
+                                    'view' => function ($url, $model, $key) {
+                                        return Html::a(Yii::t('yii', 'View'),
+                                            Url::to(['view-receiver', 'id' => $model->id]), [
+                                                'title' => Yii::t('yii', 'View'),
+                                                'data-pjax' => '0'
+                                            ]
+                                        );
+                                    }
+                                ],
                             ],
                             [
                                 'attribute' => 'mailboxTitle',

@@ -31,14 +31,15 @@ class Mailbox extends \artsoft\db\ActiveRecord
     
     const SCENARIO_COMPOSE = 'compose';
     
-    const FOLDER_POSTED = 1;   // отправленные
-    const FOLDER_RECEIVER = 2; // Приняты
-    const FOLDER_DRAFT = 3;    // черновик
-    const FOLDER_TRASH = 4;    // в корзине   
-    const FOLDER_TRUNCATE = -1;  // удалено в скрытую папку   
+    const FOLDER_RECEIVER = 0;  // Приняты
+    const FOLDER_POSTED = 1;    // отправленные
+    const FOLDER_DRAFT = 2;     // черновик
+    const FOLDER_TRASH = 3;     // в корзине   
+    const FOLDER_TRUNCATE = -1; // удалено в скрытую папку   
     
-    const STATUS_NEW = 0;      // не прочитано
-    const STATUS_READ = 1;     // прочитано 
+    const STATUS_NEW = 0;       // не прочитано
+    const STATUS_READ = 1;      // прочитано 
+    
     /**
      * {@inheritdoc}
      */
@@ -103,7 +104,6 @@ class Mailbox extends \artsoft\db\ActiveRecord
             'gridReceiverSearch' => Yii::t('art/mailbox', 'Receivers'),
         ];
     }
-
     
     /**
      * {@inheritdoc}
@@ -127,20 +127,16 @@ class Mailbox extends \artsoft\db\ActiveRecord
             case self::FOLDER_POSTED : {
                     $this->scenario = self::SCENARIO_COMPOSE;
                     $this->posted_at = time();
-                }
-                break;
+                }   break;
             case self::FOLDER_DRAFT : {
                     $this->remoted_at = NULL;
-                }
-                break;
+                }   break;
             case self::FOLDER_TRASH : {
                     $this->remoted_at = time();
-                }
-                break;
+                }   break;
             case self::FOLDER_TRUNCATE : {
                     $this->remoted_at = time();
-                }
-                break;
+                }   break;
             default: break;
         }
 

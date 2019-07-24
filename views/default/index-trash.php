@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 
                 <div class="box-body no-padding">                   
 
-                    <?= $this->render('../_menu', compact('model')) ?>
+                    <?= $this->render('_menu', compact('model')) ?>
 
                 </div>
             </div>
