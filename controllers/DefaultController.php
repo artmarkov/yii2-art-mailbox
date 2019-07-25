@@ -22,7 +22,8 @@ class DefaultController extends BaseController {
     public $modelViaClass       = 'artsoft\mailbox\models\MailboxReceiver';
     public $modelViaSearchClass = 'artsoft\mailbox\models\search\MailboxReceiverSearch';
     
-    public $enableOnlyActions = ['index', 'indexDraft', 'indexTrash', 'update', 'compose', 'view', 'delete'];
+    public $enableOnlyActions = ['index', 'index-sent', 'index-draft', 'index-trash', 'view-inbox', 'view-sent', 'compose', 'update', 'delete', 
+                                 'reply', 'forward', 'trash', 'trash-sent', 'restore', 'bulk-mark-read', 'bulk-mark-unread'];
 
 
     /**
@@ -95,7 +96,6 @@ class DefaultController extends BaseController {
         
         $params = ArrayHelper::merge(Yii::$app->request->getQueryParams(), [
                     $searchName => [
-                        'sender_id' => Yii::$app->user->identity->id,
                         'statusDelTrash' => $this->modelClass::STATUS_DEL_TRASH,
                     ]
         ]);
@@ -258,14 +258,12 @@ class DefaultController extends BaseController {
      */
     public function actionTrash($id)
     {
-        $model = $this->modelViaClass::findOne($id);
-        
-        $model->status_del = $this->modelClass::STATUS_DEL_TRASH;
-        $model->deleted_at = time();
-        
-        $model->save();
-        Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been moved to the trash folder.'));
-        return $this->redirect($this->getRedirectPage('index', $model));
+        if ($this->modelViaClass::trashMail($id)) {
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been moved to the trash folder.'));
+        } else {
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Action error occurred.'));
+        }
+        return $this->redirect($this->getRedirectPage('index', $this->modelClass));
     }
     /**
      * @param type $id
@@ -273,38 +271,64 @@ class DefaultController extends BaseController {
      */
     public function actionTrashSent($id)
     {
-        $model = $this->modelClass::findOne($id);
-        
-        $model->status_del = $this->modelClass::STATUS_DEL_TRASH;
-        $model->deleted_at = time();
-        
-        $model->save();
-        Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been moved to the trash folder.'));
-        return $this->redirect($this->getRedirectPage('index-sent', $model));
+         if ($this->modelClass::trashMail($id)) {
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been moved to the trash folder.'));
+        } else {
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Action error occurred.'));
+        }
+        return $this->redirect($this->getRedirectPage('index-sent', $this->modelClass));
     }
-/**
+    /**
      * @param type $id
      * @return type
      */
-    public function actionRestore($id)
-    {
-        $model = $this->modelClass::findOne(['id' => $id, 'sender_id' => Yii::$app->user->identity->id]);
+    public function actionRestore($id) {
         
-        $modelVia = $this->modelViaClass::findOne(['mailbox_id' => $id, 'receiver_id' => Yii::$app->user->identity->id]);
-        if ($model)
-        {
-            $model->status_del = $this->modelClass::STATUS_DEL_NO;
-            $model->deleted_at = NULL;
-            $model->save();
+        if ($this->modelClass::restoryMail($id)) {
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been restory.'));
+        } else {
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Action error occurred.'));
         }
-        if ($modelVia)
-        {
-            $modelVia->status_del = $this->modelClass::STATUS_DEL_NO;
-            $modelVia->deleted_at = NULL;
-            $modelVia->save();
+
+        return $this->redirect($this->getRedirectPage('index', $this->modelClass));
+    }
+
+    /**
+     * @param type $id
+     * @return type
+     */
+    public function actionDelete($id)
+    {
+       if ($this->modelClass::deleteMail($id)) {
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been destroyed.'));
+        } else {
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Action error occurred.'));
         }
-        Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been restory.'));
-        return $this->redirect($this->getRedirectPage('index', $model));
+        
+        return $this->redirect($this->getRedirectPage('index', $this->modelClass));
+    }
+
+    /**
+     * Activate all selected grid items
+     */
+    public function actionBulkMarkRead() {
+
+        if (Yii::$app->request->post('selection')) {
+            
+            $where = ['id' => Yii::$app->request->post('selection', [])];
+            $this->modelViaClass::updateAll(['status_read' => $this->modelClass::STATUS_READ_OLD], $where);
+        }
+    }
+    /**
+     * Activate all selected grid items
+     */
+    public function actionBulkMarkUnread() {
+
+        if (Yii::$app->request->post('selection')) {
+            
+            $where = ['id' => Yii::$app->request->post('selection', [])];
+            $this->modelViaClass::updateAll(['status_read' => $this->modelClass::STATUS_READ_NEW], $where);
+        }
     }
 
 }

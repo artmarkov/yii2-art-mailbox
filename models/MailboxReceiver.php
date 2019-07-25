@@ -89,4 +89,21 @@ class MailboxReceiver extends \artsoft\db\ActiveRecord
     {
         return new MailboxQuery(get_called_class());
     }
+    /**
+     * 
+     * @param type $id
+     * @return boolean
+     */
+    public static function trashMail($id) {
+        $ret = false;
+
+        $model = self::findOne($id);
+        $model->status_del = Mailbox::STATUS_DEL_TRASH;
+        $model->deleted_at = time();
+
+        if ($model->save()) {
+            $ret = true;
+        }
+        return $ret;
+    }
 }

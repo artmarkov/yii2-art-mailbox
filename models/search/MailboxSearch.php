@@ -90,8 +90,10 @@ class MailboxSearch extends Mailbox
          if ($this->statusDelTrash)
         {
             $query->joinWith(['receivers']);
-            $query->andFilterWhere(['OR', ['=', 'mailbox.status_del', $this->statusDelTrash], ['=', 'mailbox_receiver.status_del', $this->statusDelTrash]])
-                    ->select(['mailbox.id', 'title', 'content', 'posted_at', 'sender_id'])->distinct();
+            $query->andFilterWhere(['OR', ['=', 'mailbox.sender_id', Yii::$app->user->identity->id], ['=', 'mailbox_receiver.receiver_id', Yii::$app->user->identity->id]])
+                  ->andFilterWhere(['OR', ['=', 'mailbox.status_del', $this->statusDelTrash], ['=', 'mailbox_receiver.status_del', $this->statusDelTrash]]);
+            
+            $query->select(['mailbox.id', 'title', 'content', 'posted_at', 'sender_id'])->distinct();
         }
         return $dataProvider;
     }

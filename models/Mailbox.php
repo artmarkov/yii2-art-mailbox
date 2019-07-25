@@ -314,4 +314,91 @@ class Mailbox extends \artsoft\db\ActiveRecord
         return "{$this->updatedDate} {$this->updatedTime}";
     }
     
+    /**
+     * 
+     * @param type $id
+     * @return boolean
+     */
+     public static function trashMail($id)
+    {
+       $ret = false;
+
+        $model = self::findOne($id);
+        $model->status_del = self::STATUS_DEL_TRASH;
+        $model->deleted_at = time();
+
+        if ($model->save()) {
+            $ret = true;
+        }
+        return $ret;
+    }
+    /**
+     * 
+     * @param type $id
+     * @return boolean
+     */
+    public static function restoryMail($id) {
+        $ret = false;
+
+        $model = self::findOne([
+                    'id' => $id,
+                    'sender_id' => Yii::$app->user->identity->id
+        ]);
+
+        $modelVia = MailboxReceiver::findOne([
+                    'mailbox_id' => $id,
+                    'receiver_id' => Yii::$app->user->identity->id
+        ]);
+
+        if ($model) {
+            $model->status_del = self::STATUS_DEL_NO;
+            $model->deleted_at = NULL;
+            if ($model->save()) {
+                $ret = true;
+            }
+        }
+        if ($modelVia) {
+            $modelVia->status_del = self::STATUS_DEL_NO;
+            $modelVia->deleted_at = NULL;
+            if ($modelVia->save()) {
+                $ret = true;
+            }
+        }
+        return $ret;
+    }
+    /**
+     * 
+     * @param type $id
+     * @return boolean
+     */
+    public static function deleteMail($id) {
+        $ret = false;
+
+        $model = self::findOne([
+                    'id' => $id,
+                    'sender_id' => Yii::$app->user->identity->id,
+                    'status_del' => self::STATUS_DEL_TRASH
+        ]);
+        $modelVia = MailboxReceiver::findOne([
+                    'mailbox_id' => $id,
+                    'receiver_id' => Yii::$app->user->identity->id,
+                    'status_del' => self::STATUS_DEL_TRASH
+        ]);
+        if ($model) {
+            $model->status_del = self::STATUS_DEL_DELETE;
+            $model->deleted_at = time();
+            if ($model->save()) {
+                $ret = true;
+            }
+        }
+        if ($modelVia) {
+            $modelVia->status_del = self::STATUS_DEL_DELETE;
+            $modelVia->deleted_at = time();
+            if ($modelVia->save()) {
+                $ret = true;
+            }
+        }
+        return $ret;
+    }
+
 }
