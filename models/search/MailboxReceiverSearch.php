@@ -18,9 +18,9 @@ class MailboxReceiverSearch extends MailboxReceiver
     public function rules()
     {
         return [
-            [['id', 'mailbox_id', 'receiver_id', 'reading_at', 'remoted_at', 'folder', 'status'], 'integer'],
+            [['id', 'mailbox_id', 'receiver_id', 'reading_at', 'deleted_at', 'status_del', 'status_read'], 'integer'],
             [['mailboxTitle', 'mailboxContent'], 'string'],
-            [['mailboxSenderId', 'mailboxPostedDate', 'mailboxFolder'], 'integer'],
+            [['mailboxSenderId', 'mailboxPostedDate'], 'integer'],
         ];
     }
 
@@ -82,7 +82,7 @@ class MailboxReceiverSearch extends MailboxReceiver
                     'desc' => ['mailbox.posted_at' => SORT_DESC],
                 ],
                 'id',
-                'status',
+                'status_read',
                 'receiver_id',
             ]
         ]);
@@ -94,19 +94,25 @@ class MailboxReceiverSearch extends MailboxReceiver
             return $dataProvider;
         }
 //        жадная загрузка
-        $query->joinWith(['mailbox']);
+        $query->with(['mailbox']);
+        
+        if ($this->mailboxTitle) {
+            $query->joinWith(['mailbox']);
+        }
+        if ($this->mailboxContent) {
+            $query->joinWith(['mailbox']);
+        }
         
         $query->andFilterWhere([
             'id' => $this->id,
             'mailbox_id' => $this->mailbox_id,
             'receiver_id' => $this->receiver_id,
             'reading_at' => $this->reading_at,
-            'remoted_at' => $this->remoted_at,
+            'deleted_at' => $this->deleted_at,
             'mailbox.posted_at' => $this->mailboxPostedDate,
             'mailbox.sender_id' => $this->mailboxSenderId,
-            'mailbox.folder' => $this->mailboxFolder,
-            'mailbox_receiver.folder' => $this->folder,
-            'status' => $this->status,
+            'mailbox_receiver.status_del' => $this->status_del,
+            'status_read' => $this->status_read,
         ]);
 
         $query->joinWith(['mailbox' => function ($q) {

@@ -17,7 +17,7 @@ $this->title = Yii::t('art/mailbox', 'Draft');
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="mailbox-index">
+<div class="mailbox-draft-index">
 
     <div class="row">
         <div class="col-sm-12">
@@ -125,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'created_at',
             // 'updated_at',
             // 'posted_at',
-            // 'remoted_at',
+            // 'deleted_at',
 
                 ],
             ]);

@@ -17,7 +17,7 @@ $this->title = Yii::t('art/mailbox', 'Inbox');
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="mailbox-index">
+<div class="mailbox-sent-index">
 
     <div class="row">
         <div class="col-sm-12">
@@ -74,8 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'gridId' => 'mailbox-grid',
                     'actions' => [ 
                         Url::to(['bulk-draft']) => Yii::t('art/mailbox', 'Move to Draft'),                   
-                        Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Move to Trash'),                   
-                        Url::to(['bulk-truncate']) => Yii::t('art/mailbox', 'Truncate'),  
+                        Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Move to Trash'), 
                         
                         ] //Configure here you bulk actions
                 ],
@@ -128,7 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'created_at',
             // 'updated_at',
             // 'posted_at',
-            // 'remoted_at',
+            // 'deleted_at',
 
                 ],
             ]);

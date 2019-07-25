@@ -47,8 +47,6 @@ class DefaultController extends BaseController {
         $searchModel = new $this->modelSearchClass;
         $restrictAccess = (ArtHelper::isImplemented($modelClass, OwnerAccess::CLASSNAME) && !User::hasPermission($modelClass::getFullAccessPermission()));
 
-        if ($searchModel)
-        {
             $searchName = StringHelper::basename($searchModel::className());
             $params = Yii::$app->request->getQueryParams();
 
@@ -56,15 +54,10 @@ class DefaultController extends BaseController {
             {
                 $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
             }
-            $params[$searchName]['folder'] = $modelClass::FOLDER_POSTED;
+            $params[$searchName]['status_post'] = $modelClass::STATUS_POST_SENT;
+            $params[$searchName]['status_del'] = $modelClass::STATUS_DEL_NO;
 
-            $dataProvider = $searchModel->search($params);
-        }
-        else
-        {
-            $restrictParams = ($restrictAccess) ? [$modelClass::getOwnerField() => Yii::$app->user->identity->id] : [];
-            $dataProvider = new ActiveDataProvider(['query' => $modelClass::find()->where($restrictParams)]);
-        }
+            $dataProvider = $searchModel->search($params);        
 
         return $this->renderIsAjax('index-sent', compact('dataProvider', 'searchModel'));
     }
@@ -79,26 +72,17 @@ class DefaultController extends BaseController {
         $searchModel = new $this->modelViaSearchClass;
         $restrictAccess = (ArtHelper::isImplemented($modelClass, OwnerAccess::CLASSNAME) && !User::hasPermission($modelClass::getFullAccessPermission()));
 
-        if ($searchModel)
-        {
             $searchName = StringHelper::basename($searchModel::className());
             $params = Yii::$app->request->getQueryParams();
 
             if ($restrictAccess)
             {
                 $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
-            }
-            $params[$searchName]['folder'] = $this->modelClass::FOLDER_RECEIVER;
-            $params[$searchName]['mailboxFolder'] = $this->modelClass::FOLDER_POSTED;
+            }            
+            $params[$searchName]['status_del'] = $this->modelClass::STATUS_DEL_NO;
                 //echo '<pre>' . print_r($params, true) . '</pre>';
             $dataProvider = $searchModel->search($params);
-        }
-        else
-        {
-            $restrictParams = ($restrictAccess) ? [$modelClass::getOwnerField() => Yii::$app->user->identity->id] : [];
-            $dataProvider = new ActiveDataProvider(['query' => $modelClass::find()->where($restrictParams)]);
-        }
-
+        
         return $this->renderIsAjax('index-receiver', compact('dataProvider', 'searchModel'));
     }
     
@@ -127,7 +111,7 @@ class DefaultController extends BaseController {
     public function actionViewReceiver($id)
     {
         $model = $this->modelViaClass::findOne($id);
-        $model->status = $this->modelClass::STATUS_READ;
+        $model->status_read = $this->modelClass::STATUS_READ_OLD;
         $model->save(false);
         
         return $this->renderIsAjax('view-receiver', [
@@ -144,8 +128,6 @@ class DefaultController extends BaseController {
         $searchModel = new $this->modelSearchClass;
         $restrictAccess = (ArtHelper::isImplemented($modelClass, OwnerAccess::CLASSNAME) && !User::hasPermission($modelClass::getFullAccessPermission()));
 
-        if ($searchModel)
-        {
             $searchName = StringHelper::basename($searchModel::className());
             $params = Yii::$app->request->getQueryParams();
 
@@ -153,16 +135,10 @@ class DefaultController extends BaseController {
             {
                 $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
             }
-            $params[$searchName]['folder'] = $modelClass::FOLDER_DRAFT;
+            $params[$searchName]['status_post'] = $modelClass::STATUS_POST_DRAFT;
 
             $dataProvider = $searchModel->search($params);
-        }
-        else
-        {
-            $restrictParams = ($restrictAccess) ? [$modelClass::getOwnerField() => Yii::$app->user->identity->id] : [];
-            $dataProvider = new ActiveDataProvider(['query' => $modelClass::find()->where($restrictParams)]);
-        }
-
+        
         return $this->renderIsAjax('index-draft', compact('dataProvider', 'searchModel'));
     }
 
@@ -176,8 +152,6 @@ class DefaultController extends BaseController {
         $searchModel = new $this->modelSearchClass;
         $restrictAccess = (ArtHelper::isImplemented($modelClass, OwnerAccess::CLASSNAME) && !User::hasPermission($modelClass::getFullAccessPermission()));
 
-        if ($searchModel)
-        {
             $searchName = StringHelper::basename($searchModel::className());
             $params = Yii::$app->request->getQueryParams();
 
@@ -185,16 +159,9 @@ class DefaultController extends BaseController {
             {
                 $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
             }
-            $params[$searchName]['folder'] = $modelClass::FOLDER_TRASH;
+            $params[$searchName]['statusDelTrash'] = $modelClass::STATUS_DEL_TRASH;
 
             $dataProvider = $searchModel->search($params);
-        }
-        else
-        {
-            $restrictParams = ($restrictAccess) ? [$modelClass::getOwnerField() => Yii::$app->user->identity->id] : [];
-            $dataProvider = new ActiveDataProvider(['query' => $modelClass::find()->where($restrictParams)]);
-        }
-
         return $this->renderIsAjax('index-trash', compact('dataProvider', 'searchModel'));
     }
 
@@ -210,16 +177,16 @@ class DefaultController extends BaseController {
 
         if ($model->load(Yii::$app->request->post()))
         {
-            $folder = Yii::$app->request->post('folder');
-            if (empty($folder))
+            $status_post = Yii::$app->request->post('status_post');
+            if (empty($status_post))
             {
-                throw new NotFoundHttpException('Required Folder parameter is missing.');
+                throw new NotFoundHttpException('Required status_post parameter is missing.');
             }
-            $model->getComposeData($folder);
+            $model->getComposeData($status_post);
 
             if ($model->save())
             {
-                Yii::$app->session->setFlash('crudMessage', $model::getMessage($folder));
+                Yii::$app->session->setFlash('crudMessage', $model::getMessage($status_post));
                 return $this->redirect($this->getRedirectPage('index', $model));
             }
         }
@@ -236,19 +203,18 @@ class DefaultController extends BaseController {
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()))
+         if ($model->load(Yii::$app->request->post()))
         {
-            $folder = Yii::$app->request->post('folder');
-
-            if (empty($folder))
+            $status_post = Yii::$app->request->post('status_post');
+            if (empty($status_post))
             {
-                throw new NotFoundHttpException('Required Folder parameter is missing.');
+                throw new NotFoundHttpException('Required status_post parameter is missing.');
             }
-            $model->getComposeData($folder);
+            $model->getComposeData($status_post);
 
             if ($model->save())
             {
-                Yii::$app->session->setFlash('crudMessage', $model::getMessage($folder));
+                Yii::$app->session->setFlash('crudMessage', $model::getMessage($status_post));
                 return $this->redirect($this->getRedirectPage('index', $model));
             }
         }
@@ -270,19 +236,18 @@ class DefaultController extends BaseController {
         $model->getReplyData($model_reply);
         
 
-        if ($model->load(Yii::$app->request->post()))
+         if ($model->load(Yii::$app->request->post()))
         {
-            $folder = Yii::$app->request->post('folder');
-
-            if (empty($folder))
+            $status_post = Yii::$app->request->post('status_post');
+            if (empty($status_post))
             {
-                throw new NotFoundHttpException('Required Folder parameter is missing.');
+                throw new NotFoundHttpException('Required status_post parameter is missing.');
             }
-            $model->getComposeData($folder);
+            $model->getComposeData($status_post);
 
             if ($model->save())
             {
-                Yii::$app->session->setFlash('crudMessage', $model::getMessage($folder));
+                Yii::$app->session->setFlash('crudMessage', $model::getMessage($status_post));
                 return $this->redirect($this->getRedirectPage('index', $model));
             }
         }
@@ -306,17 +271,16 @@ class DefaultController extends BaseController {
 
         if ($model->load(Yii::$app->request->post()))
         {
-            $folder = Yii::$app->request->post('folder');
-
-            if (empty($folder))
+            $status_post = Yii::$app->request->post('status_post');
+            if (empty($status_post))
             {
-                throw new NotFoundHttpException('Required Folder parameter is missing.');
+                throw new NotFoundHttpException('Required status_post parameter is missing.');
             }
-            $model->getComposeData($folder);
+            $model->getComposeData($status_post);
 
             if ($model->save())
             {
-                Yii::$app->session->setFlash('crudMessage', $model::getMessage($folder));
+                Yii::$app->session->setFlash('crudMessage', $model::getMessage($status_post));
                 return $this->redirect($this->getRedirectPage('index', $model));
             }
         }

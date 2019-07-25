@@ -17,7 +17,7 @@ $this->title = Yii::t('art/mailbox', 'Trash');
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="mailbox-index">
+<div class="mailbox-trash-index">
 
     <div class="row">
         <div class="col-sm-12">
@@ -79,14 +79,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     ['class' => 'artsoft\grid\CheckboxColumn', 'options' => ['style' => 'width:10px']],
                     [
-                        'attribute' => 'gridReceiverSearch',
+                        'attribute' => 'sender_id',
                         'filter' => artsoft\models\User::getUsersList(),
+                        'label' => Yii::t('art/mailbox', 'Sender'),
                         'class' => 'artsoft\grid\columns\TitleActionColumn',
                         'controller' => '/mailbox/default',
                         'title' => function (Mailbox  $model) {
-                            return implode(', ',
-                                ArrayHelper::map($model->receivers, 'id', 'username'));
-                        },
+                                        return $model->senderName;
+                                    },
                         'options' => ['style' => 'width:350px'],
                         'format' => 'raw',
                         'buttonsTemplate' => '{update} {view} {delete}',
@@ -101,7 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         ],
                     ],
-                    
+                                
                     'title',           
                     [
                         'attribute' => 'content',
@@ -109,23 +109,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format' => 'html',
                     ],
                     [
-                        'attribute' => 'remoted_at',
-                        'value' => 'remotedDatetime',
+                        'attribute' => 'deleted_at',
+                        'value' => 'deletedDatetime',
                         'label' => Yii::t('art/mailbox', 'Remoted At'),
                         'format' => 'raw',
                     ],
-//                    [
-//                        'attribute' => 'sender_id',
-//                        'label' => Yii::t('art/mailbox', 'Sender'),
-//                        'value' => function (Mailbox  $model) {
-//                                        return $model->senderName;
-//                                    },
-//                        'filter' =>  artsoft\models\User::getUsersList(),
-//                    ],
             // 'created_at',
             // 'updated_at',
             // 'posted_at',
-            // 'remoted_at',
+            // 'deleted_at',
 
                 ],
             ]);

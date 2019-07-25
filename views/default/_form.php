@@ -56,16 +56,14 @@ use artsoft\helpers\Html;
                             <div class="form-group">
                                 <div class="pull-right">
                                
-                                <?= Html::submitButton(Yii::t('art/mailbox', 'Draft'), ['class' => 'btn btn-default', 'name' => 'folder', 'value' => $model::FOLDER_DRAFT, 'data-pjax' => 0]) ?>          
-                                <?= Html::submitButton(Yii::t('art/mailbox', 'Send'), ['class' => 'btn btn-primary', 'name' => 'folder', 'value' => $model::FOLDER_POSTED, 'data-pjax' => 0]) ?>          
+                                <?= Html::submitButton(Yii::t('art/mailbox', 'Draft'), ['class' => 'btn btn-default', 'name' => 'status_post', 'value' => $model::STATUS_POST_DRAFT, 'data-pjax' => 0]) ?>          
+                                <?= Html::submitButton(Yii::t('art/mailbox', 'Send'), ['class' => 'btn btn-primary', 'name' => 'status_post', 'value' => $model::STATUS_POST_SENT, 'data-pjax' => 0]) ?>          
                
                                 </div>
-                                <?= Html::a(Yii::t('art/mailbox', 'Discard'), ['/mailbox/receiver/index'], ['class' => 'btn btn-default']) ?>                           
+                                <?= Html::a(Yii::t('art/mailbox', 'Discard'), ['/mailbox/default/index'], ['class' => 'btn btn-default']) ?>                           
                                 <?php if (!$model->isNewRecord): ?>                           
-                                <?= Html::submitButton(Yii::t('art/mailbox', 'Trash'), [
-                                        'class' => 'btn btn-default',  
-                                        'name' => 'folder', 
-                                        'value' => $model::FOLDER_TRASH, 
+                                <?= Html::a(Yii::t('art/mailbox', 'Trash'), ['/mailbox/default/delete', 'id' => $model->id], [
+                                        'class' => 'btn btn-default', 
                                         'data-pjax' => 0,
                                         'data' => [
                                             'confirm' => Yii::t('art/mailbox', 'Are you sure you want to trash this mail?'),

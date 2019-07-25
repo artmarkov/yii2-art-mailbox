@@ -75,11 +75,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         'bulkActionOptions' => [
                             'gridId' => 'mailbox-receiver-grid',
                             'actions' => [
-                                Url::to(['bulk-mark-as-read']) => Yii::t('art/mailbox', 'Mark as read'),                       
-                                Url::to(['bulk-mark-unread']) => Yii::t('art/mailbox', 'Mark unread'),  
+                                Url::to(['bulk-mark-read']) => Yii::t('art/mailbox', 'Mark Read'),                       
+                                Url::to(['bulk-mark-unread']) => Yii::t('art/mailbox', 'Mark Unread'),  
                                 Url::to(['bulk-draft']) => Yii::t('art/mailbox', 'Move to Draft'),             
                                 Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Move to Trash'),                   
-                                Url::to(['bulk-truncate']) => Yii::t('art/mailbox', 'Truncate'),                     
                             ] //Configure here you bulk actions
                         ],
                         'columns' => [
@@ -117,15 +116,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label' => Yii::t('art', 'Content'),
                                 'format' => 'html',
                             ],
-//                            [
-//                                'attribute' => 'receiver_id',
-//                                'value' => 'receiver.username',
-//                                'label' => Yii::t('art/mailbox', 'Receiver'),
-//                                'filter' => artsoft\models\User::getUsersList(),
-//                            ],
+                            [
+                                'attribute' => 'receiver_id',
+                                'value' => 'receiver.username',
+                                'label' => Yii::t('art/mailbox', 'Receiver'),
+                                'filter' => artsoft\models\User::getUsersList(),
+                            ],
                             [
                                 'class' => 'artsoft\grid\columns\StatusColumn',
-                                'attribute' => 'status',
+                                'attribute' => 'status_read',
                                 'optionsArray' => Mailbox::getStatusOptionsList(),
                                 'options' => ['style' => 'width:60px'],
                             ],
@@ -136,7 +135,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'format' => 'raw',
                             ],
                         // 'reading_at',
-                        // 'remoted_at',
+                        // 'deleted_at',
                         ],
                     ]);
                     ?>
