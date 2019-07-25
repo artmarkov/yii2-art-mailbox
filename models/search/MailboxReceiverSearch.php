@@ -18,7 +18,7 @@ class MailboxReceiverSearch extends MailboxReceiver
     public function rules()
     {
         return [
-            [['id', 'mailbox_id', 'receiver_id', 'reading_at', 'deleted_at', 'status_del', 'status_read'], 'integer'],
+            [['id', 'mailbox_id', 'receiver_id', 'reading_at', 'deleted_at', 'status_del', 'status_read', 'mailboxStatusPost'], 'integer'],
             [['mailboxTitle', 'mailboxContent'], 'string'],
             [['mailboxSenderId', 'mailboxPostedDate'], 'integer'],
         ];
@@ -111,6 +111,7 @@ class MailboxReceiverSearch extends MailboxReceiver
             'deleted_at' => $this->deleted_at,
             'mailbox.posted_at' => $this->mailboxPostedDate,
             'mailbox.sender_id' => $this->mailboxSenderId,
+            'mailbox.status_post' => $this->mailboxStatusPost,
             'mailbox_receiver.status_del' => $this->status_del,
             'status_read' => $this->status_read,
         ]);

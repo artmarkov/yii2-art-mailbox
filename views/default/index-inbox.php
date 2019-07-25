@@ -90,17 +90,23 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'class' => 'artsoft\grid\columns\TitleActionColumn',
                                 'controller' => '/mailbox/receiver',
                                 'title' => function(MailboxReceiver $model) {
-                                    return Html::a($model->mailbox->senderName, ['/mailbox/default/view-receiver', 'id' => $model->id], ['data-pjax' => 0]);
+                                    return Html::a($model->mailbox->senderName, ['/mailbox/default/view-inbox', 'id' => $model->id], ['data-pjax' => 0]);
                                 },
                                 'options' => ['style' => 'width:350px'],
-                                'buttonsTemplate' => '{view} {delete}',
+                                'buttonsTemplate' => '{view} {trash}',
                                 'buttons' => [
                                     'view' => function ($url, $model, $key) {
-                                        return Html::a(Yii::t('yii', 'View'),
-                                            Url::to(['view-receiver', 'id' => $model->id]), [
-                                                'title' => Yii::t('yii', 'View'),
-                                                'data-pjax' => '0'
-                                            ]
+                                        return Html::a(Yii::t('yii', 'View'), Url::to(['view-inbox', 'id' => $model->id]), [
+                                                    'title' => Yii::t('yii', 'View'),
+                                                    'data-pjax' => '0'
+                                                        ]
+                                        );
+                                    },
+                                    'trash' => function ($url, $model, $key) {
+                                        return Html::a(Yii::t('art/mailbox', 'Move to Trash'), Url::to(['trash', 'id' => $model->id]), [
+                                                    'title' => Yii::t('art/mailbox', 'Move to Trash'),
+                                                    'data-pjax' => '0'
+                                                        ]
                                         );
                                     }
                                 ],

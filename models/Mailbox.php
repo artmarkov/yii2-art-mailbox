@@ -31,7 +31,6 @@ class Mailbox extends \artsoft\db\ActiveRecord
     public $gridReceiverSearch;
     public $statusDelTrash;
 
-
     const SCENARIO_COMPOSE = 'compose';
         
     const STATUS_POST_DRAFT = 1;    // черновик
@@ -118,6 +117,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
     {
         return new MailboxQuery(get_called_class());
     }
+    
     /**
      * 
      * @param type $folder
@@ -141,8 +141,8 @@ class Mailbox extends \artsoft\db\ActiveRecord
 
         return $this;
     }
+    
     /**
-     * 
      * @param type $model
      * @return $this
      */
@@ -156,6 +156,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
         ];
         return $this;
     } 
+    
     /* 
      * @param type $model
      * @return $this
@@ -168,11 +169,11 @@ class Mailbox extends \artsoft\db\ActiveRecord
        
         return $this;
     }
+    
     /**
-     * 
      * @param type $model
      * @return type string
-     */
+    */
     public function getReplyContent($model)
     {
         return "<blockquote>" . $model->postedDatetime . Yii::t('art/mailbox', '&nbsp;from&nbsp;') . $model->senderName . ":<br><br>" . $model->content . "</blockquote>";
@@ -180,12 +181,11 @@ class Mailbox extends \artsoft\db\ActiveRecord
     }
 
     /**
-     * 
      * @param type $folder
      * @return type string
      */
-    public static function getMessage($status_post){
-       switch ($status_post) {
+    public static function getMessage($status){
+       switch ($status) {
             case self::STATUS_POST_SENT :
                 return Yii::t('art/mailbox', 'Your mail has been posted.');
             case self::STATUS_POST_DRAFT :
@@ -203,6 +203,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
         return $this->hasMany(User::className(), ['id' => 'receiver_id'])       
                 ->viaTable('mailbox_receiver', ['mailbox_id' => 'id']);
     }
+    
      /**
      * @return \yii\db\ActiveQuery
      */
@@ -217,10 +218,12 @@ class Mailbox extends \artsoft\db\ActiveRecord
     {
         return $this->sender->username;
     }
-   public function getMailboxFolder()
+    
+    public function getMailboxFolder()
     {
         return $this->folder;
     }
+    
     public function getShortContent($length = 64, $allowableTags = '')
     {
         $content =  strip_tags($this->content, $allowableTags);
@@ -238,6 +241,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
             self::STATUS_READ_OLD => Yii::t('art/mailbox', 'Read'),
         );
     }
+    
      /**
      * getStatusOptionsList
      * @return array

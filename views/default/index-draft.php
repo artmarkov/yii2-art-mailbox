@@ -73,8 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'bulkActionOptions' => [
                     'gridId' => 'mailbox-grid',
                     'actions' => [                   
-                        Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Move to Trash'),                   
-                        Url::to(['bulk-truncate']) => Yii::t('art/mailbox', 'Truncate'),  
+                        Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Move to Trash'),
                     ] //Configure here you bulk actions
                 ],
                 'columns' => [
@@ -89,19 +88,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'options' => ['style' => 'width:350px'],
                         'format' => 'raw',
-                        'buttonsTemplate' => '{update} {view} {delete}',
+                        'buttonsTemplate' => '{update} {trash}',
                         'buttons' => [
-                            'view' => function ($url, $model, $key) {
-                                return Html::a(Yii::t('yii', 'View'),
-                                    Url::to(['view-inbox', 'id' => $model->id]), [
-                                        'title' => Yii::t('yii', 'View'),
-                                        'data-pjax' => '0'
-                                    ]
+                            'trash' => function ($url, $model, $key) {
+                                return Html::a(Yii::t('art/mailbox', 'Move to Trash'), Url::to(['trash-sent', 'id' => $model->id]), [
+                                            'title' => Yii::t('art/mailbox', 'Move to Trash'),
+                                            'data-pjax' => '0'
+                                                ]
                                 );
                             }
                         ],
                     ],
-                    
                     'title',           
                     [
                         'attribute' => 'content',

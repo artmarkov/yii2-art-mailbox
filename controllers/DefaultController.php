@@ -24,78 +24,95 @@ class DefaultController extends BaseController {
     
     public $enableOnlyActions = ['index', 'indexDraft', 'indexTrash', 'update', 'compose', 'view', 'delete'];
 
-    public function behaviors()
-    {
-        return ArrayHelper::merge(parent::behaviors(), [
-                    'verbs' => [
-                        'class' => VerbFilter::className(),
-                        'actions' => [
-                            'truncate' => ['post'],
-                            'delete' => ['post'],
-                        ],
-                    ],
-        ]);
-    }
 
-    /**
-     * Lists all models.
-     * @return mixed
-     */
-    public function actionIndexSent()
-    {
-        $modelClass = $this->modelClass;
-        $searchModel = new $this->modelSearchClass;
-        $restrictAccess = (ArtHelper::isImplemented($modelClass, OwnerAccess::CLASSNAME) && !User::hasPermission($modelClass::getFullAccessPermission()));
-
-            $searchName = StringHelper::basename($searchModel::className());
-            $params = Yii::$app->request->getQueryParams();
-
-            if ($restrictAccess)
-            {
-                $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
-            }
-            $params[$searchName]['status_post'] = $modelClass::STATUS_POST_SENT;
-            $params[$searchName]['status_del'] = $modelClass::STATUS_DEL_NO;
-
-            $dataProvider = $searchModel->search($params);        
-
-        return $this->renderIsAjax('index-sent', compact('dataProvider', 'searchModel'));
-    }
-    
     /**
      * Lists all models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $modelClass = $this->modelViaClass;
         $searchModel = new $this->modelViaSearchClass;
-        $restrictAccess = (ArtHelper::isImplemented($modelClass, OwnerAccess::CLASSNAME) && !User::hasPermission($modelClass::getFullAccessPermission()));
-
-            $searchName = StringHelper::basename($searchModel::className());
-            $params = Yii::$app->request->getQueryParams();
-
-            if ($restrictAccess)
-            {
-                $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
-            }            
-            $params[$searchName]['status_del'] = $this->modelClass::STATUS_DEL_NO;
-                //echo '<pre>' . print_r($params, true) . '</pre>';
-            $dataProvider = $searchModel->search($params);
+        $searchName = StringHelper::basename($searchModel::className());
         
-        return $this->renderIsAjax('index-receiver', compact('dataProvider', 'searchModel'));
+        $params = ArrayHelper::merge(Yii::$app->request->getQueryParams(), [
+                    $searchName => [
+                        'receiver_id' => Yii::$app->user->identity->id,
+                        'mailboxStatusPost' => $this->modelClass::STATUS_POST_SENT,
+                        'status_del' => $this->modelClass::STATUS_DEL_NO,
+                    ]
+        ]);
+        $dataProvider = $searchModel->search($params);
+        return $this->renderIsAjax('index-inbox', compact('dataProvider', 'searchModel'));
     }
     
     /**
+     * Lists all models.
+     * @return mixed
+     */
+    public function actionIndexSent()
+    {
+        $searchModel = new $this->modelSearchClass;
+        $searchName = StringHelper::basename($searchModel::className());
+        
+        $params = ArrayHelper::merge(Yii::$app->request->getQueryParams(), [
+                    $searchName => [
+                        'sender_id' => Yii::$app->user->identity->id,
+                        'status_post' => $this->modelClass::STATUS_POST_SENT,
+                        'status_del' => $this->modelClass::STATUS_DEL_NO,
+                    ]
+        ]);
+        $dataProvider = $searchModel->search($params);
+        return $this->renderIsAjax('index-sent', compact('dataProvider', 'searchModel'));
+    }
+
+    /**
+     * Lists all models.
+     * @return mixed
+     */
+    public function actionIndexDraft()
+    {
+        $searchModel = new $this->modelSearchClass;
+        $searchName = StringHelper::basename($searchModel::className());
+        
+        $params = ArrayHelper::merge(Yii::$app->request->getQueryParams(), [
+                    $searchName => [
+                        'sender_id' => Yii::$app->user->identity->id,
+                        'status_post' => $this->modelClass::STATUS_POST_DRAFT,
+                        'status_del' => $this->modelClass::STATUS_DEL_NO,
+                    ]
+        ]);
+        $dataProvider = $searchModel->search($params);
+        return $this->renderIsAjax('index-draft', compact('dataProvider', 'searchModel'));
+    }
+    /**
+     * Lists all models.
+     * @return mixed
+     */
+     public function actionIndexTrash()
+    {
+        $searchModel = new $this->modelSearchClass;
+        $searchName = StringHelper::basename($searchModel::className());
+        
+        $params = ArrayHelper::merge(Yii::$app->request->getQueryParams(), [
+                    $searchName => [
+                        'sender_id' => Yii::$app->user->identity->id,
+                        'statusDelTrash' => $this->modelClass::STATUS_DEL_TRASH,
+                    ]
+        ]);
+        $dataProvider = $searchModel->search($params);
+        return $this->renderIsAjax('index-trash', compact('dataProvider', 'searchModel'));
+    }
+    /**
      * Displays a single model.
-     *
      * @param integer $id
-     *
      * @return mixed
      */
     public function actionViewInbox($id)
     {
-        $model = $this->modelClass::findOne($id);
+        $model = $this->modelViaClass::findOne($id);
+        
+        $model->status_read = $this->modelClass::STATUS_READ_OLD;
+        $model->save();
         
         return $this->renderIsAjax('view-inbox', [
             'model' => $model,
@@ -103,66 +120,16 @@ class DefaultController extends BaseController {
     } 
     /**
      * Displays a single model.
-     *
      * @param integer $id
-     *
      * @return mixed
      */
-    public function actionViewReceiver($id)
+    public function actionViewSent($id)
     {
-        $model = $this->modelViaClass::findOne($id);
-        $model->status_read = $this->modelClass::STATUS_READ_OLD;
-        $model->save(false);
+        $model = $this->modelClass::findOne($id);
         
-        return $this->renderIsAjax('view-receiver', [
+        return $this->renderIsAjax('view-sent', [
             'model' => $model,
         ]);
-    }
-    /**
-     * Lists all models.
-     * @return mixed
-     */
-    public function actionIndexDraft()
-    {
-        $modelClass = $this->modelClass;
-        $searchModel = new $this->modelSearchClass;
-        $restrictAccess = (ArtHelper::isImplemented($modelClass, OwnerAccess::CLASSNAME) && !User::hasPermission($modelClass::getFullAccessPermission()));
-
-            $searchName = StringHelper::basename($searchModel::className());
-            $params = Yii::$app->request->getQueryParams();
-
-            if ($restrictAccess)
-            {
-                $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
-            }
-            $params[$searchName]['status_post'] = $modelClass::STATUS_POST_DRAFT;
-
-            $dataProvider = $searchModel->search($params);
-        
-        return $this->renderIsAjax('index-draft', compact('dataProvider', 'searchModel'));
-    }
-
-    /**
-     * Lists all models.
-     * @return mixed
-     */
-    public function actionIndexTrash()
-    {
-        $modelClass = $this->modelClass;
-        $searchModel = new $this->modelSearchClass;
-        $restrictAccess = (ArtHelper::isImplemented($modelClass, OwnerAccess::CLASSNAME) && !User::hasPermission($modelClass::getFullAccessPermission()));
-
-            $searchName = StringHelper::basename($searchModel::className());
-            $params = Yii::$app->request->getQueryParams();
-
-            if ($restrictAccess)
-            {
-                $params[$searchName][$modelClass::getOwnerField()] = Yii::$app->user->identity->id;
-            }
-            $params[$searchName]['statusDelTrash'] = $modelClass::STATUS_DEL_TRASH;
-
-            $dataProvider = $searchModel->search($params);
-        return $this->renderIsAjax('index-trash', compact('dataProvider', 'searchModel'));
     }
 
     /**
@@ -203,7 +170,12 @@ class DefaultController extends BaseController {
     {
         $model = $this->findModel($id);
 
-         if ($model->load(Yii::$app->request->post()))
+        if ($model->status_post != $this->modelClass::STATUS_POST_DRAFT)
+        {
+            throw new NotFoundHttpException('Editing is only allowed for the drafts folder.');
+        }
+
+        if ($model->load(Yii::$app->request->post()))
         {
             $status_post = Yii::$app->request->post('status_post');
             if (empty($status_post))
@@ -220,8 +192,8 @@ class DefaultController extends BaseController {
         }
         return $this->renderIsAjax('update', compact('model'));
     }
+
     /**
-     * 
      * @param type $id
      * @return type
      * @throws NotFoundHttpException
@@ -229,12 +201,9 @@ class DefaultController extends BaseController {
      public function actionReply($id)
     {
          
-        $model_reply = self::findModel($id);
-        
-        $model = new $this->modelClass;
-        
-        $model->getReplyData($model_reply);
-        
+        $model_reply = self::findModel($id);        
+        $model = new $this->modelClass;        
+        $model->getReplyData($model_reply);        
 
          if ($model->load(Yii::$app->request->post()))
         {
@@ -253,8 +222,8 @@ class DefaultController extends BaseController {
         }
         return $this->renderIsAjax('compose', compact('model'));
     }
+    
     /**
-     * 
      * @param type $id
      * @return type
      * @throws NotFoundHttpException
@@ -262,12 +231,9 @@ class DefaultController extends BaseController {
      public function actionForward($id)
     {
          
-        $model_reply = self::findModel($id);
-        
-        $model = new $this->modelClass;
-        
-        $model->getForwardData($model_reply);
-        
+        $model_reply = self::findModel($id);        
+        $model = new $this->modelClass;        
+        $model->getForwardData($model_reply);        
 
         if ($model->load(Yii::$app->request->post()))
         {
@@ -286,4 +252,59 @@ class DefaultController extends BaseController {
         }
         return $this->renderIsAjax('compose', compact('model'));
     }
+    /**
+     * @param type $id
+     * @return type
+     */
+    public function actionTrash($id)
+    {
+        $model = $this->modelViaClass::findOne($id);
+        
+        $model->status_del = $this->modelClass::STATUS_DEL_TRASH;
+        $model->deleted_at = time();
+        
+        $model->save();
+        Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been moved to the trash folder.'));
+        return $this->redirect($this->getRedirectPage('index', $model));
+    }
+    /**
+     * @param type $id
+     * @return type
+     */
+    public function actionTrashSent($id)
+    {
+        $model = $this->modelClass::findOne($id);
+        
+        $model->status_del = $this->modelClass::STATUS_DEL_TRASH;
+        $model->deleted_at = time();
+        
+        $model->save();
+        Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been moved to the trash folder.'));
+        return $this->redirect($this->getRedirectPage('index-sent', $model));
+    }
+/**
+     * @param type $id
+     * @return type
+     */
+    public function actionRestore($id)
+    {
+        $model = $this->modelClass::findOne(['id' => $id, 'sender_id' => Yii::$app->user->identity->id]);
+        
+        $modelVia = $this->modelViaClass::findOne(['mailbox_id' => $id, 'receiver_id' => Yii::$app->user->identity->id]);
+        if ($model)
+        {
+            $model->status_del = $this->modelClass::STATUS_DEL_NO;
+            $model->deleted_at = NULL;
+            $model->save();
+        }
+        if ($modelVia)
+        {
+            $modelVia->status_del = $this->modelClass::STATUS_DEL_NO;
+            $modelVia->deleted_at = NULL;
+            $modelVia->save();
+        }
+        Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been restory.'));
+        return $this->redirect($this->getRedirectPage('index', $model));
+    }
+
 }

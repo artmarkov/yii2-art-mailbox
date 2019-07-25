@@ -17,9 +17,6 @@ use artsoft\helpers\Html;
     $form = ActiveForm::begin([
             'id' => 'mailbox-form',
             'validateOnBlur' => false,
-           // 'type' => ActiveForm::TYPE_INLINE, 
-           // 'method' => 'GET',
-            //'action' => Url::to(['/mailbox/default/compose']), 
             'enableClientScript' => true, // default
             ])
     ?>

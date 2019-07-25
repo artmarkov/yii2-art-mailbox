@@ -71,10 +71,7 @@ class MailboxSearch extends Mailbox
          if ($this->gridReceiverSearch) {
             $query->joinWith(['receivers']);
         }
-         if ($this->statusDelTrash) {
-            $query->joinWith(['receivers']);
-        }
-        
+                 
         $query->andFilterWhere([
             'id' => $this->id,
             'sender_id' => $this->sender_id,
@@ -90,9 +87,12 @@ class MailboxSearch extends Mailbox
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'content', $this->content]);
         
-        $query->andFilterWhere(['OR', ['=', 'mailbox.status_del', $this->statusDelTrash], ['=', 'mailbox_receiver.status_del', $this->statusDelTrash]])
-                ->select(['title', 'content', 'posted_at', 'sender_id'])->distinct();
-
+         if ($this->statusDelTrash)
+        {
+            $query->joinWith(['receivers']);
+            $query->andFilterWhere(['OR', ['=', 'mailbox.status_del', $this->statusDelTrash], ['=', 'mailbox_receiver.status_del', $this->statusDelTrash]])
+                    ->select(['mailbox.id', 'title', 'content', 'posted_at', 'sender_id'])->distinct();
+        }
         return $dataProvider;
     }
 }
