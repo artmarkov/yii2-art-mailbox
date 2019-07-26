@@ -65,22 +65,22 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
 
                         <div class="col-sm-6 text-right">
-                            <?=  GridPageSize::widget(['pjaxId' => 'mailbox-grid-pjax']) ?>
+                            <?=  GridPageSize::widget(['pjaxId' => 'mailbox-trash-grid-pjax']) ?>
                         </div>
                     </div>
             <?php 
             Pjax::begin([
-                'id' => 'mailbox-grid-pjax',
+                'id' => 'mailbox-trash-grid-pjax',
             ])
             ?>
 
             <?= 
             GridView::widget([
-                'id' => 'mailbox-grid',
+                'id' => 'mailbox-trash-grid',
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
                 'bulkActionOptions' => [
-                    'gridId' => 'mailbox-grid',
+                    'gridId' => 'mailbox-trash-grid',
                     'actions' => [          
                        Url::to(['bulk-restore']) => Yii::t('art/mailbox', 'Restore'),  
                        Url::to(['bulk-delete']) => Yii::t('yii', 'Delete'),  

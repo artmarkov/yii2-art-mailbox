@@ -106,4 +106,25 @@ class MailboxReceiver extends \artsoft\db\ActiveRecord
         }
         return $ret;
     }
+    /**
+     * Count new mail
+     * @return type int
+     */
+    public static function getCountNewMail()
+    {
+        return self::find()->where([
+                    'receiver_id' => Yii::$app->user->identity->id,
+                    'status_read' => Mailbox::STATUS_READ_NEW,
+                ])->count();
+    }
+
+    public static function getLabelNewMail()
+    {
+        $count = self::getCountNewMail();
+        if ($count != 0)
+        {
+            return '<span class="label label-success pull-right">' . $count . '</span>';
+        }
+    }
+
 }

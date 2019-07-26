@@ -23,7 +23,7 @@ class DefaultController extends BaseController {
     public $modelViaSearchClass = 'artsoft\mailbox\models\search\MailboxReceiverSearch';
     
     public $enableOnlyActions = ['index', 'index-sent', 'index-draft', 'index-trash', 'view-inbox', 'view-sent', 'compose', 'update', 'delete', 
-                                 'reply', 'forward', 'trash', 'trash-sent', 'restore', 'bulk-mark-read', 'bulk-mark-unread'];
+                                 'reply', 'forward', 'trash', 'trash-sent', 'restore', 'bulk-mark-read', 'bulk-mark-unread', 'bulk-trash', 'bulk-trush-sent'];
 
 
     /**
@@ -328,6 +328,42 @@ class DefaultController extends BaseController {
             
             $where = ['id' => Yii::$app->request->post('selection', [])];
             $this->modelViaClass::updateAll(['status_read' => $this->modelClass::STATUS_READ_NEW], $where);
+        }
+    }
+    /**
+     * Activate all selected grid items
+     */
+    public function actionBulkTrash() {
+
+        if (Yii::$app->request->post('selection')) {
+            
+            $where = ['id' => Yii::$app->request->post('selection', [])];
+            $this->modelViaClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_TRASH, 'deleted_at' => time()], $where);
+        }
+    }
+    /**
+     * Activate all selected grid items
+     */
+    public function actionBulkTrashSent() {
+
+        if (Yii::$app->request->post('selection')) {
+            
+            $where = ['id' => Yii::$app->request->post('selection', [])];
+            $this->modelClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_TRASH, 'deleted_at' => time()], $where);
+        }
+    }
+    /**
+     * Activate all selected grid items
+     */
+    public function actionBulkRestore() {
+
+        if (Yii::$app->request->post('selection')) {
+            
+            $where = ['id' => Yii::$app->request->post('selection', []), 'sender_id' => Yii::$app->user->identity->id];
+            $this->modelClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_NO, 'deleted_at' => NULL], $where); 
+            
+            $whereVia = ['mailbox_id' => Yii::$app->request->post('selection', []), 'receiver_id' => Yii::$app->user->identity->id];
+            $this->modelViaClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_NO, 'deleted_at' => NULL], $whereVia);
         }
     }
 

@@ -56,25 +56,24 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
 
                         <div class="col-sm-6 text-right">
-                            <?=  GridPageSize::widget(['pjaxId' => 'mailbox-grid-pjax']) ?>
+                            <?=  GridPageSize::widget(['pjaxId' => 'mailbox-sent-grid-pjax']) ?>
                         </div>
                     </div>
             <?php 
             Pjax::begin([
-                'id' => 'mailbox-grid-pjax',
+                'id' => 'mailbox-sent-grid-pjax',
             ])
             ?>
 
             <?= 
             GridView::widget([
-                'id' => 'mailbox-grid',
+                'id' => 'mailbox-sent-grid',
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
                 'bulkActionOptions' => [
-                    'gridId' => 'mailbox-grid',
-                    'actions' => [ 
-                        Url::to(['bulk-draft']) => Yii::t('art/mailbox', 'Move to Draft'),                   
-                        Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Move to Trash'), 
+                    'gridId' => 'mailbox-sent-grid',
+                    'actions' => [                
+                        Url::to(['bulk-trash-sent']) => Yii::t('art/mailbox', 'Move to Trash'), 
                         
                         ] //Configure here you bulk actions
                 ],

@@ -17,7 +17,7 @@ $this->title = Yii::t('art/mailbox', 'Inbox');
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="mailbox-receiver-index">
+<div class="mailbox-inbox-index">
 
     <div class="row">
         <div class="col-sm-12">
@@ -26,6 +26,11 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
    <div class="row">
+         <?php
+       Pjax::begin([
+           'id' => 'mailbox-inbox-grid-pjax',
+       ])
+       ?>
         <div class="col-md-3">
             <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/compose'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
          
@@ -57,28 +62,22 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
 
                         <div class="col-sm-6 text-right">
-                            <?= GridPageSize::widget(['pjaxId' => 'mailbox-receiver-grid-pjax']) ?>
+                            <?= GridPageSize::widget(['pjaxId' => 'mailbox-inbox-grid-pjax']) ?>
                         </div>
                     </div>
 
-                    <?php
-                    Pjax::begin([
-                        'id' => 'mailbox-receiver-grid-pjax',
-                    ])
-                    ?>
-
+                  
                     <?=
                     GridView::widget([
-                        'id' => 'mailbox-receiver-grid',
+                        'id' => 'mailbox-inbox-grid',
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
                         'bulkActionOptions' => [
-                            'gridId' => 'mailbox-receiver-grid',
+                            'gridId' => 'mailbox-inbox-grid',
                             'actions' => [
                                 Url::to(['bulk-mark-read']) => Yii::t('art/mailbox', 'Mark Read'),                       
-                                Url::to(['bulk-mark-unread']) => Yii::t('art/mailbox', 'Mark Unread'),  
-                                Url::to(['bulk-draft']) => Yii::t('art/mailbox', 'Move to Draft'),             
-                                Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Move to Trash'),                   
+                                Url::to(['bulk-mark-unread']) => Yii::t('art/mailbox', 'Mark Unread'),        
+                                Url::to(['bulk-trash']) => Yii::t('art/mailbox', 'Move to Trash'),                   
                             ] //Configure here you bulk actions
                         ],
                         'columns' => [
@@ -88,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label' => Yii::t('art/mailbox', 'Sender'),
                                 'filter' => artsoft\models\User::getUsersList(),
                                 'class' => 'artsoft\grid\columns\TitleActionColumn',
-                                'controller' => '/mailbox/receiver',
+                                'controller' => '/mailbox/default',
                                 'title' => function(MailboxReceiver $model) {
                                     return Html::a($model->mailbox->senderName, ['/mailbox/default/view-inbox', 'id' => $model->id], ['data-pjax' => 0]);
                                 },
@@ -146,10 +145,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]);
                     ?>
 
-                    <?php Pjax::end() ?>
                 </div>
             </div>
         </div>
+         <?php Pjax::end() ?>
     </div>
 </div>
 

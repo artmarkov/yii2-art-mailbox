@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('art/mailbox', 'Mailboxs'), 
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="mailbox-receiver-view">
+<div class="mailbox-inbox-view">
 
     <div class="row">
         <div class="col-sm-12">
