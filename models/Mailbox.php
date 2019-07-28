@@ -8,6 +8,7 @@ use yii\behaviors\TimestampBehavior;
 use artsoft\models\User;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%mailbox}}".
@@ -24,7 +25,7 @@ use yii\helpers\Html;
  * @property int $deleted_at
  *
  * @property User $sender
- * @property MailboxReceiver[] $mailboxReceivers
+ * @property MailboxInbox[] $MailboxInboxs
  */
 class Mailbox extends \artsoft\db\ActiveRecord
 {
@@ -201,7 +202,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
     public function getReceivers()
     {
         return $this->hasMany(User::className(), ['id' => 'receiver_id'])       
-                ->viaTable('mailbox_receiver', ['mailbox_id' => 'id']);
+                ->viaTable('mailbox_inbox', ['mailbox_id' => 'id']);
     }
     
      /**
@@ -345,7 +346,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
                     'sender_id' => Yii::$app->user->identity->id
         ]);
 
-        $modelVia = MailboxReceiver::findOne([
+        $modelVia = MailboxInbox::findOne([
                     'mailbox_id' => $id,
                     'receiver_id' => Yii::$app->user->identity->id
         ]);
@@ -379,7 +380,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
                     'sender_id' => Yii::$app->user->identity->id,
                     'status_del' => self::STATUS_DEL_TRASH
         ]);
-        $modelVia = MailboxReceiver::findOne([
+        $modelVia = MailboxInbox::findOne([
                     'mailbox_id' => $id,
                     'receiver_id' => Yii::$app->user->identity->id,
                     'status_del' => self::STATUS_DEL_TRASH
@@ -399,6 +400,45 @@ class Mailbox extends \artsoft\db\ActiveRecord
             }
         }
         return $ret;
+    }
+    
+    /**
+     * 
+     * @param type $id
+     * @return type array int
+     */
+    public static function getAllTrashMail() {
+
+        return self::find()->joinWith(['receivers'])
+                        ->where(['OR', ['=', 'mailbox.sender_id', Yii::$app->user->identity->id], ['=', 'mailbox_inbox.receiver_id', Yii::$app->user->identity->id]])
+                        ->andWhere(['OR', ['=', 'mailbox.status_del', self::STATUS_DEL_TRASH], ['=', 'mailbox_inbox.status_del', self::STATUS_DEL_TRASH]])
+                        ->asArray()->column();
+    }
+
+    /**
+     * 
+     * @param type $id
+     * @return type int
+     */
+    public static function getNextMail($id) {
+        return self::find()->where(['>', 'id', $id])->andWhere([
+                    'sender_id' => Yii::$app->user->identity->id,
+                    'status_post' => self::STATUS_POST_SENT,
+                    'status_del' => self::STATUS_DEL_NO,
+                ])->min('id');
+    }
+
+    /**
+     * 
+     * @param type $id
+     * @return type int
+     */
+    public static function getPreviousMail($id) {
+        return self::find()->where(['<', 'id', $id])->andWhere([
+                    'sender_id' => Yii::$app->user->identity->id,
+                    'status_post' => self::STATUS_POST_SENT,
+                    'status_del' => self::STATUS_DEL_NO,
+                ])->max('id');
     }
 
 }

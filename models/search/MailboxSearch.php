@@ -81,7 +81,7 @@ class MailboxSearch extends Mailbox
             'deleted_at' => $this->deleted_at,
             'status_post' => $this->status_post,
             'status_del' => $this->status_del,
-            'mailbox_receiver.receiver_id' => $this->gridReceiverSearch,
+            'mailbox_inbox.receiver_id' => $this->gridReceiverSearch,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
@@ -90,8 +90,8 @@ class MailboxSearch extends Mailbox
          if ($this->statusDelTrash)
         {
             $query->joinWith(['receivers']);
-            $query->andFilterWhere(['OR', ['=', 'mailbox.sender_id', Yii::$app->user->identity->id], ['=', 'mailbox_receiver.receiver_id', Yii::$app->user->identity->id]])
-                  ->andFilterWhere(['OR', ['=', 'mailbox.status_del', $this->statusDelTrash], ['=', 'mailbox_receiver.status_del', $this->statusDelTrash]]);
+            $query->andFilterWhere(['OR', ['=', 'mailbox.sender_id', Yii::$app->user->identity->id], ['=', 'mailbox_inbox.receiver_id', Yii::$app->user->identity->id]])
+                  ->andFilterWhere(['OR', ['=', 'mailbox.status_del', $this->statusDelTrash], ['=', 'mailbox_inbox.status_del', $this->statusDelTrash]]);
             
             $query->select(['mailbox.id', 'title', 'content', 'posted_at', 'sender_id'])->distinct();
         }

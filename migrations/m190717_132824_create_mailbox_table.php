@@ -26,7 +26,7 @@ class m190717_132824_create_mailbox_table extends Migration
         $this->createIndex('sender_id', '{{%mailbox}}', 'sender_id');
         $this->addForeignKey('mailbox_ibfk_1', '{{%mailbox}}', 'sender_id', '{{%user}}', 'id', 'RESTRICT', 'RESTRICT');
         
-       $this->createTable('{{%mailbox_receiver}}', [
+       $this->createTable('{{%mailbox_inbox}}', [
             'id' => $this->primaryKey(),
             'mailbox_id' => $this->integer()->notNull(),
             'receiver_id' => $this->integer()->notNull(),
@@ -36,15 +36,15 @@ class m190717_132824_create_mailbox_table extends Migration
             'deleted_at' => $this->integer(),
         ], $tableOptions);
 
-        $this->createIndex('mailbox_id', '{{%mailbox_receiver}}', 'mailbox_id');
-        $this->createIndex('receiver_id', '{{%mailbox_receiver}}', 'receiver_id');
-        $this->addForeignKey('mailbox_receiver_ibfk_1', '{{%mailbox_receiver}}', 'receiver_id', '{{%user}}', 'id', 'RESTRICT', 'RESTRICT');
-        $this->addForeignKey('mailbox_receiver_ibfk_2', '{{%mailbox_receiver}}', 'mailbox_id', '{{%mailbox}}', 'id', 'RESTRICT', 'RESTRICT');
+        $this->createIndex('mailbox_id', '{{%mailbox_inbox}}', 'mailbox_id');
+        $this->createIndex('receiver_id', '{{%mailbox_inbox}}', 'receiver_id');
+        $this->addForeignKey('mailbox_inbox_ibfk_1', '{{%mailbox_inbox}}', 'receiver_id', '{{%user}}', 'id', 'RESTRICT', 'RESTRICT');
+        $this->addForeignKey('mailbox_inbox_ibfk_2', '{{%mailbox_inbox}}', 'mailbox_id', '{{%mailbox}}', 'id', 'RESTRICT', 'RESTRICT');
     }
 
     public function down()
     {
-        $this->dropTable('{{%mailbox_receiver}}');
+        $this->dropTable('{{%mailbox_inbox}}');
         $this->dropTable('{{%mailbox}}');
     }
 }

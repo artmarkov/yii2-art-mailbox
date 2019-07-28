@@ -3,7 +3,7 @@
 use artsoft\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model artsoft\mailbox\models\MailboxReceiver */
+/* @var $model artsoft\mailbox\models\MailboxInbox */
 
 $this->title = Yii::t('art/mailbox', 'Read mail');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('art/mailbox', 'Mailboxs'), 'url' => ['index']];

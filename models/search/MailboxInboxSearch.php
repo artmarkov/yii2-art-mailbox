@@ -5,12 +5,12 @@ namespace artsoft\mailbox\models\search;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use artsoft\mailbox\models\MailboxReceiver;
+use artsoft\mailbox\models\MailboxInbox;
 
 /**
- * MailboxReceiverSearch represents the model behind the search form about `artsoft\mailbox\models\MailboxReceiver`.
+ * MailboxInboxSearch represents the model behind the search form about `artsoft\mailbox\models\MailboxInbox`.
  */
-class MailboxReceiverSearch extends MailboxReceiver
+class MailboxInboxSearch extends MailboxInbox
 {
     /**
      * @inheritdoc
@@ -42,7 +42,7 @@ class MailboxReceiverSearch extends MailboxReceiver
      */
     public function search($params)
     {
-        $query = MailboxReceiver::find();
+        $query = MailboxInbox::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -112,7 +112,7 @@ class MailboxReceiverSearch extends MailboxReceiver
             'mailbox.posted_at' => $this->mailboxPostedDate,
             'mailbox.sender_id' => $this->mailboxSenderId,
             'mailbox.status_post' => $this->mailboxStatusPost,
-            'mailbox_receiver.status_del' => $this->status_del,
+            'mailbox_inbox.status_del' => $this->status_del,
             'status_read' => $this->status_read,
         ]);
 

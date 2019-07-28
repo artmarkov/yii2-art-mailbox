@@ -1,7 +1,7 @@
 <?php
 
 use artsoft\widgets\Nav;
-use artsoft\mailbox\models\MailboxReceiver;
+use artsoft\mailbox\models\MailboxInbox;
 artsoft\mailbox\MailboxAssetsBundle::register($this);
 ?>
 
@@ -11,7 +11,7 @@ artsoft\mailbox\MailboxAssetsBundle::register($this);
         $menuItems = [
             [
                 'encode' => false,
-                'label' => '<i class="fa fa-inbox" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Inbox') . MailboxReceiver::getLabelNewMail(),
+                'label' => '<i class="fa fa-inbox" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Inbox') . MailboxInbox::getLabelNewMail(),
                 'url' => ['default/index'],
                 'active' => true
             ],

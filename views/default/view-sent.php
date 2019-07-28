@@ -1,6 +1,7 @@
 <?php
 
 use artsoft\helpers\Html;
+use artsoft\mailbox\models\Mailbox;
 
 /* @var $this yii\web\View */
 /* @var $model artsoft\mailbox\models\Mailbox */
@@ -40,10 +41,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
 
                     <div class="box-tools pull-right">                        
-  
-                            <?= Html::a('<i class="fa fa-chevron-left"></i>', ['/mailbox/default/previous'], ['class' => 'btn btn-link','data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Previous']) ?>          
-                            <?= Html::a('<i class="fa fa-chevron-right"></i>', ['/mailbox/default/next'], ['class' => 'btn btn-link', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Next']) ?>          
-                      
+                        <ul class="pager">
+                            <li><?= Html::a('<i class="fa fa-chevron-left"></i>', ['/mailbox/default/view-sent', 'id' => Mailbox::getPreviousMail($model->id)], ['class' => 'previous', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Previous']) ?></li>
+                            <li><?= Html::a('<i class="fa fa-chevron-right"></i>', ['/mailbox/default/view-sent', 'id' => Mailbox::getNextMail($model->id)], ['class' => 'next', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Next']) ?></li>
+                        </ul>
                     </div>
                 </div>
                 <div class="box-body no-padding">

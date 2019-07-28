@@ -40,27 +40,25 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 </div>
             </div>
-            
-            <?= Html::a('<i class="fa fa-recycle" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Empty trash'), ['/mailbox/default/clian'], 
-                    [
-                        'class' => 'btn btn-danger margin-bottom',
-                        'data' => [
-                                        'confirm' => Yii::t('art/mailbox', 'Are you sure you want to empty trash?'),
-                                        'method' => 'post',
-                                    ],]) 
-            ?>
         </div>
 	<div class="col-md-9">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-sm-6">
-                            <?php 
+                            <?= Html::a('<i class="fa fa-recycle" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Empty trash'), ['/mailbox/default/clian'], [
+                                'class' => 'btn btn-danger margin-bottom',
+                                'data' => [
+                                    'confirm' => Yii::t('art/mailbox', 'Are you sure you want to empty trash?'),
+                                    'method' => 'post',
+                                ],])
+                            ?>
+                            <?php
                             /* Uncomment this to activate GridQuickLinks */
                             /*  echo GridQuickLinks::widget([
-                                'model' => Mailbox::className(),
-                                'searchModel' => $searchModel,                                 
-                            ]) */
+                              'model' => Mailbox::className(),
+                              'searchModel' => $searchModel,
+                              ]) */
                             ?>
                         </div>
 
@@ -81,6 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterModel' => $searchModel,
                 'bulkActionOptions' => [
                     'gridId' => 'mailbox-trash-grid',
+                    'confirmationText' => Yii::t('art/mailbox', 'Are you sure you want to delete this mail?'),
                     'actions' => [          
                        Url::to(['bulk-restore']) => Yii::t('art/mailbox', 'Restore'),  
                        Url::to(['bulk-delete']) => Yii::t('yii', 'Delete'),  

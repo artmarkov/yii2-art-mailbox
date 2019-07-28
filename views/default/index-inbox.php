@@ -5,12 +5,12 @@ use yii\widgets\Pjax;
 use artsoft\grid\GridView;
 use artsoft\grid\GridQuickLinks;
 use artsoft\mailbox\models\Mailbox;
-use artsoft\mailbox\models\MailboxReceiver;
+use artsoft\mailbox\models\MailboxInbox;
 use artsoft\helpers\Html;
 use artsoft\grid\GridPageSize;
 
 /* @var $this yii\web\View */
-/* @var $searchModel artsoft\mailbox\models\search\MailboxReceiverSearch */
+/* @var $searchModel artsoft\mailbox\models\search\MailboxInboxSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('art/mailbox', 'Inbox');
@@ -26,11 +26,6 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
    <div class="row">
-         <?php
-       Pjax::begin([
-           'id' => 'mailbox-inbox-grid-pjax',
-       ])
-       ?>
         <div class="col-md-3">
             <?= Html::a(Yii::t('art/mailbox', 'Compose'), ['/mailbox/default/compose'], ['class' => 'btn btn-primary btn-block margin-bottom']) ?>
          
@@ -67,8 +62,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
 
                   
-                    <?=
-                    GridView::widget([
+                    <?php
+                  Pjax::begin([
+                      'id' => 'mailbox-inbox-grid-pjax',
+                  ])
+                  ?>
+                    <?= GridView::widget([
                         'id' => 'mailbox-inbox-grid',
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
@@ -88,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'filter' => artsoft\models\User::getUsersList(),
                                 'class' => 'artsoft\grid\columns\TitleActionColumn',
                                 'controller' => '/mailbox/default',
-                                'title' => function(MailboxReceiver $model) {
+                                'title' => function(MailboxInbox $model) {
                                     return Html::a($model->mailbox->senderName, ['/mailbox/default/view-inbox', 'id' => $model->id], ['data-pjax' => 0]);
                                 },
                                 'options' => ['style' => 'width:350px'],
@@ -121,12 +120,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label' => Yii::t('art', 'Content'),
                                 'format' => 'html',
                             ],
-                            [
-                                'attribute' => 'receiver_id',
-                                'value' => 'receiver.username',
-                                'label' => Yii::t('art/mailbox', 'Receiver'),
-                                'filter' => artsoft\models\User::getUsersList(),
-                            ],
+//                            [
+//                                'attribute' => 'receiver_id',
+//                                'value' => 'receiver.username',
+//                                'label' => Yii::t('art/mailbox', 'Receiver'),
+//                                'filter' => artsoft\models\User::getUsersList(),
+//                            ],
                             [
                                 'class' => 'artsoft\grid\columns\StatusColumn',
                                 'attribute' => 'status_read',
@@ -145,10 +144,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]);
                     ?>
 
+                    <?php Pjax::end() ?>
                 </div>
             </div>
         </div>
-         <?php Pjax::end() ?>
     </div>
 </div>
 

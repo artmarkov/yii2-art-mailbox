@@ -6,7 +6,7 @@ use Yii;
 use artsoft\models\User;
 
 /**
- * This is the model class for table "{{%mailbox_receiver}}".
+ * This is the model class for table "{{%mailbox_inbox}}".
  *
  * @property int $id
  * @property int $mailbox_id
@@ -19,7 +19,7 @@ use artsoft\models\User;
  * @property User $receiver
  * @property Mailbox $mailbox
  */
-class MailboxReceiver extends \artsoft\db\ActiveRecord
+class MailboxInbox extends \artsoft\db\ActiveRecord
 {       
     public $mailboxSenderId;    
     public $mailboxTitle;    
@@ -33,7 +33,7 @@ class MailboxReceiver extends \artsoft\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%mailbox_receiver}}';
+        return '{{%mailbox_inbox}}';
     }
 
     /**
@@ -112,9 +112,13 @@ class MailboxReceiver extends \artsoft\db\ActiveRecord
      */
     public static function getCountNewMail()
     {
-        return self::find()->where([
+        return self::find()
+                ->joinWith(['mailbox'])
+                ->where([
                     'receiver_id' => Yii::$app->user->identity->id,
                     'status_read' => Mailbox::STATUS_READ_NEW,
+                    'status_post' => Mailbox::STATUS_POST_SENT,
+                    'mailbox_inbox.status_del' => Mailbox::STATUS_DEL_NO,
                 ])->count();
     }
 

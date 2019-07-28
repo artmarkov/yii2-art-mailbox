@@ -19,11 +19,11 @@ class DefaultController extends BaseController {
     public $modelClass = 'artsoft\mailbox\models\Mailbox';
     public $modelSearchClass = 'artsoft\mailbox\models\search\MailboxSearch';
     
-    public $modelViaClass       = 'artsoft\mailbox\models\MailboxReceiver';
-    public $modelViaSearchClass = 'artsoft\mailbox\models\search\MailboxReceiverSearch';
+    public $modelViaClass       = 'artsoft\mailbox\models\MailboxInbox';
+    public $modelViaSearchClass = 'artsoft\mailbox\models\search\MailboxInboxSearch';
     
-    public $enableOnlyActions = ['index', 'index-sent', 'index-draft', 'index-trash', 'view-inbox', 'view-sent', 'compose', 'update', 'delete', 
-                                 'reply', 'forward', 'trash', 'trash-sent', 'restore', 'bulk-mark-read', 'bulk-mark-unread', 'bulk-trash', 'bulk-trush-sent'];
+    public $enableOnlyActions = ['index', 'index-sent', 'index-draft', 'index-trash', 'view-inbox', 'view-sent', 'compose', 'update', 'delete','reply', 'forward',  
+                                 'trash', 'trash-sent', 'restore', 'bulk-mark-read', 'bulk-mark-unread', 'bulk-trash', 'bulk-trush-sent', 'bulk-delete', 'bulk-restore'];
 
 
     /**
@@ -309,7 +309,7 @@ class DefaultController extends BaseController {
     }
 
     /**
-     * Activate all selected grid items
+     * Read all selected grid items
      */
     public function actionBulkMarkRead() {
 
@@ -320,7 +320,7 @@ class DefaultController extends BaseController {
         }
     }
     /**
-     * Activate all selected grid items
+     * Unread all selected grid items
      */
     public function actionBulkMarkUnread() {
 
@@ -331,7 +331,7 @@ class DefaultController extends BaseController {
         }
     }
     /**
-     * Activate all selected grid items
+     * Trash all selected grid items
      */
     public function actionBulkTrash() {
 
@@ -342,7 +342,7 @@ class DefaultController extends BaseController {
         }
     }
     /**
-     * Activate all selected grid items
+     * Trash all selected grid items
      */
     public function actionBulkTrashSent() {
 
@@ -353,7 +353,7 @@ class DefaultController extends BaseController {
         }
     }
     /**
-     * Activate all selected grid items
+     * Restore all selected grid items
      */
     public function actionBulkRestore() {
 
@@ -365,6 +365,41 @@ class DefaultController extends BaseController {
             $whereVia = ['mailbox_id' => Yii::$app->request->post('selection', []), 'receiver_id' => Yii::$app->user->identity->id];
             $this->modelViaClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_NO, 'deleted_at' => NULL], $whereVia);
         }
+    } 
+    /**
+     * Delete all selected grid items
+     */
+    public function actionBulkDelete() {
+        
+        if (Yii::$app->request->post('selection')) {
+            $where = ['id' => Yii::$app->request->post('selection', []), 'sender_id' => Yii::$app->user->identity->id, 'status_del' => $this->modelClass::STATUS_DEL_TRASH];
+            $this->modelClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_DELETE, 'deleted_at' => time()], $where); 
+            
+            $whereVia = ['mailbox_id' => Yii::$app->request->post('selection', []), 'receiver_id' => Yii::$app->user->identity->id, 'status_del' => $this->modelClass::STATUS_DEL_TRASH];
+            $this->modelViaClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_DELETE, 'deleted_at' => time()], $whereVia);
+        }
     }
+    /**
+     * Delete all selected grid items
+     */
+    public function actionClian() {
 
+        $id = $this->modelClass::getAllTrashMail();
+         //  echo '<pre>' . print_r($id, true) . '</pre>';
+        if (!empty($id)) {
+            
+            $where = ['id' => $id, 'sender_id' => Yii::$app->user->identity->id, 'status_del' => $this->modelClass::STATUS_DEL_TRASH];
+            $this->modelClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_DELETE, 'deleted_at' => time()], $where); 
+            
+            $whereVia = ['mailbox_id' => $id, 'receiver_id' => Yii::$app->user->identity->id, 'status_del' => $this->modelClass::STATUS_DEL_TRASH];
+            $this->modelViaClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_DELETE, 'deleted_at' => time()], $whereVia);
+            
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your cart has been emptied.'));
+        } else {
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your cart is empty.'));
+            
+        }
+            
+            return $this->redirect($this->getRedirectPage('index', $this->modelClass));
+    }
 }
