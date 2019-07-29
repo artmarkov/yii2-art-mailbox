@@ -39,12 +39,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="box-header with-border">
 
                     <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
-
-                    <div class="box-tools pull-right">                        
-                        <ul class="pager">
-                            <li><?= Html::a('<i class="fa fa-chevron-left"></i>', ['/mailbox/default/view-sent', 'id' => Mailbox::getPreviousMail($model->id)], ['class' => 'previous', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Previous']) ?></li>
-                            <li><?= Html::a('<i class="fa fa-chevron-right"></i>', ['/mailbox/default/view-sent', 'id' => Mailbox::getNextMail($model->id)], ['class' => 'next', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Next']) ?></li>
-                        </ul>
+                    
+                    <div class="box-tools pull-right"> 
+                        <?= artsoft\mailbox\widgets\PagerSelector::widget([
+                            'prev_id' => Mailbox::getPrevMail($model->id),
+                            'next_id' => Mailbox::getNextMail($model->id),
+                           // 'path' => '/mailbox/default/view-sent',
+                        ]);
+                        ?>
                     </div>
                 </div>
                 <div class="box-body no-padding">

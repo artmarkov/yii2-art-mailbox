@@ -1,6 +1,7 @@
 <?php
 
 use artsoft\helpers\Html;
+use artsoft\mailbox\models\MailboxInbox;
 
 /* @var $this yii\web\View */
 /* @var $model artsoft\mailbox\models\MailboxInbox */
@@ -39,11 +40,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
 
-                    <div class="box-tools pull-right">                        
-  
-                            <?= Html::a('<i class="fa fa-chevron-left"></i>', ['/mailbox/default/previousReceiver'], ['class' => 'btn btn-link','data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Previous']) ?>          
-                            <?= Html::a('<i class="fa fa-chevron-right"></i>', ['/mailbox/default/nextReceiver'], ['class' => 'btn btn-link', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Next']) ?>          
-                      
+                   <div class="box-tools pull-right"> 
+                        <?= artsoft\mailbox\widgets\PagerSelector::widget([
+                            'prev_id' => MailboxInbox::getPrevMail($model->id),
+                            'next_id' => MailboxInbox::getNextMail($model->id),
+                            'path' => '/mailbox/default/view-inbox',
+                        ]);
+                        ?>
                     </div>
                 </div>
                 <div class="box-body no-padding">

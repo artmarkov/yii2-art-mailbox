@@ -433,7 +433,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
      * @param type $id
      * @return type int
      */
-    public static function getPreviousMail($id) {
+    public static function getPrevMail($id) {
         return self::find()->where(['<', 'id', $id])->andWhere([
                     'sender_id' => Yii::$app->user->identity->id,
                     'status_post' => self::STATUS_POST_SENT,

@@ -130,5 +130,35 @@ class MailboxInbox extends \artsoft\db\ActiveRecord
             return '<span class="label label-success pull-right">' . $count . '</span>';
         }
     }
+    /**
+     * 
+     * @param type $id
+     * @return type int
+     */
+    public static function getNextMail($id) {
+        return self::find()
+                ->joinWith(['mailbox'])
+                ->where(['>', 'mailbox_inbox.id', $id])->andWhere([
+                    'receiver_id' => Yii::$app->user->identity->id,
+                    'mailbox.status_post' => Mailbox::STATUS_POST_SENT,
+                    'mailbox_inbox.status_del' => Mailbox::STATUS_DEL_NO,
+                ])->min('mailbox_inbox.id');
+    }
+
+    /**
+     * 
+     * @param type $id
+     * @return type int
+     */
+    public static function getPrevMail($id) {
+        return self::find()
+                ->joinWith(['mailbox'])
+                ->where(['<', 'mailbox_inbox.id', $id])->andWhere([
+                    'receiver_id' => Yii::$app->user->identity->id,
+                    'mailbox.status_post' => Mailbox::STATUS_POST_SENT,
+                    'mailbox_inbox.status_del' => Mailbox::STATUS_DEL_NO,
+                ])->max('mailbox_inbox.id');
+    }
 
 }
+ 
