@@ -402,4 +402,19 @@ class DefaultController extends BaseController {
             
             return $this->redirect($this->getRedirectPage('index', $this->modelClass));
     }
+    
+    /**
+     * Remove hidden data
+     */
+    public function actionClianDeleted() {
+        
+        if($this->modelClass::clianDeletedMail()) {
+             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Hidden data was successfully deleted.'));
+        }
+        else {
+             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'No Hidden data.'));
+        }
+            
+            return $this->redirect($this->getRedirectPage('index', $this->modelClass));
+    }
 }

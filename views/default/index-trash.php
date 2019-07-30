@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 </div>
             </div>
+            <?= Html::a(Yii::t('art/mailbox', 'Remove hidden data'), ['/mailbox/default/clian-deleted'], ['class' => 'btn btn-default btn-block margin-bottom']) ?>
         </div>
 	<div class="col-md-9">
             <div class="panel panel-default">

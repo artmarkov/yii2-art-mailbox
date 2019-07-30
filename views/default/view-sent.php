@@ -50,11 +50,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
                 <div class="box-body no-padding">
-                    <div class="mailbox-read-info">
-                    <h3><?= $model->title; ?></h3>
-                    <h5><?= Yii::t('art/mailbox', 'From:') . ' ' . $model->senderName; ?>
-                        <span class="mailbox-read-time pull-right"><?= $model->postedDatetime; ?></span></h5>
-                </div>   
+                    <div id = "print_info" class="mailbox-read-info">
+                        <h3><?= $model->title; ?></h3>
+                        <h5><?= Yii::t('art/mailbox', 'From:') . ' ' . $model->senderName; ?>
+                            <span class="mailbox-read-time pull-right"><?= $model->postedDatetime; ?></span></h5>
+                    </div>   
                 <div class="mailbox-controls with-border text-center">
                     <div class="btn-group">
                         
@@ -63,12 +63,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= Html::a('<i class="fa fa-share"></i>', ['/mailbox/default/forward', 'id' => $model->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Forward']) ?>
 
                     </div>
-                    <?= Html::a('<i class="fa fa-print"></i>', ['/mailbox/default/print', 'id' => $model->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Print']) ?>                         
-
                 </div>
                            
 
-                <div class="panel-body">
+                <div id = "print_body" class="panel-body">
                     <div class="mailbox-read-message">
 
                         <?= $model->content; ?>
@@ -87,9 +85,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>                                
                     
                         <?= Html::a('<i class="fa fa-trash-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Move to Trash'), ['/mailbox/default/trash-sent', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
-                        <?= Html::a('<i class="fa fa-print" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Print'), ['/mailbox/default/print', 'id' => $model->id], ['class' => 'btn btn-default']) ?>                           
-
-                 
+                        <?= artsoft\printthis\PrintThis::widget([
+                            'htmlOptions' => [
+                                'id' => ['print_info', 'print_body'],
+                                'btnOptions' => [
+                                    'class' => 'btn btn-default btn-sm',
+                                ],
+                                'btnText' => Yii::t('art/mailbox', 'Print'),
+                            ]
+                        ]);
+                        ?>
                 </div>
 
             </div>

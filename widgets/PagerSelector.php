@@ -57,11 +57,11 @@ class PagerSelector extends \yii\base\Widget
        
         if (!isset($this->next_id)) {
             Html::addCssClass($this->liOptionsNext, 'disabled');
-            $this->link_next = Html::a($this->prev_icon, null);
+            $this->link_next = Html::a($this->next_icon, null);
         }
         if (!isset($this->prev_id)) {
             Html::addCssClass($this->liOptionsPrev, 'disabled');
-            $this->link_prev = Html::a($this->next_icon, null);
+            $this->link_prev = Html::a($this->prev_icon, null);
         }
         
         $this->rawPagerHtml = '';

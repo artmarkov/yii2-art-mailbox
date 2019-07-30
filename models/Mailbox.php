@@ -419,9 +419,10 @@ class Mailbox extends \artsoft\db\ActiveRecord
      * @param type $id
      * @return type array int
      */
-    public static function ClianDeletedMail()
+    public static function clianDeletedMail()
     {
-
+        $ret = false;
+        
         $data = self::find()->where(['status_del' => self::STATUS_DEL_DELETE])->asArray()->column();
 
         foreach ($data as $id)
@@ -439,9 +440,11 @@ class Mailbox extends \artsoft\db\ActiveRecord
             
             if ($count_all == $count_del)
             {
-                self::deleteAll();
+                $model = self::findOne($id);
+                $model->delete() ?  $ret = true : $ret = false;
             }
         }
+        return $ret;
     }
 
     /**
