@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel artsoft\mailbox\models\search\MailboxSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('art/mailbox', 'Inbox');
+$this->title = Yii::t('art/mailbox', 'Sent');
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
