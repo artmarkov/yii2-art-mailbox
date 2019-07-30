@@ -413,6 +413,35 @@ class Mailbox extends \artsoft\db\ActiveRecord
                         ->where(['OR', ['=', 'mailbox.sender_id', Yii::$app->user->identity->id], ['=', 'mailbox_inbox.receiver_id', Yii::$app->user->identity->id]])
                         ->andWhere(['OR', ['=', 'mailbox.status_del', self::STATUS_DEL_TRASH], ['=', 'mailbox_inbox.status_del', self::STATUS_DEL_TRASH]])
                         ->asArray()->column();
+    } 
+    /**
+     * 
+     * @param type $id
+     * @return type array int
+     */
+    public static function ClianDeletedMail()
+    {
+
+        $data = self::find()->where(['status_del' => self::STATUS_DEL_DELETE])->asArray()->column();
+
+        foreach ($data as $id)
+        {
+            $count_all = MailboxInbox::find()
+                            ->where([
+                                'mailbox_id' => $id,
+                            ])->count();
+
+            $count_del = MailboxInbox::find()
+                            ->where([
+                                'mailbox_id' => $id,
+                                'status_del' => self::STATUS_DEL_DELETE,
+                            ])->count();
+            
+            if ($count_all == $count_del)
+            {
+                self::deleteAll();
+            }
+        }
     }
 
     /**

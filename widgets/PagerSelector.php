@@ -34,14 +34,15 @@ class PagerSelector extends \yii\base\Widget
     public $liOptionsPrev = [];
     
     public $next_icon = '<i class="fa fa-chevron-right"></i>';
-    public $prev_icon = '<i class="fa fa-chevron-left"></i>';
-    
+    public $prev_icon = '<i class="fa fa-chevron-left"></i>';    
     
     public $next_options = ['data-toggle' => 'tooltip', 'data-container' => 'body', 'data-placement' => 'top', 'data-original-title' => 'Next'];
     public $prev_options = ['data-toggle' => 'tooltip', 'data-container' => 'body', 'data-placement' => 'top', 'data-original-title' => 'Previous'];
 
 
     private $rawPagerHtml;
+    private $link_next;
+    private $link_prev;    
     
     public function run() {
          $this->buildPager();
@@ -50,21 +51,26 @@ class PagerSelector extends \yii\base\Widget
     }
 
     private function buildPager() {
+        
+       $this->link_next = Html::a($this->next_icon, [$this->path, $this->primaryKey => $this->next_id], $this->next_options);
+       $this->link_prev = Html::a($this->prev_icon, [$this->path, $this->primaryKey => $this->prev_id], $this->prev_options);
        
-         if (!isset($this->next_id)) {
+        if (!isset($this->next_id)) {
             Html::addCssClass($this->liOptionsNext, 'disabled');
+            $this->link_next = Html::a($this->prev_icon, null);
         }
         if (!isset($this->prev_id)) {
             Html::addCssClass($this->liOptionsPrev, 'disabled');
+            $this->link_prev = Html::a($this->next_icon, null);
         }
         
         $this->rawPagerHtml = '';
         $this->rawPagerHtml .= Html::beginTag('ul', $this->ulOptions);
         $this->rawPagerHtml .= Html::beginTag('li', $this->liOptionsPrev);
-        $this->rawPagerHtml .= isset($this->prev_id) ? Html::a($this->prev_icon, [$this->path, $this->primaryKey => $this->prev_id], $this->prev_options) : Html::a($this->prev_icon, null);
+        $this->rawPagerHtml .= $this->link_prev; 
         $this->rawPagerHtml .= Html::endTag('li');
         $this->rawPagerHtml .= Html::beginTag('li', $this->liOptionsNext);
-        $this->rawPagerHtml .= isset($this->next_id) ? Html::a($this->next_icon, [$this->path, $this->primaryKey => $this->next_id], $this->next_options) : Html::a($this->next_icon, null);
+        $this->rawPagerHtml .= $this->link_next; 
         $this->rawPagerHtml .= Html::endTag('li');
         $this->rawPagerHtml .= Html::endTag('ul');
     }
