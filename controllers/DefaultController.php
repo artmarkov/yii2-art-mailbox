@@ -300,7 +300,7 @@ class DefaultController extends BaseController {
     public function actionDelete($id)
     {
        if ($this->modelClass::deleteMail($id)) {
-            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been destroyed.'));
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been deleted.'));
         } else {
             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Action error occurred.'));
         }
@@ -367,7 +367,7 @@ class DefaultController extends BaseController {
         }
     } 
     /**
-     * Delete all selected grid items
+     * Mark Delete all selected grid items
      */
     public function actionBulkDelete() {
         
@@ -380,11 +380,11 @@ class DefaultController extends BaseController {
         }
     }
     /**
-     * Delete all selected grid items
+     * clear own trash
      */
-    public function actionClian() {
+    public function actionClianOwn() {
 
-        $id = $this->modelClass::getAllTrashMail();
+        $id = $this->modelClass::getTrashOwnMail();
          //  echo '<pre>' . print_r($id, true) . '</pre>';
         if (!empty($id)) {
             
@@ -394,6 +394,8 @@ class DefaultController extends BaseController {
             $whereVia = ['mailbox_id' => $id, 'receiver_id' => Yii::$app->user->identity->id, 'status_del' => $this->modelClass::STATUS_DEL_TRASH];
             $this->modelViaClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_DELETE, 'deleted_at' => time()], $whereVia);
             
+            $this->modelClass::clianDeletedMail($this->modelClass::getDeletedOwnMail());
+                    
             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your cart has been emptied.'));
         } else {
             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your cart is empty.'));
@@ -402,17 +404,27 @@ class DefaultController extends BaseController {
             
             return $this->redirect($this->getRedirectPage('index', $this->modelClass));
     }
-    
     /**
-     * Remove hidden data
+     * clear all trash
      */
-    public function actionClianDeleted() {
-        
-        if($this->modelClass::clianDeletedMail()) {
-             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Hidden data was successfully deleted.'));
-        }
-        else {
-             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'No Hidden data.'));
+    public function actionClian() {
+
+        $id = $this->modelClass::getTrashMail();
+         //  echo '<pre>' . print_r($id, true) . '</pre>';
+        if (!empty($id)) {
+            
+            $where = ['id' => $id, 'status_del' => $this->modelClass::STATUS_DEL_TRASH];
+            $this->modelClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_DELETE, 'deleted_at' => time()], $where); 
+            
+            $whereVia = ['mailbox_id' => $id, 'status_del' => $this->modelClass::STATUS_DEL_TRASH];
+            $this->modelViaClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_DELETE, 'deleted_at' => time()], $whereVia);
+            
+            $this->modelClass::clianDeletedMail($this->modelClass::getDeletedMail());
+                    
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'All carts has been emptied.'));
+        } else {
+            Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'All carts is empty.'));
+            
         }
             
             return $this->redirect($this->getRedirectPage('index', $this->modelClass));

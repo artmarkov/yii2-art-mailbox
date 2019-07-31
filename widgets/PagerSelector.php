@@ -33,8 +33,8 @@ class PagerSelector extends \yii\base\Widget
     public $liOptionsNext = [];
     public $liOptionsPrev = [];
     
-    public $next_icon = '<i class="fa fa-chevron-right"></i>';
-    public $prev_icon = '<i class="fa fa-chevron-left"></i>';    
+    public $next_icon = 'fa fa-chevron-right';
+    public $prev_icon = 'fa fa-chevron-left';    
     
     public $next_options = ['data-toggle' => 'tooltip', 'data-container' => 'body', 'data-placement' => 'top', 'data-original-title' => 'Next'];
     public $prev_options = ['data-toggle' => 'tooltip', 'data-container' => 'body', 'data-placement' => 'top', 'data-original-title' => 'Previous'];
@@ -52,16 +52,16 @@ class PagerSelector extends \yii\base\Widget
 
     private function buildPager() {
         
-       $this->link_next = Html::a($this->next_icon, [$this->path, $this->primaryKey => $this->next_id], $this->next_options);
-       $this->link_prev = Html::a($this->prev_icon, [$this->path, $this->primaryKey => $this->prev_id], $this->prev_options);
+       $this->link_next = Html::a('<i class="' . $this->next_icon . '"></i>', [$this->path, $this->primaryKey => $this->next_id], $this->next_options);
+       $this->link_prev = Html::a('<i class="' . $this->prev_icon . '"></i>', [$this->path, $this->primaryKey => $this->prev_id], $this->prev_options);
        
         if (!isset($this->next_id)) {
             Html::addCssClass($this->liOptionsNext, 'disabled');
-            $this->link_next = Html::a($this->next_icon, null);
+            $this->link_next = Html::a('<i class="' . $this->next_icon . '"></i>', null);
         }
         if (!isset($this->prev_id)) {
             Html::addCssClass($this->liOptionsPrev, 'disabled');
-            $this->link_prev = Html::a($this->prev_icon, null);
+            $this->link_prev = Html::a('<i class="' . $this->prev_icon . '"></i>', null);
         }
         
         $this->rawPagerHtml = '';

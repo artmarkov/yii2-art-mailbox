@@ -40,17 +40,22 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 </div>
             </div>
-            <?= Html::a(Yii::t('art/mailbox', 'Remove hidden data'), ['/mailbox/default/clian-deleted'], ['class' => 'btn btn-default btn-block margin-bottom']) ?>
+            <?= Html::a('<i class="fa fa-recycle" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Clear all trash'), ['/mailbox/default/clian'], ['class' => 'btn btn-danger btn-block margin-bottom',
+                                'data' => [
+                                    'confirm' => Yii::t('art/mailbox', 'Are you sure you want to clear all trash?'),
+                                    'method' => 'post',
+                                ],])
+                            ?>
         </div>
 	<div class="col-md-9">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-sm-6">
-                            <?= Html::a('<i class="fa fa-recycle" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Empty trash'), ['/mailbox/default/clian'], [
-                                'class' => 'btn btn-danger margin-bottom',
+                            <?= Html::a('<i class="fa fa-recycle" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Clear trash'), ['/mailbox/default/clian-own'], [
+                                'class' => 'btn btn-sm btn-danger margin-bottom',
                                 'data' => [
-                                    'confirm' => Yii::t('art/mailbox', 'Are you sure you want to empty trash?'),
+                                    'confirm' => Yii::t('art/mailbox', 'Are you sure you want to clear own trash?'),
                                     'method' => 'post',
                                 ],])
                             ?>

@@ -101,7 +101,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
             'title' => Yii::t('art', 'Title'),
             'content' => Yii::t('art', 'Content'),
             'status_post' => Yii::t('art/mailbox', 'Status Post'),
-            'status_del' => Yii::t('art/mailbox', 'Status Post'),
+            'status_del' => Yii::t('art/mailbox', 'Status Delete'),
             'created_at' => Yii::t('art', 'Created'),
             'updated_at' => Yii::t('art', 'Updated'),
             'posted_at' => Yii::t('art/mailbox', 'Posted At'),
@@ -403,11 +403,10 @@ class Mailbox extends \artsoft\db\ActiveRecord
     }
     
     /**
-     * 
      * @param type $id
      * @return type array int
      */
-    public static function getAllTrashMail() {
+    public static function getTrashOwnMail() {
 
         return self::find()->joinWith(['receivers'])
                         ->where(['OR', ['=', 'mailbox.sender_id', Yii::$app->user->identity->id], ['=', 'mailbox_inbox.receiver_id', Yii::$app->user->identity->id]])
@@ -415,15 +414,41 @@ class Mailbox extends \artsoft\db\ActiveRecord
                         ->asArray()->column();
     } 
     /**
-     * 
      * @param type $id
      * @return type array int
      */
-    public static function clianDeletedMail()
+    public static function getTrashMail() {
+
+        return self::find()->joinWith(['receivers'])
+                        ->where(['OR', ['=', 'mailbox.status_del', self::STATUS_DEL_TRASH], ['=', 'mailbox_inbox.status_del', self::STATUS_DEL_TRASH]])
+                        ->asArray()->column();
+    } 
+    /**
+     * @param type $id
+     * @return type array int
+     */
+    public static function getDeletedOwnMail()
+    {
+        return self::find()->where(['status_del' => self::STATUS_DEL_DELETE, 'sender_id' => Yii::$app->user->identity->id])->asArray()->column();
+    }
+    /**
+     * @param type $id
+     * @return type array int
+     */
+    public static function getDeletedMail()
+    {
+        return self::find()->where(['status_del' => self::STATUS_DEL_DELETE])->asArray()->column();
+    }
+
+
+    /**
+     * 
+     * @param type $id
+     * @return type bool
+     */
+    public static function clianDeletedMail($data)
     {
         $ret = false;
-        
-        $data = self::find()->where(['status_del' => self::STATUS_DEL_DELETE])->asArray()->column();
 
         foreach ($data as $id)
         {
@@ -441,7 +466,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
             if ($count_all == $count_del)
             {
                 $model = self::findOne($id);
-                $model->delete() ?  $ret = true : $ret = false;
+                $model->delete() ?  $ret = true : false;
             }
         }
         return $ret;
