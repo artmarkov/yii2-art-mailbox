@@ -33,7 +33,7 @@ artsoft\mailbox\MailboxAssetsBundle::register($this);
         ];
         echo Nav::widget([
             'id' => 'mailbox',
-            'options' => ['class' => 'nav nav-pills nav-stacked'],
+            'options' => ['class' => 'nav'],
             'items' => $menuItems,
         ]);
         ?>

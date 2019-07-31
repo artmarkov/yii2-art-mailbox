@@ -93,14 +93,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         'buttonsTemplate' => '{view} {trash}',
                         'buttons' => [
                             'view' => function ($url, $model, $key) {
-                                return Html::a(Yii::t('yii', 'View'), Url::to(['view-sent', 'id' => $model->id]), [
+                                return Html::a(Yii::t('yii', 'View'), Url::to(['/mailbox/default/view-sent', 'id' => $model->id]), [
                                             'title' => Yii::t('yii', 'View'),
                                             'data-pjax' => '0'
                                                 ]
                                 );
                             },
                             'trash' => function ($url, $model, $key) {
-                                return Html::a(Yii::t('art/mailbox', 'Move to Trash'), Url::to(['trash-sent', 'id' => $model->id]), [
+                                return Html::a(Yii::t('art/mailbox', 'Move to Trash'), Url::to(['/mailbox/default/trash-sent', 'id' => $model->id]), [
                                             'title' => Yii::t('art/mailbox', 'Move to Trash'),
                                             'data-pjax' => '0'
                                                 ]

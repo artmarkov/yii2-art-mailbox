@@ -10,6 +10,8 @@ use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 
+use artsoft\mailbox\models\ImageManager;
+
 /**
  * This is the model class for table "{{%mailbox}}".
  *
@@ -498,4 +500,25 @@ class Mailbox extends \artsoft\db\ActiveRecord
                 ])->max('id');
     }
 
+     public function getImages()
+    {
+        return $this->hasMany(ImageManager::className(), ['item_id' => 'id'])->orderBy('sort');
+    }
+    public function getImagesLinks()
+    {
+        return ArrayHelper::getColumn($this->images, 'imageUrl');
+    }
+    public function getImagesLinksData()
+    {
+        return ArrayHelper::toArray($this->images,[
+                ImageManager::className() => [
+                    'type' => 'type',
+                    'filetype' => 'filetype',
+                    'downloadUrl' => 'url',
+                    'caption'=> 'name',
+                    'size'=> 'size',
+                    'key'=> 'id',
+                ]]
+        );
+    }
 }

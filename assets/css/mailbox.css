@@ -96,3 +96,6 @@
 .margin-bottom {
     margin-bottom: 20px !important;
 }
+.mailbox-nav ul li {
+    border-bottom: 1px solid #f4f4f4;
+}

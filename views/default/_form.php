@@ -5,6 +5,7 @@ use artsoft\mailbox\models\Mailbox;
 use artsoft\media\widgets\TinyMce;
 use artsoft\models\User;
 use artsoft\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model artsoft\mailbox\models\Mailbox */
@@ -17,6 +18,7 @@ use artsoft\helpers\Html;
     $form = ActiveForm::begin([
             'id' => 'mailbox-form',
             'validateOnBlur' => false,
+            'options' => ['enctype'=>'multipart/form-data'],
             'enableClientScript' => true, // default
             ])
     ?>
@@ -33,7 +35,44 @@ use artsoft\helpers\Html;
                     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
                     <?= $form->field($model, 'content')->widget(TinyMce::className()); ?>
+<div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                           <!--<?//php echo '<pre>' . print_r($model->imagesLinksData, true) . '</pre>'; ?>-->
+                            <?= \kartik\file\FileInput::widget([
+                                    'name' => 'ImageManager[attachment]',
+                                    'options'=>[
+                                        'multiple'=>true
+                                    ],
+                                    'pluginOptions' => [
+                                        'deleteUrl' => Url::toRoute(['/mailbox/image-manager/delete-image']),
+                                        'initialPreview'=> $model->imagesLinks,
+                                        'initialPreviewAsData'=>true,
+                                        'initialPreviewFileType' => 'image', 
+                                        'overwriteInitial'=>false,
+                                        'initialPreviewConfig'=>$model->imagesLinksData,
+                                        'allowedFileExtensions' => ["jpg", "png", "mp4", "pdf"],
+                                        'uploadUrl' => Url::to(['/mailbox/image-manager/file-upload']),
+                                        'uploadExtraData' => [
+                                            'ImageManager[class]' => $model->formName(),
+                                            'ImageManager[item_id]' => $model->id
+                                        ],
+                                        'maxFileCount' => 10,
+                                    ],
+                                    'pluginEvents' => [
+                                        'filesorted' => new \yii\web\JsExpression('function(event, params){
+                                              $.post("'.Url::toRoute(["/mailbox/image-manager/sort-image", "id" => $model->id]).'", {sort: params});
+                                        }')
+                                    ],
+                              ]);                    
+                          ?>
+                           
+                        </div>
 
+                    </div>
+                </div> 
+            </div>
                     <div class="record-info">
                         <div class="form-group clearfix">
                             <label class="control-label" style="float: left; padding-right: 5px;"><?=  $model->attributeLabels()['id'] ?>: </label>

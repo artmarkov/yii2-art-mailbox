@@ -256,7 +256,7 @@ class DefaultController extends BaseController {
      * @param type $id
      * @return type
      */
-    public function actionTrash($id)
+    public function actionTrashInbox($id)
     {
         if ($this->modelViaClass::trashMail($id)) {
             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been moved to the trash folder.'));

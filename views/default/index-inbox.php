@@ -101,7 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         );
                                     },
                                     'trash' => function ($url, $model, $key) {
-                                        return Html::a(Yii::t('art/mailbox', 'Move to Trash'), Url::to(['trash', 'id' => $model->id]), [
+                                        return Html::a(Yii::t('art/mailbox', 'Move to Trash'), Url::to(['trash-inbox', 'id' => $model->id]), [
                                                     'title' => Yii::t('art/mailbox', 'Move to Trash'),
                                                     'data-pjax' => '0'
                                                         ]
