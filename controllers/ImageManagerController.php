@@ -42,17 +42,19 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
             }
 
             $result_link = str_replace('admin', '', Url::home(true)) . 'uploads/images' . '/' . $post['ImageManager']['class'] . '/';
-            $file = UploadedFile::getInstancesByName('ImageManager[attachment]');
-            
+         
+            foreach (UploadedFile::getInstancesByName('ImageManager[attachment]') as $file) {
+           // echo '<pre>' . print_r($file, true) . '</pre>';
             $model = new ImageManager();
-            echo '<pre>' . print_r($file, true) . '</pre>';
 
             $model->name = strtotime('now') . '_' . Yii::$app->getSecurity()->generateRandomString(6) . '.' . $file->extension;
-            
+            $model->orig_name = $name;
+            $model->alt = $name;
             $model->type = ArrayHelper::getValue($type_array, $file->extension . '.type') ? ArrayHelper::getValue($type_array, $file->extension . '.type') : 'image';
             $model->filetype = ArrayHelper::getValue($type_array, $file->extension . '.filetype');
-            $model->url = $result_link . $model->name;
+            //$model->url = $result_link . $model->name;
             $model->size = $file->size;
+           // echo '<pre>' . print_r($model, true) . '</pre>';
             $model->load($post);
 
             $model->validate();
@@ -72,7 +74,7 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
                 }
                 $model->save();
             }
-
+            }
             Yii::$app->response->format = Response::FORMAT_JSON;
 
             return $result;
@@ -82,6 +84,47 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
         }
     }
 
+    public function actionUpload()
+ {
+     Yii::$app->response->format = Response::FORMAT_JSON;
+     if (!Yii::$app->request->isAjax) {
+         throw new BadRequestHttpException();
+     }
+     $post = Yii::$app->request->post();
+     $files = UploadedFile::getInstancesByName('ImageManager[attachment]');
+     $baseDir = Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->basePath);
+     if (!is_dir($baseDir)) {
+         mkdir($baseDir);
+     }
+     $dir = $baseDir .  DIRECTORY_SEPARATOR . $post['ImageManager']['class'] . DIRECTORY_SEPARATOR;
+     if (!is_dir($dir)) {
+         mkdir($dir);
+     }
+     $response = [];
+     
+     echo '<pre>' . print_r($post, true) . '</pre>';
+     echo '<pre>' . print_r($dir, true) . '</pre>';
+     foreach ($files as $key => $file) {
+        
+             $name = $file->name;
+         
+         $file->saveAs($dir . DIRECTORY_SEPARATOR . $name);
+         $model = new ImageManager();
+         $model->orig_name = $name;
+         $model->alt = $name;
+         $model->name = strtotime('now') . '_' . Yii::$app->getSecurity()->generateRandomString(6) . '.' . $file->extension;  
+            $model->type = ArrayHelper::getValue($type_array, $file->extension . '.type') ? ArrayHelper::getValue($type_array, $file->extension . '.type') : 'image';
+            $model->filetype = ArrayHelper::getValue($type_array, $file->extension . '.filetype');
+           
+            $model->size = $file->size;
+            echo '<pre>' . print_r($file, true) . '</pre>';
+         if ($model->save()) {
+             $response = ['status' => true, 'message' => 'Success', 'html' => $this->renderAjax('_image', ['model' => $model])];
+         }
+         break;
+     }
+     return $response;
+ }
     /**
      * 
      * @param type $id

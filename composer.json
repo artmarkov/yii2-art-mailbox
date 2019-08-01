@@ -10,7 +10,8 @@
   ],
   "require": {
     "artsoft/yii2-art-core": "dev-master",
-    "artsoft/yii2-print-this": "dev-master"
+    "artsoft/yii2-print-this": "dev-master",
+    "kartik-v/yii2-widget-fileinput": "dev-master"
   },
   "extra": {
         "bootstrap": "artsoft\\mailbox\\Bootstrap"

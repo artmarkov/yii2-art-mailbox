@@ -16,4 +16,10 @@ class MailboxModule extends \yii\base\Module
     public $controllerNamespace = 'artsoft\mailbox\controllers';
     public $view;
 
+     /**
+     * Path for backup directory.
+     *
+     * @var string $dumpPath
+     */
+    public $basePath = '@frontend/web/uploads/images';
 }
