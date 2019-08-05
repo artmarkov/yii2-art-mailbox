@@ -75,9 +75,9 @@ class ImageManager extends \yii\db\ActiveRecord {
                 'and', ['class' => $this->class, 'item_id' => $this->item_id], [ '>', 'sort', $this->sort]
             ]);
             //удаляем физически
-                $dir = Yii::getAlias('@images') . '/';
-                    if (file_exists($dir . $this->class . '/' . $this->name)) {
-                        @unlink($dir . $this->class . '/' . $this->name);
+                $baseDir = Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->basePath);
+                    if (file_exists($baseDir . $this->class . DIRECTORY_SEPARATOR . $this->name)) {
+                        @unlink($baseDir . $this->class . DIRECTORY_SEPARATOR . $this->name);
                     }
             
             return true;

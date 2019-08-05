@@ -41,7 +41,7 @@ use yii\helpers\Url;
                         <div class="col-md-12">
                            <!--<?//php echo '<pre>' . print_r($model->imagesLinksData, true) . '</pre>'; ?>-->
                             <?= \kartik\file\FileInput::widget([
-                                    'name' => 'ImageManager[attachment]',
+                                    'name' => 'attachment[]',
                                     'options'=>[
                                         'multiple'=>true
                                     ],

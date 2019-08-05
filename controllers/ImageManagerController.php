@@ -32,56 +32,58 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
               'mp4' => ['type' => 'video' , 'filetype' => 'video/mp4'],        
           ];
 
-        if (Yii::$app->request->isPost) {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (!Yii::$app->request->isPost) {
+            throw new BadRequestHttpException('Only POST is allowed.');
+        }
             $post = Yii::$app->request->post();
-
-            $dir = Yii::getAlias('@images') . '/' . $post['ImageManager']['class'] . '/';
+            $baseDir = Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->basePath);
+            if (!file_exists($baseDir)) {
+                FileHelper::createDirectory($baseDir);
+            }
+            $dir = $baseDir . DIRECTORY_SEPARATOR . $post['ImageManager']['class'];
             
             if (!file_exists($dir)) {
                 FileHelper::createDirectory($dir);
             }
 
-            $result_link = str_replace('admin', '', Url::home(true)) . 'uploads/images' . '/' . $post['ImageManager']['class'] . '/';
-         
-            foreach (UploadedFile::getInstancesByName('ImageManager[attachment]') as $file) {
-           // echo '<pre>' . print_r($file, true) . '</pre>';
-            $model = new ImageManager();
+            $files = UploadedFile::getInstancesByName('attachment');
+            
+            foreach ($files as $file) {
+                // echo '<pre>' . print_r($file, true) . '</pre>';
+                $model = new ImageManager();
+                $name = $file->name;
+                $model->name = strtotime('now') . '_' . Yii::$app->getSecurity()->generateRandomString(6) . '.' . $file->extension;
+                $model->orig_name = $name;
+                $model->alt = $name;
+                $model->type = ArrayHelper::getValue($type_array, $file->extension . '.type') ? ArrayHelper::getValue($type_array, $file->extension . '.type') : 'image';
+                $model->filetype = ArrayHelper::getValue($type_array, $file->extension . '.filetype');
+               
+                $model->size = $file->size;
+                $model->load($post);
 
-            $model->name = strtotime('now') . '_' . Yii::$app->getSecurity()->generateRandomString(6) . '.' . $file->extension;
-            $model->orig_name = $name;
-            $model->alt = $name;
-            $model->type = ArrayHelper::getValue($type_array, $file->extension . '.type') ? ArrayHelper::getValue($type_array, $file->extension . '.type') : 'image';
-            $model->filetype = ArrayHelper::getValue($type_array, $file->extension . '.filetype');
-            //$model->url = $result_link . $model->name;
-            $model->size = $file->size;
-           // echo '<pre>' . print_r($model, true) . '</pre>';
-            $model->load($post);
-
-            $model->validate();
-            if ($model->hasErrors()) {
-                $result = [
-                    'error' => $model->getFirstError('file')
-                ];
-            } else {
-                if ($file->saveAs($dir . $model->name)) {
-//                    $imag = Yii::$app->image->load($dir . $model->name);
-//                    $imag->resize(800, NULL, Image::PRECISE)->save($dir . $model->name, 85);
-                    $result = ['filelink' => $result_link . $model->name, 'filename' => $model->name];
-                } else {
+                $model->validate();
+                // echo '<pre>' . print_r($model, true) . '</pre>';
+                if ($model->hasErrors()) {
                     $result = [
-                        'error' => Yii::t('art', 'Error')
+                        'error' => $model->getFirstError('file')
                     ];
+                } else {
+                    if ($file->saveAs($dir . DIRECTORY_SEPARATOR . $model->name)) {
+                        
+                        $result = ['status' => true, 'message' => 'Success', 'filename' => $model->name];
+                    } else {
+                        $result = [
+                            'error' => Yii::t('art', 'Error')
+                        ];
+                    }
+                    $model->save();
                 }
-                $model->save();
             }
-            }
-            Yii::$app->response->format = Response::FORMAT_JSON;
+           
 
             return $result;
-        } else {
-
-            throw new BadRequestHttpException('Only POST is allowed.');
-        }
+        
     }
 
     public function actionUpload()
@@ -102,8 +104,8 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
      }
      $response = [];
      
-     echo '<pre>' . print_r($post, true) . '</pre>';
-     echo '<pre>' . print_r($dir, true) . '</pre>';
+//     echo '<pre>' . print_r($post, true) . '</pre>';
+//     echo '<pre>' . print_r($dir, true) . '</pre>';
      foreach ($files as $key => $file) {
         
              $name = $file->name;
@@ -113,11 +115,11 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
          $model->orig_name = $name;
          $model->alt = $name;
          $model->name = strtotime('now') . '_' . Yii::$app->getSecurity()->generateRandomString(6) . '.' . $file->extension;  
-            $model->type = ArrayHelper::getValue($type_array, $file->extension . '.type') ? ArrayHelper::getValue($type_array, $file->extension . '.type') : 'image';
-            $model->filetype = ArrayHelper::getValue($type_array, $file->extension . '.filetype');
+//            $model->type = ArrayHelper::getValue($type_array, $file->extension . '.type') ? ArrayHelper::getValue($type_array, $file->extension . '.type') : 'image';
+//            $model->filetype = ArrayHelper::getValue($type_array, $file->extension . '.filetype');
            
             $model->size = $file->size;
-            echo '<pre>' . print_r($file, true) . '</pre>';
+//            echo '<pre>' . print_r($file, true) . '</pre>';
          if ($model->save()) {
              $response = ['status' => true, 'message' => 'Success', 'html' => $this->renderAjax('_image', ['model' => $model])];
          }
