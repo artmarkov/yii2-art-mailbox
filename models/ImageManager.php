@@ -4,7 +4,7 @@ namespace artsoft\mailbox\models;
 
 use Yii;
 use yii\helpers\Url;
-
+use yii\helpers\ArrayHelper;
 /**
  * This is the model class for table "{{%image_manager}}".
  *
@@ -21,7 +21,16 @@ use yii\helpers\Url;
  */
 class ImageManager extends \yii\db\ActiveRecord {
 
-    
+    /**
+     * array const
+     */
+    const TYPE = [
+            'jpg' => ['type' => 'image'],
+            'png' => ['type' => 'image', 'filetype' => 'image/png'],
+            'pdf' => ['type' => 'pdf'],
+            'mp4' => ['type' => 'video', 'filetype' => 'video/mp4'],
+        ];
+
     /**
      * {@inheritdoc}
      */
@@ -63,6 +72,25 @@ class ImageManager extends \yii\db\ActiveRecord {
             'size' => Yii::t('art', 'Size'),
         ];
     }
+    
+     /**
+     * 
+     * @param type model $file
+     * @return model
+     */
+     public static function getImageAttribute($file) {
+         
+        $model = new ImageManager();
+        $name = $file->name;
+        $model->name = strtotime('now') . '_' . Yii::$app->getSecurity()->generateRandomString(6) . '.' . $file->extension;
+        $model->orig_name = $name;
+        $model->alt = $name;
+        $model->type = ArrayHelper::getValue(self::TYPE, $file->extension . '.type') ? ArrayHelper::getValue(self::TYPE, $file->extension . '.type') : 'image';
+        $model->filetype = ArrayHelper::getValue(self::TYPE, $file->extension . '.filetype');
+        $model->size = $file->size;
+
+        return $model;
+    }
 
     /**
      * 
@@ -74,10 +102,10 @@ class ImageManager extends \yii\db\ActiveRecord {
                 'and', ['class' => $this->class, 'item_id' => $this->item_id], [ '>', 'sort', $this->sort]
             ]);
             //удаляем физически
-                $baseDir = Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->basePath);
-                
-                    if (file_exists($baseDir . DIRECTORY_SEPARATOR . $this->class . DIRECTORY_SEPARATOR . $this->name)) {
-                        @unlink($baseDir . DIRECTORY_SEPARATOR . $this->class . DIRECTORY_SEPARATOR . $this->name);
+                $baseDir = Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->absolutePath);
+                $routes = "{$baseDir}/{$this->class}/{$this->name}";
+                    if (file_exists($routes)) {
+                        @unlink($routes);
                     }
             
             return true;
@@ -91,10 +119,15 @@ class ImageManager extends \yii\db\ActiveRecord {
      * @return string
      */
     public function getImageUrl() {
+        $uploadDir = Url::to('/', true);
+        $uploadDir .= Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->uploadPath);
         if ($this->name) {
-            $path = str_replace('admin', '', Url::home(true)) . 'uploads/images/' . $this->class . DIRECTORY_SEPARATOR . $this->name;
+            //$path = Url::to('/', true) . $uploadDir . DIRECTORY_SEPARATOR . $this->class . DIRECTORY_SEPARATOR . $this->name;
+            $path = "{$uploadDir}/{$this->class}/{$this->name}";
+            
         } else {
-            $path = str_replace('admin', '', Url::home(true)) . 'uploads/images/nophoto.svg';
+            //$path = Url::to('/', true) . $uploadDir . DIRECTORY_SEPARATOR . 'nophoto.svg';
+            $path = "{$uploadDir}/nophoto.svg";
         }
         return $path;
     }

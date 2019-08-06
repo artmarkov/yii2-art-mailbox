@@ -518,6 +518,9 @@ class Mailbox extends \artsoft\db\ActiveRecord
                     'caption'=> 'name',
                     'size'=> 'size',
                     'key'=> 'id',
+                    'frameAttr' => [
+                        'title' => 'orig_name',
+                    ]
                 ]]
         );
     }

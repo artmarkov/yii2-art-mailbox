@@ -17,32 +17,53 @@ class MailboxModule extends \yii\base\Module
     const VERSION = '0.1.0';
 
     public $controllerNamespace = 'artsoft\mailbox\controllers';
+    
     public $view;
 
      /**
      * 
-     * @var string $basePath
+     * @var string 
      */
-    public $basePath = '@frontend/web/uploads/images';
+    public $basePath;
+    
+    public $uploadPath;
+    
+    public $absolutePath;
+    
     
     public function init()
     {
-         $this->basePath = Yii::getAlias($this->basePath);
+         if (!isset($this->basePath)) {
+            $this->basePath = '@frontend/web';
+        }
+
+        if (!isset($this->uploadPath)) {
+            $this->uploadPath = 'uploads/images';
+        }
+        
+         $this->absolutePath = Yii::getAlias($this->basePath);
         if (!StringHelper::endsWith($this->basePath, '/', false)) {
-            $this->basePath .= '/';
+            $this->absolutePath .= '/';
         }
-         if (!file_exists($this->basePath)) {
-            mkdir($this->basePath);
-            chmod($this->basePath, 0755);
+         $this->absolutePath .= $this->uploadPath;
+        if (!StringHelper::endsWith($this->uploadPath, '/', false)) {
+            $this->absolutePath .= '/';
         }
-        if (!is_dir($this->basePath)) {
+        
+         if (!file_exists($this->absolutePath)) {
+           mkdir($this->absolutePath, 0777, true);
+        }
+        
+        if (!is_dir($this->absolutePath)) {
             throw new InvalidConfigException('Path is not directory');
         }
-        if (!is_writable($this->basePath)) {
+        if (!is_writable($this->absolutePath)) {
             throw new InvalidConfigException('Path is not writable! Check chmod!');
         }
         parent::init();
 
-        // custom initialization code goes here
+
+       
+       
     }
 }
