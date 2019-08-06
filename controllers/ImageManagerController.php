@@ -38,9 +38,7 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
         }
             $post = Yii::$app->request->post();
             $baseDir = Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->basePath);
-            if (!file_exists($baseDir)) {
-                FileHelper::createDirectory($baseDir);
-            }
+           
             $dir = $baseDir . DIRECTORY_SEPARATOR . $post['ImageManager']['class'];
             
             if (!file_exists($dir)) {
@@ -48,7 +46,6 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
             }
 
             $files = UploadedFile::getInstancesByName('attachment');
-            
             foreach ($files as $file) {
                 // echo '<pre>' . print_r($file, true) . '</pre>';
                 $model = new ImageManager();

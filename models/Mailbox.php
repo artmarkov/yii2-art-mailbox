@@ -514,7 +514,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
                 ImageManager::className() => [
                     'type' => 'type',
                     'filetype' => 'filetype',
-                    'downloadUrl' => 'url',
+                    'downloadUrl' => 'imageUrl',
                     'caption'=> 'name',
                     'size'=> 'size',
                     'key'=> 'id',

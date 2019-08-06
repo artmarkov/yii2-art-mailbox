@@ -21,8 +21,7 @@ use yii\helpers\Url;
  */
 class ImageManager extends \yii\db\ActiveRecord {
 
-    public $attachment;
-   
+    
     /**
      * {@inheritdoc}
      */
@@ -76,8 +75,9 @@ class ImageManager extends \yii\db\ActiveRecord {
             ]);
             //удаляем физически
                 $baseDir = Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->basePath);
-                    if (file_exists($baseDir . $this->class . DIRECTORY_SEPARATOR . $this->name)) {
-                        @unlink($baseDir . $this->class . DIRECTORY_SEPARATOR . $this->name);
+                
+                    if (file_exists($baseDir . DIRECTORY_SEPARATOR . $this->class . DIRECTORY_SEPARATOR . $this->name)) {
+                        @unlink($baseDir . DIRECTORY_SEPARATOR . $this->class . DIRECTORY_SEPARATOR . $this->name);
                     }
             
             return true;
@@ -92,7 +92,7 @@ class ImageManager extends \yii\db\ActiveRecord {
      */
     public function getImageUrl() {
         if ($this->name) {
-            $path = str_replace('admin', '', Url::home(true)) . 'uploads/images/' . $this->class . '/' . $this->name;
+            $path = str_replace('admin', '', Url::home(true)) . 'uploads/images/' . $this->class . DIRECTORY_SEPARATOR . $this->name;
         } else {
             $path = str_replace('admin', '', Url::home(true)) . 'uploads/images/nophoto.svg';
         }

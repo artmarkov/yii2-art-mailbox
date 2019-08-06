@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'bulkActionOptions' => [
                     'gridId' => 'mailbox-draft-grid',
                     'actions' => [                   
-                        Url::to(['bulk-trush']) => Yii::t('art/mailbox', 'Move to Trash'),
+                        Url::to(['bulk-trash-sent']) => Yii::t('art/mailbox', 'Move to Trash'),
                     ] //Configure here you bulk actions
                 ],
                 'columns' => [
