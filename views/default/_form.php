@@ -39,31 +39,31 @@ use yii\helpers\Url;
                     <div class="panel-body">
                         <div class="row">
 
-                               <!--<?//php echo '<pre>' . print_r($model->imagesLinksData, true) . '</pre>'; ?>-->
+                               <!--<?//php echo '<pre>' . print_r($model->filesLinksData, true) . '</pre>'; ?>-->
                                 <?= \kartik\file\FileInput::widget([
                                         'name' => 'attachment[]',
                                         'options'=>[
                                             'multiple'=>true
                                         ],
                                         'pluginOptions' => [
-                                            'deleteUrl' => Url::toRoute(['/mailbox/image-manager/delete-image']),
-                                            'initialPreview'=> $model->imagesLinks,
+                                            'deleteUrl' => Url::toRoute(['/mailbox/file-manager/delete-file']),
+                                            'initialPreview'=> $model->filesLinks,
                                             'initialPreviewAsData'=>true,
                                             'initialPreviewFileType' => 'image', 
                                             'overwriteInitial'=>false,
-                                            'initialPreviewConfig'=>$model->imagesLinksData,
+                                            'initialPreviewConfig'=>$model->filesLinksData,
                                             'maxFileSize' => 1500, // Kb
                                             'allowedFileExtensions' => ["jpg", "png", "mp4", "pdf"],
-                                            'uploadUrl' => Url::to(['/mailbox/image-manager/file-upload']),
+                                            'uploadUrl' => Url::to(['/mailbox/file-manager/file-upload']),
                                             'uploadExtraData' => [
-                                                'ImageManager[class]' => $model->formName(),
-                                                'ImageManager[item_id]' => $model->id
+                                                'FileManager[class]' => $model->formName(),
+                                                'FileManager[item_id]' => $model->id
                                             ],
                                             'maxFileCount' => 10,
                                         ],
                                         'pluginEvents' => [
                                             'filesorted' => new \yii\web\JsExpression('function(event, params){
-                                                  $.post("'.Url::toRoute(["/mailbox/image-manager/sort-image", "id" => $model->id]).'", {sort: params});
+                                                  $.post("'.Url::toRoute(["/mailbox/file-manager/sort-file", "id" => $model->id]).'", {sort: params});
                                             }')
                                         ],
                                   ]);                    

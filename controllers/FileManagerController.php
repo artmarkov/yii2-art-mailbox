@@ -6,17 +6,17 @@ namespace artsoft\mailbox\controllers;
 use Yii;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
-use artsoft\mailbox\models\ImageManager;
+use artsoft\mailbox\models\FileManager;
 use yii\helpers\FileHelper;
 use yii\web\Response;
 use yii\web\BadRequestHttpException;
 use yii\helpers\ArrayHelper;
 /**
- * Description of ImageManagerController
+ * Description of FileManagerController
  *
  * @author markov-av
  */
-class ImageManagerController extends \artsoft\controllers\admin\BaseController {
+class FileManagerController extends \artsoft\controllers\admin\BaseController {
 
     /**
      * 
@@ -35,7 +35,7 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
         $post = Yii::$app->request->post();
         
         $baseDir = Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->absolutePath);
-        $dir = $baseDir . DIRECTORY_SEPARATOR . $post['ImageManager']['class'];
+        $dir = $baseDir . DIRECTORY_SEPARATOR . $post['FileManager']['class'];
 
         if (!file_exists($dir)) {
             FileHelper::createDirectory($dir);
@@ -43,7 +43,7 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
 
         $files = UploadedFile::getInstancesByName('attachment');
         foreach ($files as $file) {
-            $model = ImageManager::getImageAttribute($file);
+            $model = FileManager::getFileAttribute($file);
             $model->load($post);
             $model->validate();
             // echo '<pre>' . print_r($model, true) . '</pre>';
@@ -68,10 +68,10 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
      * @return boolean
      * @throws MethodNotAllowedHttpException
      */
-    public function actionSortImage($id) {
+    public function actionSortFile($id) {
         if (Yii::$app->request->isAjax) {
             
-            $model = ImageManager::findOne(['item_id' => $id]);
+            $model = FileManager::findOne(['item_id' => $id]);
             $post = Yii::$app->request->post('sort');
             
             if ($post['oldIndex'] > $post['newIndex']) {
@@ -81,9 +81,9 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
                 $param = ['and', ['<=', 'sort', $post['newIndex']], ['>', 'sort', $post['oldIndex']]];
                 $counter = -1;
             }
-            ImageManager::updateAllCounters(['sort' => $counter], [
+            FileManager::updateAllCounters(['sort' => $counter], [
                 'and', ['class' => $model->class, 'item_id' => $id], $param]);
-            ImageManager::updateAll(['sort' => $post['newIndex']], [
+            FileManager::updateAll(['sort' => $post['newIndex']], [
                 'id' => $post['stack'][$post['newIndex']]['key']
             ]);
 
@@ -97,8 +97,8 @@ class ImageManagerController extends \artsoft\controllers\admin\BaseController {
      * @return boolean
      * @throws NotFoundHttpException
      */
-    public function actionDeleteImage() {
-        if (($model = ImageManager::findOne(Yii::$app->request->post('key'))) and $model->delete()) {
+    public function actionDeleteFile() {
+        if (($model = FileManager::findOne(Yii::$app->request->post('key'))) and $model->delete()) {
 
             return true;
         } else {

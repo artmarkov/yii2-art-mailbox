@@ -2,6 +2,7 @@
 
 use artsoft\helpers\Html;
 use artsoft\mailbox\models\MailboxInbox;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model artsoft\mailbox\models\MailboxInbox */
@@ -74,7 +75,41 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
                 </div>
+<div class="panel-body">
+                        <div class="row">
 
+                               <!--<?//php echo '<pre>' . print_r($model->filesLinksData, true) . '</pre>'; ?>-->
+                                <?= \kartik\file\FileInput::widget([
+                                        'name' => 'attachment[]',
+                                        'options'=>[
+                                            'multiple'=>true
+                                        ],
+                                        'pluginOptions' => [
+//                                            'deleteUrl' => Url::toRoute(['/mailbox/file-manager/delete-file']),
+                                            'initialPreview'=> $model->mailbox->filesLinks,
+                                            'initialPreviewAsData'=>true,
+                                            'initialPreviewFileType' => 'image', 
+                                            'overwriteInitial'=>false,
+                                            'initialPreviewConfig'=>$model->mailbox->filesLinksData,
+//                                            'maxFileSize' => 1500, // Kb
+//                                            'allowedFileExtensions' => ["jpg", "png", "mp4", "pdf"],
+//                                            'uploadUrl' => Url::to(['/mailbox/file-manager/file-upload']),
+//                                            'uploadExtraData' => [
+//                                                'FileManager[class]' => $model->mailbox->formName(),
+//                                                'FileManager[item_id]' => $model->mailbox->id
+//                                            ],
+//                                            'maxFileCount' => 10,
+                                        ],
+//                                        'pluginEvents' => [
+//                                            'filesorted' => new \yii\web\JsExpression('function(event, params){
+//                                                  $.post("'.Url::toRoute(["/mailbox/file-manager/sort-file", "id" => $model->id]).'", {sort: params});
+//                                            }')
+//                                        ],
+                                  ]);                    
+                              ?>
+
+                        </div>
+                    </div> 
                 <div class="box-footer">
                     
                     <div class="pull-right">

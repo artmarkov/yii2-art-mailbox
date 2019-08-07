@@ -10,7 +10,7 @@ use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 
-use artsoft\mailbox\models\ImageManager;
+use artsoft\mailbox\models\FileManager;
 
 /**
  * This is the model class for table "{{%mailbox}}".
@@ -79,8 +79,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
      */
     public function rules()
     {
-        return [
-            [['title'], 'required'],
+        return [            
             ['receivers_ids', 'required', 'on' => self::SCENARIO_COMPOSE, 'enableClientValidation' => false],
             [['status_post', 'status_del', 'posted_at', 'deleted_at'], 'integer'],
             [['sender_id', 'created_at', 'updated_at'], 'safe'],
@@ -500,21 +499,21 @@ class Mailbox extends \artsoft\db\ActiveRecord
                 ])->max('id');
     }
 
-     public function getImages()
+     public function getFiles()
     {
-        return $this->hasMany(ImageManager::className(), ['item_id' => 'id'])->orderBy('sort');
+        return $this->hasMany(FileManager::className(), ['item_id' => 'id'])->orderBy('sort');
     }
-    public function getImagesLinks()
+    public function getFilesLinks()
     {
-        return ArrayHelper::getColumn($this->images, 'imageUrl');
+        return ArrayHelper::getColumn($this->files, 'fileUrl');
     }
-    public function getImagesLinksData()
+    public function getFilesLinksData()
     {
-        return ArrayHelper::toArray($this->images,[
-                ImageManager::className() => [
+        return ArrayHelper::toArray($this->files,[
+                FileManager::className() => [
                     'type' => 'type',
                     'filetype' => 'filetype',
-                    'downloadUrl' => 'imageUrl',
+                    'downloadUrl' => 'fileUrl',
                     'caption'=> 'name',
                     'size'=> 'size',
                     'key'=> 'id',

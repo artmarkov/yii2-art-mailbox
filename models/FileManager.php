@@ -6,7 +6,7 @@ use Yii;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 /**
- * This is the model class for table "{{%image_manager}}".
+ * This is the model class for table "{{%file_manager}}".
  *
  * @property int $id
  * @property string $orig_name
@@ -19,7 +19,7 @@ use yii\helpers\ArrayHelper;
  * @property string $filetype
  * @property string $size
  */
-class ImageManager extends \yii\db\ActiveRecord {
+class FileManager extends \yii\db\ActiveRecord {
 
     /**
      * array const
@@ -35,7 +35,7 @@ class ImageManager extends \yii\db\ActiveRecord {
      * {@inheritdoc}
      */
     public static function tableName() {
-        return '{{%image_manager}}';
+        return '{{%file_manager}}';
     }
 
     /**
@@ -46,7 +46,7 @@ class ImageManager extends \yii\db\ActiveRecord {
             [['orig_name', 'name', 'type'], 'required'],
             [['item_id', 'sort', 'size'], 'integer'],
             ['sort', 'default', 'value' => function($model) {
-                $count = ImageManager::find()->andWhere(['class' => $model->class])->count();
+                $count = FileManager::find()->andWhere(['class' => $model->class])->count();
                 return ($count > 0) ? $count++ : 0;
             }],
             [['type', 'filetype'], 'safe'],
@@ -78,9 +78,9 @@ class ImageManager extends \yii\db\ActiveRecord {
      * @param type model $file
      * @return model
      */
-     public static function getImageAttribute($file) {
+     public static function getFileAttribute($file) {
          
-        $model = new ImageManager();
+        $model = new FileManager();
         $name = $file->name;
         $model->name = strtotime('now') . '_' . Yii::$app->getSecurity()->generateRandomString(6) . '.' . $file->extension;
         $model->orig_name = $name;
@@ -98,7 +98,7 @@ class ImageManager extends \yii\db\ActiveRecord {
      */
     public function beforeDelete() {
         if (parent::beforeDelete()) {
-            ImageManager::updateAllCounters(['sort' => -1], [
+            FileManager::updateAllCounters(['sort' => -1], [
                 'and', ['class' => $this->class, 'item_id' => $this->item_id], [ '>', 'sort', $this->sort]
             ]);
             //удаляем физически
@@ -118,7 +118,7 @@ class ImageManager extends \yii\db\ActiveRecord {
      * 
      * @return string
      */
-    public function getImageUrl() {
+    public function getFileUrl() {
         $uploadDir = Url::to('/', true);
         $uploadDir .= Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->uploadPath);
         if ($this->name) {

@@ -38,7 +38,7 @@ class MailboxModule extends \yii\base\Module
         }
 
         if (!isset($this->uploadPath)) {
-            $this->uploadPath = 'uploads/images';
+            $this->uploadPath = 'uploads/files';
         }
         
          $this->absolutePath = Yii::getAlias($this->basePath);
