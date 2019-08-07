@@ -56,60 +56,72 @@ $this->params['breadcrumbs'][] = $this->title;
                         <h5><?= Yii::t('art/mailbox', 'From:') . ' ' . $model->receiver->username; ?>
                             <span class="mailbox-read-time pull-right"><?= $model->mailbox->postedDateTime; ?></span></h5>
                     </div>   
-                <div class="mailbox-controls with-border text-center">
-                    <div class="btn-group">
-                        
-                        <?= Html::a('<i class="fa fa-trash-o"></i>', ['/mailbox/default/trash', 'id' => $model->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => Yii::t('art/mailbox', 'Move to Trash')]) ?>
-                        <?= Html::a('<i class="fa fa-reply"></i>', ['/mailbox/default/reply', 'id' => $model->mailbox->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Reply']) ?>
-                        <?= Html::a('<i class="fa fa-share"></i>', ['/mailbox/default/forward', 'id' => $model->mailbox->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Forward']) ?>
+                    <div class="mailbox-controls with-border text-center">
+                        <div class="btn-group">
 
-                    </div>                    
-                </div>
-                           
+                            <?= Html::a('<i class="fa fa-trash-o"></i>', ['/mailbox/default/trash', 'id' => $model->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => Yii::t('art/mailbox', 'Move to Trash')]) ?>
+                            <?= Html::a('<i class="fa fa-reply"></i>', ['/mailbox/default/reply', 'id' => $model->mailbox->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Reply']) ?>
+                            <?= Html::a('<i class="fa fa-share"></i>', ['/mailbox/default/forward', 'id' => $model->mailbox->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Forward']) ?>
 
-                <div id = "print_body" class="panel-body">
-                    <div  class="mailbox-read-message">
-
-                        <?= $model->mailbox->content; ?>
-
+                        </div>                    
                     </div>
-                </div>
-                </div>
-<div class="panel-body">
-                        <div class="row">
 
-                               <!--<?//php echo '<pre>' . print_r($model->filesLinksData, true) . '</pre>'; ?>-->
-                                <?= \kartik\file\FileInput::widget([
-                                        'name' => 'attachment[]',
-                                        'options'=>[
-                                            'multiple'=>true
-                                        ],
-                                        'pluginOptions' => [
-//                                            'deleteUrl' => Url::toRoute(['/mailbox/file-manager/delete-file']),
-                                            'initialPreview'=> $model->mailbox->filesLinks,
-                                            'initialPreviewAsData'=>true,
-                                            'initialPreviewFileType' => 'image', 
-                                            'overwriteInitial'=>false,
-                                            'initialPreviewConfig'=>$model->mailbox->filesLinksData,
-//                                            'maxFileSize' => 1500, // Kb
-//                                            'allowedFileExtensions' => ["jpg", "png", "mp4", "pdf"],
-//                                            'uploadUrl' => Url::to(['/mailbox/file-manager/file-upload']),
-//                                            'uploadExtraData' => [
-//                                                'FileManager[class]' => $model->mailbox->formName(),
-//                                                'FileManager[item_id]' => $model->mailbox->id
-//                                            ],
-//                                            'maxFileCount' => 10,
-                                        ],
-//                                        'pluginEvents' => [
-//                                            'filesorted' => new \yii\web\JsExpression('function(event, params){
-//                                                  $.post("'.Url::toRoute(["/mailbox/file-manager/sort-file", "id" => $model->id]).'", {sort: params});
-//                                            }')
-//                                        ],
-                                  ]);                    
-                              ?>
+
+                    <div id = "print_body" class="panel-body">
+                        <div  class="mailbox-read-message">
+
+                            <?= $model->mailbox->content; ?>
 
                         </div>
+                    </div>
+
+                    <div class="panel-body">
+
+                               <!--<?//php echo '<pre>' . print_r($model->filesLinksData, true) . '</pre>'; ?>-->
+                        <?= \kartik\file\FileInput::widget([
+                            'id' => 'fileinput-manager',
+                            'name' => 'attachment[]',
+                            'language' => \Yii::$app->language,
+                            'disabled' => true,
+//                            'readonly' => 'readonly',
+                            'options' => [
+                                'multiple' => true
+                            ],
+                            'pluginOptions' => [
+                                'showCaption' => false,
+                                'showBrowse' => false,
+                                'showUpload' => false,
+                                'showRemove' => false,
+                                'uploadAsync' => false,
+                                'deleteUrl' => Url::toRoute(['/mailbox/file-manager/delete-file']),
+                                'initialPreview' => $model->mailbox->filesLinks,
+                                'initialPreviewAsData' => true,
+                                'initialPreviewFileType' => 'image',
+                                'overwriteInitial' => false,
+                                'initialPreviewConfig' => $model->mailbox->filesLinksData,
+                                'maxFileSize' => 1500, // Kb
+                                'allowedFileExtensions' => ["jpg", "png", "mp4", "pdf"],
+                                'uploadUrl' => Url::to(['/mailbox/file-manager/file-upload']),
+                                'uploadExtraData' => [
+                                    'FileManager[class]' => $model->mailbox->formName(),
+                                    'FileManager[item_id]' => $model->mailbox->id
+                                ],
+                                'maxFileCount' => 10,
+                            ],
+                            'pluginEvents' => [
+                                'filesorted' => new \yii\web\JsExpression('function(event, params){
+                                                  $.post("' . Url::toRoute(["/mailbox/file-manager/sort-file", "id" => $model->mailbox->id]) . '", {sort: params});
+                                            }'),
+                                'filebatchselected' => new \yii\web\JsExpression('function(event, files) {                                               
+                                                  $("#fileinput-manager").fileinput("upload");
+                                            }'),
+                            ],
+                        ]);
+                        ?>
+
+
                     </div> 
+                </div>
                 <div class="box-footer">
                     
                     <div class="pull-right">
