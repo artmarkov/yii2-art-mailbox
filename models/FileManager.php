@@ -70,7 +70,7 @@ class FileManager extends \yii\db\ActiveRecord {
             [['created_at'], 'safe'],
             [['item_id', 'sort', 'size'], 'integer'],
             ['sort', 'default', 'value' => function($model) {
-                $count = FileManager::find()->andWhere(['class' => $model->class])->count();
+                $count = FileManager::find()->andWhere(['class' => $model->class, 'item_id' => $model->item_id])->count();
                 return ($count > 0) ? $count++ : 0;
             }],
             [['type', 'filetype'], 'safe'],
@@ -139,6 +139,15 @@ class FileManager extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param type $class
+     * @return type string
+     */
+    public static function getFolder($class){
+        return str_replace('\\', '_', $class);
+    }
+    
+    /**
+     * 
      * @return string
      */
     public function getFileUrl() {
@@ -146,7 +155,7 @@ class FileManager extends \yii\db\ActiveRecord {
         $uploadDir .= Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->uploadPath);
         if ($this->name) {
             //$path = Url::to('/', true) . $uploadDir . DIRECTORY_SEPARATOR . $this->class . DIRECTORY_SEPARATOR . $this->name;
-            $path = "{$uploadDir}/{$this->class}/{$this->name}";
+            $path = "{$uploadDir}/{$this::getFolder($this->class)}/{$this->name}";
             
         } else {
             //$path = Url::to('/', true) . $uploadDir . DIRECTORY_SEPARATOR . 'nophoto.svg';
@@ -154,5 +163,4 @@ class FileManager extends \yii\db\ActiveRecord {
         }
         return $path;
     }
-    
 }

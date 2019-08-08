@@ -33,7 +33,7 @@ class FileManagerController extends \artsoft\controllers\admin\BaseController {
         $post = Yii::$app->request->post();
         
         $baseDir = Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->absolutePath);
-        $dir = $baseDir . DIRECTORY_SEPARATOR . $post['FileManager']['class'];
+        $dir = $baseDir . DIRECTORY_SEPARATOR . FileManager::getFolder($post['FileManager']['class']);
 
         if (!file_exists($dir)) {
             FileHelper::createDirectory($dir);
