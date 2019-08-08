@@ -76,49 +76,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
 
                     <div class="panel-body">
-
-                               <!--<?//php echo '<pre>' . print_r($model->filesLinksData, true) . '</pre>'; ?>-->
-                        <?= \kartik\file\FileInput::widget([
-                            'id' => 'fileinput-manager',
-                            'name' => 'attachment[]',
-                            'language' => \Yii::$app->language,
-                            'disabled' => true,
-//                            'readonly' => 'readonly',
-                            'options' => [
-                                'multiple' => true
-                            ],
+                        <?= artsoft\mailbox\widgets\FileInput::widget([
+                            'model' => $model->mailbox,
                             'pluginOptions' => [
                                 'showCaption' => false,
                                 'showBrowse' => false,
-                                'showUpload' => false,
-                                'showRemove' => false,
-                                'uploadAsync' => false,
-                                'deleteUrl' => Url::toRoute(['/mailbox/file-manager/delete-file']),
-                                'initialPreview' => $model->mailbox->filesLinks,
-                                'initialPreviewAsData' => true,
-                                'initialPreviewFileType' => 'image',
-                                'overwriteInitial' => false,
-                                'initialPreviewConfig' => $model->mailbox->filesLinksData,
-                                'maxFileSize' => 1500, // Kb
-                                'allowedFileExtensions' => ["jpg", "png", "mp4", "pdf"],
-                                'uploadUrl' => Url::to(['/mailbox/file-manager/file-upload']),
-                                'uploadExtraData' => [
-                                    'FileManager[class]' => $model->mailbox->formName(),
-                                    'FileManager[item_id]' => $model->mailbox->id
+                                'dropZoneEnabled' => false,
+                                'fileActionSettings' => [
+                                    'showDrag' => false,
+                                    'showRemove' => false,
                                 ],
-                                'maxFileCount' => 10,
-                            ],
-                            'pluginEvents' => [
-                                'filesorted' => new \yii\web\JsExpression('function(event, params){
-                                                  $.post("' . Url::toRoute(["/mailbox/file-manager/sort-file", "id" => $model->mailbox->id]) . '", {sort: params});
-                                            }'),
-                                'filebatchselected' => new \yii\web\JsExpression('function(event, files) {                                               
-                                                  $("#fileinput-manager").fileinput("upload");
-                                            }'),
                             ],
                         ]);
                         ?>
-
 
                     </div> 
                 </div>

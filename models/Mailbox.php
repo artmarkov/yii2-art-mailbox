@@ -499,14 +499,16 @@ class Mailbox extends \artsoft\db\ActiveRecord
                 ])->max('id');
     }
 
-     public function getFiles()
+    public function getFiles()
     {
         return $this->hasMany(FileManager::className(), ['item_id' => 'id'])->orderBy('sort');
     }
+    
     public function getFilesLinks()
     {
         return ArrayHelper::getColumn($this->files, 'fileUrl');
     }
+    
     public function getFilesLinksData()
     {
         return ArrayHelper::toArray($this->files,[

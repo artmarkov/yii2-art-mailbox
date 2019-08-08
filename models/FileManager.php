@@ -3,6 +3,9 @@
 namespace artsoft\mailbox\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
+use artsoft\models\User;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 /**
@@ -18,6 +21,8 @@ use yii\helpers\ArrayHelper;
  * @property string $type
  * @property string $filetype
  * @property string $size
+ * @property int $created_at
+ * @property int $created_by
  */
 class FileManager extends \yii\db\ActiveRecord {
 
@@ -31,6 +36,24 @@ class FileManager extends \yii\db\ActiveRecord {
             'mp4' => ['type' => 'video', 'filetype' => 'video/mp4'],
         ];
 
+      /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [         
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => NULL,
+            ], 
+            'blameable' => [
+                'class' => BlameableBehavior::className(),
+                'createdByAttribute' => 'created_by',
+                'updatedByAttribute' => NULL,
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -44,6 +67,7 @@ class FileManager extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['orig_name', 'name', 'type'], 'required'],
+            [['created_at'], 'safe'],
             [['item_id', 'sort', 'size'], 'integer'],
             ['sort', 'default', 'value' => function($model) {
                 $count = FileManager::find()->andWhere(['class' => $model->class])->count();
@@ -51,8 +75,7 @@ class FileManager extends \yii\db\ActiveRecord {
             }],
             [['type', 'filetype'], 'safe'],
             [['orig_name', 'name', 'class', 'alt'], 'string', 'max' => 256],
-            //[['attachment'], 'image'],
-           // [['attachment'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, pdf'],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
         ];
     }
 
@@ -92,7 +115,7 @@ class FileManager extends \yii\db\ActiveRecord {
         return $model;
     }
 
-    /**
+        /**
      * 
      * @return boolean
      */
