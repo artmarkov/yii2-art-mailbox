@@ -25,6 +25,15 @@ class FileInput extends \yii\base\Widget {
     
     public function run()
     {
+        if (!isset($this->model)) {
+            throw new \yii\base\InvalidConfigException('Model was not found.');
+        }
+        
+        if (!isset($this->id))
+        {
+            $this->id = $this->getId();
+        }
+        
         $this->buildWidget();
 
         return $this->getWidgetHtml();
@@ -32,12 +41,6 @@ class FileInput extends \yii\base\Widget {
 
     private function buildWidget()
     {
-
-        if (!isset($this->id))
-        {
-            $this->id = $this->getId();
-        }
-
         $this->rawWidgetHtml = \kartik\file\FileInput::widget([
                     'id' => $this->id,
                     'name' => 'attachment[]',

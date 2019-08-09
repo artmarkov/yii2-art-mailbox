@@ -50,7 +50,7 @@ class MailboxModule extends \yii\base\Module
             $this->absolutePath .= '/';
         }
         
-         if (!file_exists($this->absolutePath)) {
+        if (!file_exists($this->absolutePath)) {
            mkdir($this->absolutePath, 0777, true);
         }
         

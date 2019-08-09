@@ -124,11 +124,9 @@ class FileManager extends \yii\db\ActiveRecord {
             FileManager::updateAllCounters(['sort' => -1], [
                 'and', ['class' => $this->class, 'item_id' => $this->item_id], [ '>', 'sort', $this->sort]
             ]);
-            //удаляем физически
-                $baseDir = Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->absolutePath);
-                $routes = "{$baseDir}/{$this::getFolder($this->class)}/{$this->name}";
-                    if (file_exists($routes)) {
-                        @unlink($routes);
+            //удаляем физически              
+                    if (file_exists($this->getRoutes())) {
+                        @unlink($this->getRoutes());
                     }
             
             return true;
@@ -144,6 +142,27 @@ class FileManager extends \yii\db\ActiveRecord {
      */
     public static function getFolder($class){
         return strtolower($class);
+    } 
+    /**
+     * 
+     * @return type string
+     */
+    public static function getAbsoluteDir(){
+        return Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->absolutePath);
+    } 
+    /**
+     * 
+     * @return type string
+     */
+    public static function getUploadDir(){
+        return Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->uploadPath);
+    }
+    /**
+     * 
+     * @return type string
+     */
+    public function getRoutes(){
+        return "{$this::getAbsoluteDir()}/{$this::getFolder($this->class)}/{$this->name}";
     }
     
     /**
@@ -151,16 +170,18 @@ class FileManager extends \yii\db\ActiveRecord {
      * @return string
      */
     public function getFileUrl() {
-        $uploadDir = Url::to('/', true);
-        $uploadDir .= Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->uploadPath);
-        if ($this->name) {
+
+        $uploadDir = Url::to('/', true) . $this->getUploadDir();
+
+        if ($this->name && file_exists($this->getRoutes())) {
+
             //$path = Url::to('/', true) . $uploadDir . DIRECTORY_SEPARATOR . $this->class . DIRECTORY_SEPARATOR . $this->name;
-            $routes = "{$uploadDir}/{$this::getFolder($this->class)}/{$this->name}";
-            
+            $path = "{$uploadDir}/{$this::getFolder($this->class)}/{$this->name}";
         } else {
             //$path = Url::to('/', true) . $uploadDir . DIRECTORY_SEPARATOR . 'nophoto.svg';
-            $routes = "{$uploadDir}/nophoto.svg";
+            $path = "{$uploadDir}/nofile.jpg";
         }
-        return $routes;
+        return $path;
     }
+
 }
