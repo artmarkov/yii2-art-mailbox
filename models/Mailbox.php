@@ -533,7 +533,10 @@ class Mailbox extends \artsoft\db\ActiveRecord
     {
         if (parent::beforeDelete())
         {
-            $data = FileManager::find(['class' => $this->formName(), 'item_id' => $this->id])->asArray()->column();
+            $data = FileManager::find()
+                    ->andWhere(['class' => $this->formName()])
+                    ->andWhere(['item_id' => $this->id])
+                    ->asArray()->column();
             foreach ($data as $id)
             {
                 FileManager::findOne($id)->delete();
