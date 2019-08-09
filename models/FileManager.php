@@ -115,7 +115,7 @@ class FileManager extends \yii\db\ActiveRecord {
         return $model;
     }
 
-        /**
+     /**
      * 
      * @return boolean
      */
@@ -126,7 +126,7 @@ class FileManager extends \yii\db\ActiveRecord {
             ]);
             //удаляем физически
                 $baseDir = Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->absolutePath);
-                $routes = "{$baseDir}/{$this->class}/{$this->name}";
+                $routes = "{$baseDir}/{$this::getFolder($this->class)}/{$this->name}";
                     if (file_exists($routes)) {
                         @unlink($routes);
                     }
@@ -143,7 +143,7 @@ class FileManager extends \yii\db\ActiveRecord {
      * @return type string
      */
     public static function getFolder($class){
-        return str_replace('\\', '_', $class);
+        return strtolower($class);
     }
     
     /**
@@ -155,12 +155,12 @@ class FileManager extends \yii\db\ActiveRecord {
         $uploadDir .= Yii::getAlias(\artsoft\mailbox\MailboxModule::getInstance()->uploadPath);
         if ($this->name) {
             //$path = Url::to('/', true) . $uploadDir . DIRECTORY_SEPARATOR . $this->class . DIRECTORY_SEPARATOR . $this->name;
-            $path = "{$uploadDir}/{$this::getFolder($this->class)}/{$this->name}";
+            $routes = "{$uploadDir}/{$this::getFolder($this->class)}/{$this->name}";
             
         } else {
             //$path = Url::to('/', true) . $uploadDir . DIRECTORY_SEPARATOR . 'nophoto.svg';
-            $path = "{$uploadDir}/nophoto.svg";
+            $routes = "{$uploadDir}/nophoto.svg";
         }
-        return $path;
+        return $routes;
     }
 }

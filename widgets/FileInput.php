@@ -9,7 +9,7 @@ use Yii;
 /**
  * Description of FileInput
  *
- * @author artmarkov
+ * @author artmarkov@mail.ru
  */
 class FileInput extends \yii\base\Widget {
 
@@ -68,7 +68,7 @@ class FileInput extends \yii\base\Widget {
                             'showRemove' => true,
                         ],
                         'uploadExtraData' => [
-                            'FileManager[class]' => $this->model->className(),
+                            'FileManager[class]' => $this->model->formName(),
                             'FileManager[item_id]' => $this->model->id
                         ],
                             ], $this->pluginOptions),

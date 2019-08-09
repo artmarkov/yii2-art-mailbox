@@ -67,7 +67,7 @@ use yii\helpers\Url;
                                 </div>
                                 <?= Html::a(Yii::t('art/mailbox', 'Discard'), ['/mailbox/default/index'], ['class' => 'btn btn-default']) ?>                           
                                 <?php if (!$model->isNewRecord): ?>                           
-                                <?= Html::a(Yii::t('art/mailbox', 'Trash'), ['/mailbox/default/delete', 'id' => $model->id], [
+                                <?= Html::a(Yii::t('art/mailbox', 'Trash'), ['/mailbox/default/trash-sent', 'id' => $model->id], [
                                         'class' => 'btn btn-default', 
                                         'data-pjax' => 0,
                                         'data' => [

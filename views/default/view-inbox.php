@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="mailbox-controls with-border text-center">
                         <div class="btn-group">
 
-                            <?= Html::a('<i class="fa fa-trash-o"></i>', ['/mailbox/default/trash', 'id' => $model->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => Yii::t('art/mailbox', 'Move to Trash')]) ?>
+                            <?= Html::a('<i class="fa fa-trash-o"></i>', ['/mailbox/default/trash-inbox', 'id' => $model->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => Yii::t('art/mailbox', 'Move to Trash')]) ?>
                             <?= Html::a('<i class="fa fa-reply"></i>', ['/mailbox/default/reply', 'id' => $model->mailbox->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Reply']) ?>
                             <?= Html::a('<i class="fa fa-share"></i>', ['/mailbox/default/forward', 'id' => $model->mailbox->id], ['class' => 'btn btn-default btn-sm', 'data-toggle' => 'tooltip', 'data-container' => 'body', 'title' => '', 'data-original-title' => 'Forward']) ?>
 
@@ -101,7 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     </div> 
                     
-                        <?= Html::a('<i class="fa fa-trash-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Move to Trash'), ['/mailbox/default/trash', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
+                        <?= Html::a('<i class="fa fa-trash-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Move to Trash'), ['/mailbox/default/trash-inbox', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
                         <?= artsoft\printthis\PrintThis::widget([
                             'htmlOptions' => [
                                 'id' => ['print_info', 'print_body'],

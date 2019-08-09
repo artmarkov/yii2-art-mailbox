@@ -525,4 +525,25 @@ class Mailbox extends \artsoft\db\ActiveRecord
                 ]]
         );
     }
+    /**
+     * 
+     * @return boolean
+     */
+    public function beforeDelete()
+    {
+        if (parent::beforeDelete())
+        {
+            $data = FileManager::find(['class' => $this->formName(), 'item_id' => $this->id])->asArray()->column();
+            foreach ($data as $id)
+            {
+                FileManager::findOne($id)->delete();
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }
