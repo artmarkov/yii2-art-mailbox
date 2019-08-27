@@ -139,31 +139,12 @@ class DefaultController extends BaseController {
      */
     public function actionCompose()
     {
-       
+
         $model = new $this->modelClass;
-        $model->status_post = $this->modelClass::STATUS_POST_DRAFT;       
-        $model->save(false); 
-       
-         return $this->redirect(['update', 'id' => $model->id]);
-//        $model->setIsNewRecord(false);
-//        //echo '<pre>' . print_r($model, true) . '</pre>';
-//        
-//        if ($model->load(Yii::$app->request->post()))
-//        {
-//            $status_post = Yii::$app->request->post('status_post');
-//            if (empty($status_post))
-//            {
-//                throw new NotFoundHttpException('Required status_post parameter is missing.');
-//            }
-//            $model->getComposeData($status_post);
-//
-//            if ($model->save())
-//            {
-//                Yii::$app->session->setFlash('crudMessage', $model::getMessage($status_post));
-//                return $this->redirect($this->getRedirectPage('index', $model));
-//            }
-//        }
-//        return $this->renderIsAjax('compose', compact('model'));
+        $model->status_post = $this->modelClass::STATUS_POST_DRAFT;
+        $model->save(false);
+
+        return $this->redirect(['update', 'id' => $model->id]);
     }
 
     /**
@@ -206,29 +187,15 @@ class DefaultController extends BaseController {
      */
      public function actionReply($id)
     {
-         
-        $model_reply = self::findModel($id);        
-        $model = new $this->modelClass;        
-        $model->getReplyData($model_reply);        
+        $model_reply = self::findModel($id);
+        $model = new $this->modelClass;
+        $model->getReplyData($model_reply);
+        $model->status_post = $this->modelClass::STATUS_POST_DRAFT;
+        $model->save(false);
 
-         if ($model->load(Yii::$app->request->post()))
-        {
-            $status_post = Yii::$app->request->post('status_post');
-            if (empty($status_post))
-            {
-                throw new NotFoundHttpException('Required status_post parameter is missing.');
-            }
-            $model->getComposeData($status_post);
-
-            if ($model->save())
-            {
-                Yii::$app->session->setFlash('crudMessage', $model::getMessage($status_post));
-                return $this->redirect($this->getRedirectPage('index', $model));
-            }
-        }
-        return $this->renderIsAjax('compose', compact('model'));
+        return $this->redirect(['update', 'id' => $model->id]);
     }
-    
+
     /**
      * @param type $id
      * @return type
@@ -236,28 +203,14 @@ class DefaultController extends BaseController {
      */
      public function actionForward($id)
     {
-         
-        $model_reply = self::findModel($id);        
-        $model = new $this->modelClass;        
-        $model->getForwardData($model_reply);        
+        $model_reply = self::findModel($id);
+        $model = new $this->modelClass;
+        $model->getForwardData($model_reply);
+        $model->save(false);
 
-        if ($model->load(Yii::$app->request->post()))
-        {
-            $status_post = Yii::$app->request->post('status_post');
-            if (empty($status_post))
-            {
-                throw new NotFoundHttpException('Required status_post parameter is missing.');
-            }
-            $model->getComposeData($status_post);
-
-            if ($model->save())
-            {
-                Yii::$app->session->setFlash('crudMessage', $model::getMessage($status_post));
-                return $this->redirect($this->getRedirectPage('index', $model));
-            }
-        }
-        return $this->renderIsAjax('compose', compact('model'));
+        return $this->redirect(['update', 'id' => $model->id]);
     }
+
     /**
      * @param type $id
      * @return type

@@ -121,7 +121,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'content',
                         'value' => 'shortContent',
                         'format' => 'html',
-                    ],
+                    ],                                
+                    [
+                        'value' => function($model) {                                
+                                return $model->clip;
+                            },
+                        'format' => 'html',
+                    ],                                
                     [
                         'attribute' => 'posted_at',
                         'value' => 'postedDatetime',

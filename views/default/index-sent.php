@@ -116,6 +116,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format' => 'html',
                     ],
                     [
+                        'value' => function($model) {                                
+                                return $model->clip;
+                            },
+                        'format' => 'html',
+                    ],
+                    [
                         'attribute' => 'posted_at',
                         'value' => 'postedDatetime',
                         'label' => Yii::t('art/mailbox', 'Posted At'),

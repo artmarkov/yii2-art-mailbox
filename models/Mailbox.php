@@ -156,6 +156,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
         $this->receivers_ids = [
             $model->sender_id
         ];
+        $this->status_post = self::STATUS_POST_DRAFT;
         return $this;
     } 
     
@@ -168,6 +169,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
         
         $this->title = "Fwd:" . $model->title;
         $this->content = $this->getReplyContent($model);
+        $this->status_post = self::STATUS_POST_DRAFT;
        
         return $this;
     }
@@ -509,6 +511,17 @@ class Mailbox extends \artsoft\db\ActiveRecord
         return ArrayHelper::getColumn($this->files, 'fileUrl');
     }
     
+     public function getFilesCount()
+    {
+        $data = ArrayHelper::getColumn($this->files, 'id');
+        return count($data);
+    }
+
+    public function getClip()
+    {
+        return ($this->filesCount > 0) ? '<i class="fa fa-paperclip" aria-hidden="true"></i>' : '';
+    }
+
     public function getFilesLinksData()
     {
         return ArrayHelper::toArray($this->files,[
