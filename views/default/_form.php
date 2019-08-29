@@ -38,7 +38,7 @@ use yii\helpers\Url;
            
                     <div class="panel-body">
                         <div class="row">
-                            <?= artsoft\mailbox\widgets\FileInput::widget(['model' => $model, 'options' => ['multiple' => true]])?>
+                            <?= artsoft\fileinput\widgets\FileInput::widget(['model' => $model, 'options' => ['multiple' => true]])?>
                         </div>
                     </div> 
       

@@ -72,6 +72,10 @@ class Mailbox extends \artsoft\db\ActiveRecord
                     'receivers' => 'receivers_ids',
                 ],
             ],
+            'fileManager' => [
+                'class' => \artsoft\fileinput\behaviors\FileManagerBehavior::className(),
+               
+            ],
         ];
     }
     /**
@@ -501,65 +505,10 @@ class Mailbox extends \artsoft\db\ActiveRecord
                 ])->max('id');
     }
 
-    public function getFiles()
-    {
-        return $this->hasMany(FileManager::className(), ['item_id' => 'id'])->orderBy('sort');
-    }
-    
-    public function getFilesLinks()
-    {
-        return ArrayHelper::getColumn($this->files, 'fileUrl');
-    }
-    
-     public function getFilesCount()
-    {
-        $data = ArrayHelper::getColumn($this->files, 'id');
-        return count($data);
-    }
-
     public function getClip()
     {
         return ($this->filesCount > 0) ? '<i class="fa fa-paperclip" aria-hidden="true"></i>' : '';
     }
 
-    public function getFilesLinksData()
-    {
-        return ArrayHelper::toArray($this->files,[
-                FileManager::className() => [
-                    'type' => 'type',
-                    'filetype' => 'filetype',
-                    'downloadUrl' => 'fileUrl',
-                    'caption'=> 'name',
-                    'size'=> 'size',
-                    'key'=> 'id',
-                    'frameAttr' => [
-                        'title' => 'orig_name',
-                    ]
-                ]]
-        );
-    }
-    /**
-     * 
-     * @return boolean
-     */
-    public function beforeDelete()
-    {
-        if (parent::beforeDelete())
-        {
-            $data = FileManager::find()
-                    ->andWhere(['class' => $this->formName()])
-                    ->andWhere(['item_id' => $this->id])
-                    ->asArray()->column();
-            foreach ($data as $id)
-            {
-                FileManager::findOne($id)->delete();
-            }
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
 
 }

@@ -76,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
                     <div class="panel-body">
-                        <?= artsoft\mailbox\widgets\FileInput::widget([
+                        <?= artsoft\fileinput\widgets\FileInput::widget([
                             'model' => $model,
                             'pluginOptions' => [
                                 'showCaption' => false,
