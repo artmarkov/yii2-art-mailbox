@@ -81,6 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'pluginOptions' => [
                                 'showCaption' => false,
                                 'showBrowse' => false,
+                                'showUpload' => false,
                                 'dropZoneEnabled' => false,
                                 'fileActionSettings' => [
                                     'showDrag' => false,
