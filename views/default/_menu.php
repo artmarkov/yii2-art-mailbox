@@ -2,7 +2,9 @@
 
 use artsoft\widgets\Nav;
 use artsoft\mailbox\models\MailboxInbox;
-artsoft\mailbox\MailboxAssetsBundle::register($this);
+use artsoft\mailbox\MailboxAssetsBundle;
+
+MailboxAssetsBundle::register($this);
 ?>
 
 <div class="mailbox-menu">
