@@ -185,7 +185,7 @@ class DefaultController extends BaseController {
      * @return type
      * @throws NotFoundHttpException
      */
-     public function actionReply($id)
+    public function actionReply($id)
     {
         $model_reply = self::findModel($id);
         $model = new $this->modelClass;
@@ -201,12 +201,15 @@ class DefaultController extends BaseController {
      * @return type
      * @throws NotFoundHttpException
      */
-     public function actionForward($id)
+    public function actionForward($id) 
     {
         $model_reply = self::findModel($id);
         $model = new $this->modelClass;
         $model->getForwardData($model_reply);
-        $model->save(false);
+        
+        if ($model->save(false)) {
+            $model->copyForwardFiles($id, $model->id);
+        }
 
         return $this->redirect(['update', 'id' => $model->id]);
     }

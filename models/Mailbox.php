@@ -8,9 +8,7 @@ use yii\behaviors\TimestampBehavior;
 use artsoft\models\User;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
-
-use artsoft\mailbox\models\FileManager;
+use artsoft\fileinput\models\FileManager;
 
 /**
  * This is the model class for table "{{%mailbox}}".
@@ -72,9 +70,8 @@ class Mailbox extends \artsoft\db\ActiveRecord
                     'receivers' => 'receivers_ids',
                 ],
             ],
-            'fileManager' => [
-                'class' => \artsoft\fileinput\behaviors\FileManagerBehavior::className(),
-               
+            [
+                'class' => \artsoft\fileinput\behaviors\FileManagerBehavior::className(),               
             ],
         ];
     }
@@ -163,6 +160,27 @@ class Mailbox extends \artsoft\db\ActiveRecord
         $this->status_post = self::STATUS_POST_DRAFT;
         return $this;
     } 
+    
+    /**
+     * 
+     * @param type $id_old
+     * @param type $id_new
+     */
+    public function copyForwardFiles($id_old, $id_new)
+    {
+        $column = FileManager::find()
+                        ->andWhere(['class' => $this->formName()])
+                        ->andWhere(['item_id' => $id_old])
+                        ->asArray()->column();
+        foreach ($column as $id)
+        {
+           $model_old = FileManager::findOne($id);
+           $model_new = new FileManager;
+           $model_new->attributes = $model_old->attributes;
+           $model_new->item_id = $id_new;
+           $model_new->save();
+        }
+    }
     
     /* 
      * @param type $model
