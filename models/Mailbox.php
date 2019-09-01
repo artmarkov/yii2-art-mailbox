@@ -116,42 +116,38 @@ class Mailbox extends \artsoft\db\ActiveRecord
      * {@inheritdoc}
      * @return MailboxQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new MailboxQuery(get_called_class());
     }
-    
+
     /**
      * 
-     * @param type $folder
+     * @param type $status_post
      * @return $this
      */
-    public function getComposeData($status_post)
-    {
+    public function getComposeData($status_post) {
         $this->status_post = $status_post;
 
-        switch ($status_post)
-        {
+        switch ($status_post) {
             case self::STATUS_POST_SENT : {
                     $this->scenario = self::SCENARIO_COMPOSE;
                     $this->posted_at = time();
-                }   break;
+                } break;
             case self::STATUS_POST_DRAFT : {
                     $this->deleted_at = NULL;
-                }   break;
+                } break;
             default: break;
         }
 
         return $this;
     }
-    
+
     /**
      * @param type $model
      * @return $this
      */
-    public function getReplyData($model)
-    {
-        
+    public function getReplyData($model) {
+
         $this->title = "Re:" . $model->title;
         $this->content = $this->getReplyContent($model);
         $this->receivers_ids = [
@@ -159,43 +155,40 @@ class Mailbox extends \artsoft\db\ActiveRecord
         ];
         $this->status_post = self::STATUS_POST_DRAFT;
         return $this;
-    } 
-    
+    }
+
     /**
      * 
      * @param type $id_old
      * @param type $id_new
      */
-    public function copyForwardFiles($id_old, $id_new)
-    {
+    public function copyForwardFiles($id_old, $id_new) {
         $column = FileManager::find()
                         ->andWhere(['class' => $this->formName()])
                         ->andWhere(['item_id' => $id_old])
                         ->asArray()->column();
-        foreach ($column as $id)
-        {
-           $model_old = FileManager::findOne($id);
-           $model_new = new FileManager;
-           $model_new->attributes = $model_old->attributes;
-           $model_new->item_id = $id_new;
-           $model_new->save();
+        foreach ($column as $id) {
+            $model_old = FileManager::findOne($id);
+            $model_new = new FileManager;
+            $model_new->attributes = $model_old->attributes;
+            $model_new->item_id = $id_new;
+            $model_new->save();
         }
     }
-    
+
     /* 
      * @param type $model
      * @return $this
      */
-    public function getForwardData($model)
-    {
-        
+    public function getForwardData($model) {
+
         $this->title = "Fwd:" . $model->title;
         $this->content = $this->getReplyContent($model);
         $this->status_post = self::STATUS_POST_DRAFT;
-       
+
         return $this;
     }
-    
+
     /**
      * @param type $model
      * @return type string
@@ -207,7 +200,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
     }
 
     /**
-     * @param type $folder
+     * @param type $status
      * @return type string
      */
     public static function getMessage($status){
@@ -224,130 +217,110 @@ class Mailbox extends \artsoft\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getReceivers()
-    {
-        return $this->hasMany(User::className(), ['id' => 'receiver_id'])       
-                ->viaTable('mailbox_inbox', ['mailbox_id' => 'id']);
+    public function getReceivers() {
+        return $this->hasMany(User::className(), ['id' => 'receiver_id'])
+                        ->viaTable('mailbox_inbox', ['mailbox_id' => 'id']);
     }
-    
-     /**
+
+    /**
      * @return \yii\db\ActiveQuery
      */
-    
-    public function getSender()
-    {
+    public function getSender() {
         return $this->hasOne(User::className(), ['id' => 'sender_id']);
     }
-    
-     /* Геттер для имени отправителя */
-    public function getSenderName()
-    {
+
+    /* Геттер для имени отправителя */
+
+    public function getSenderName() {
         return $this->sender->username;
     }
-    
-    public function getMailboxFolder()
-    {
+
+    public function getMailboxFolder() {
         return $this->folder;
     }
-    
-    public function getShortContent($length = 64, $allowableTags = '')
-    {
-        $content =  strip_tags($this->content, $allowableTags);
+
+    public function getShortContent($length = 64, $allowableTags = '') {
+        $content = strip_tags($this->content, $allowableTags);
         return HtmlPurifier::process(mb_substr(Html::encode($content), 0, $length, "UTF-8")) . ((strlen($content) > $length) ? '...' : '');
     }
-    
+
     /**
      * getStatusList
      * @return array
      */
-    public static function getStatusList()
-    {
+    public static function getStatusList() {
         return array(
             self::STATUS_READ_NEW => Yii::t('art/mailbox', 'New'),
             self::STATUS_READ_OLD => Yii::t('art/mailbox', 'Read'),
         );
     }
-    
-     /**
+
+    /**
      * getStatusOptionsList
      * @return array
      */
-    public static function getStatusOptionsList()
-    {
+     public static function getStatusOptionsList() {
         return [
             [self::STATUS_READ_NEW, Yii::t('art/mailbox', 'New'), 'success'],
             [self::STATUS_READ_OLD, Yii::t('art/mailbox', 'Read'), 'default']
         ];
     }
-    
-    public function getPostedDate()
-    {
+
+    public function getPostedDate() {
         return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $this->posted_at);
     }
 
-    public function getdeletedDate()
-    {
+    public function getdeletedDate() {
         return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $this->deleted_at);
     }
 
-    public function getPostedTime()
-    {
+    public function getPostedTime() {
         return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $this->posted_at);
     }
 
-    public function getRemotedTime()
-    {
+    public function getRemotedTime() {
         return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $this->deleted_at);
     }
 
-    public function getPostedDatetime()
-    {
+    public function getPostedDatetime() {
         return "{$this->postedDate} {$this->postedTime}";
     }
 
-    public function getdeletedDatetime()
-    {
+    public function getdeletedDatetime() {
         return "{$this->deletedDate} {$this->remotedTime}";
-    } 
-    
-    public function getCreatedDate()
-    {
+    }
+
+    public function getCreatedDate() {
         return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $this->created_at);
     }
 
-    public function getUpdatedDate()
-    {
+    public function getUpdatedDate() {
         return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $this->updated_at);
     }
 
-    public function getCreatedTime()
-    {
+    public function getCreatedTime() {
         return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $this->created_at);
     }
 
-    public function getUpdatedTime()
-    {
+    public function getUpdatedTime() {
         return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $this->updated_at);
     }
 
-    public function getCreatedDatetime()
-    {
+    public function getCreatedDatetime() {
         return "{$this->createdDate} {$this->createdTime}";
     }
 
-    public function getUpdatedDatetime()
-    {
+    public function getUpdatedDatetime() {
         return "{$this->updatedDate} {$this->updatedTime}";
     }
-    
+
     /**
      * 
      * @param type $id
      * @return boolean
      */
-     public static function trashMail($id)
-    {
-       $ret = false;
+    public static function trashMail($id) {
+        $ret = false;
 
         $model = self::findOne($id);
         $model->status_del = self::STATUS_DEL_TRASH;
@@ -358,6 +331,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
         }
         return $ret;
     }
+
     /**
      * 
      * @param type $id
@@ -449,34 +423,28 @@ class Mailbox extends \artsoft\db\ActiveRecord
                         ->asArray()->column();
     } 
     /**
-     * @param type $id
      * @return type array int
      */
-    public static function getDeletedOwnMail()
-    {
+    public static function getDeletedOwnMail() {
         return self::find()->where(['status_del' => self::STATUS_DEL_DELETE, 'sender_id' => Yii::$app->user->identity->id])->asArray()->column();
     }
+
     /**
-     * @param type $id
      * @return type array int
      */
-    public static function getDeletedMail()
-    {
+    public static function getDeletedMail() {
         return self::find()->where(['status_del' => self::STATUS_DEL_DELETE])->asArray()->column();
     }
 
-
     /**
      * 
-     * @param type $id
+     * @param type array $data
      * @return type bool
      */
-    public static function clianDeletedMail($data)
-    {
+    public static function clianDeletedMail($data) {
         $ret = false;
 
-        foreach ($data as $id)
-        {
+        foreach ($data as $id) {
             $count_all = MailboxInbox::find()
                             ->where([
                                 'mailbox_id' => $id,
@@ -487,11 +455,10 @@ class Mailbox extends \artsoft\db\ActiveRecord
                                 'mailbox_id' => $id,
                                 'status_del' => self::STATUS_DEL_DELETE,
                             ])->count();
-            
-            if ($count_all == $count_del)
-            {
+
+            if ($count_all == $count_del) {
                 $model = self::findOne($id);
-                $model->delete() ?  $ret = true : false;
+                $model->delete() ? $ret = true : false;
             }
         }
         return $ret;
@@ -499,7 +466,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
 
     /**
      * 
-     * @param type $id
+     * @param type int $id
      * @return type int
      */
     public static function getNextMail($id) {
@@ -523,10 +490,11 @@ class Mailbox extends \artsoft\db\ActiveRecord
                 ])->max('id');
     }
 
-    public function getClip()
-    {
+    /**
+     * 
+     * @return type string
+     */
+    public function getClip() {
         return ($this->filesCount > 0) ? '<i class="fa fa-paperclip" aria-hidden="true"></i>' : '';
     }
-
-
 }
