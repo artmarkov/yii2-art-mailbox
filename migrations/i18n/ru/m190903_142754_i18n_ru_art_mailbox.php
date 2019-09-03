@@ -43,7 +43,7 @@ class m190903_142754_i18n_ru_art_mailbox extends TranslatedMessagesMigration
             'Receivers' => 'Получатели',
             'Reading At' => 'Прочитано',
             'Remoted At' => 'Удалено',
-            'Restore' => 'Востановить',
+            'Restore' => 'Восстановить',
             'Reply' => 'Ответить',
             'Read mail' => 'Режим просмотра',
             'Status Read' => 'Статус',
