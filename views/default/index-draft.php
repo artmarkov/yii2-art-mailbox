@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
          
             <div class="panel panel-default">
             <div class="box-header with-border">
-                <h3 class="box-title">Folders</h3>
+                <h3 class="box-title"><?= Yii::t('art/mailbox', 'Folders'); ?></h3>
             </div>
                 
                 <div class="box-body no-padding">                   
@@ -91,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'buttonsTemplate' => '{update} {trash}',
                         'buttons' => [
                             'trash' => function ($url, $model, $key) {
-                                return Html::a(Yii::t('art/mailbox', 'Move to Trash'), Url::to(['trash-sent', 'id' => $model->id]), [
+                                return Html::a(Yii::t('art/mailbox', 'Move to Trash'), ['/mailbox/default/trash-sent', 'id' => $model->id], [
                                             'title' => Yii::t('art/mailbox', 'Move to Trash'),
                                             'data-pjax' => '0'
                                                 ]

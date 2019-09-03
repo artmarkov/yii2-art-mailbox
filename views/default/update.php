@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
          
             <div class="panel panel-default">
             <div class="box-header with-border">
-                <h3 class="box-title">Folders</h3>
+                <h3 class="box-title"><?= Yii::t('art/mailbox', 'Folders'); ?></h3>
             </div>
                 
                 <div class="box-body no-padding">                   

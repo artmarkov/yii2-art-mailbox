@@ -21,7 +21,7 @@ class DefaultController extends BaseController {
     public $modelViaClass = 'artsoft\mailbox\models\MailboxInbox';
     public $modelViaSearchClass = 'artsoft\mailbox\models\search\MailboxInboxSearch';
     public $enableOnlyActions = ['index', 'index-sent', 'index-draft', 'index-trash', 'view-inbox', 'view-sent', 'compose', 'update', 'delete', 'reply', 'forward',
-        'trash', 'trash-sent', 'restore', 'bulk-mark-read', 'bulk-mark-unread', 'bulk-trash', 'bulk-trush-sent', 'bulk-delete', 'bulk-restore'];
+        'trash', 'trash-sent', 'restore', 'bulk-mark-read', 'bulk-mark-unread', 'bulk-trash', 'bulk-trash-sent', 'bulk-delete', 'bulk-restore', 'grid-page-size', 'clian', 'clian-own'];
 
     /**
      * Lists all models.
@@ -204,7 +204,7 @@ class DefaultController extends BaseController {
      * @param type $id
      * @return type
      */
-    public function actionTrashInbox($id) {
+    public function actionTrash($id) {
         if ($this->modelViaClass::trashMail($id)) {
             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your mail has been moved to the trash folder.'));
         } else {

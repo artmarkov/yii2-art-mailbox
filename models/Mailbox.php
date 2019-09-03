@@ -103,7 +103,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
             'title' => Yii::t('art', 'Title'),
             'content' => Yii::t('art', 'Content'),
             'status_post' => Yii::t('art/mailbox', 'Status Post'),
-            'status_del' => Yii::t('art/mailbox', 'Status Delete'),
+            'status_del' => Yii::t('art/mailbox', 'Status Del'),
             'created_at' => Yii::t('art', 'Created'),
             'updated_at' => Yii::t('art', 'Updated'),
             'posted_at' => Yii::t('art/mailbox', 'Posted At'),
@@ -195,7 +195,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
     */
     public function getReplyContent($model)
     {
-        return "<blockquote>" . $model->postedDatetime . Yii::t('art/mailbox', '&nbsp;from&nbsp;') . $model->senderName . ":<br><br>" . $model->content . "</blockquote>";
+        return "<blockquote>" . $model->postedDatetime . "&nbsp;from&nbsp;" . $model->senderName . ":<br><br>" . $model->content . "</blockquote>";
        
     }
 

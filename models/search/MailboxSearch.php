@@ -80,7 +80,7 @@ class MailboxSearch extends Mailbox
             'posted_at' => $this->posted_at,
             'deleted_at' => $this->deleted_at,
             'status_post' => $this->status_post,
-            'status_del' => $this->status_del,
+            'mailbox.status_del' => $this->status_del,
             'mailbox_inbox.receiver_id' => $this->gridReceiverSearch,
         ]);
 

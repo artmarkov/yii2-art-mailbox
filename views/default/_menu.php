@@ -14,23 +14,23 @@ MailboxAssetsBundle::register($this);
             [
                 'encode' => false,
                 'label' => '<i class="fa fa-inbox" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Inbox') . MailboxInbox::getLabelNewMail(),
-                'url' => ['default/index'],
+                'url' => ['/mailbox/default/index'],
                 'active' => true
             ],
             [
                 'encode' => false,
                 'label' => '<i class="fa fa-envelope-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Sent'),
-                'url' => ['default/index-sent']
+                'url' => ['/mailbox/default/index-sent']
             ],
             [
                 'encode' => false,
                 'label' => '<i class="fa fa-file-text-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Drafts'),
-                'url' => ['default/index-draft']
+                'url' => ['/mailbox/default/index-draft']
             ],
             [
                 'encode' => false,
                 'label' => '<i class="fa fa-trash-o" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Trash'),
-                'url' => ['default/index-trash']
+                'url' => ['/mailbox/default/index-trash']
             ],
         ];
         echo Nav::widget([

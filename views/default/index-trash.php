@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
          
             <div class="panel panel-default">
             <div class="box-header with-border">
-                <h3 class="box-title">Folders</h3>
+                <h3 class="box-title"><?= Yii::t('art/mailbox', 'Folders'); ?></h3>
             </div>
                 
                 <div class="box-body no-padding">                   
@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-sm-6">
-                            <?= Html::a('<i class="fa fa-recycle" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Clear trash'), ['/mailbox/default/clian-own'], [
+                            <?= Html::a('<i class="fa fa-recycle" style="margin-right: 5px;"></i>' . Yii::t('art/mailbox', 'Clear own trash'), ['/mailbox/default/clian-own'], [
                                 'class' => 'btn btn-sm btn-danger margin-bottom',
                                 'data' => [
                                     'confirm' => Yii::t('art/mailbox', 'Are you sure you want to clear own trash?'),
@@ -107,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'buttonsTemplate' => '{restore} {delete}',
                         'buttons' => [
                             'restore' => function ($url, $model, $key) {
-                                return Html::a(Yii::t('art/mailbox', 'Restore'), Url::to(['restore', 'id' => $model->id]), [
+                                return Html::a(Yii::t('art/mailbox', 'Restore'), ['/mailbox/default/restore', 'id' => $model->id], [
                                             'title' => Yii::t('art/mailbox', 'Restore'),
                                             'data-pjax' => '0'
                                                 ]
