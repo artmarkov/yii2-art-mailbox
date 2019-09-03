@@ -41,6 +41,7 @@ class m190903_110915_i18n_art_mailbox_source extends SourceMessagesMigration
             'Restore' => 1,
             'Reply' => 1,
             'Read mail' => 1,
+            'Status Read' => 1,         
             'Status Post' => 1,         
             'Status Del' => 1,
             'Sender ID' => 1,
