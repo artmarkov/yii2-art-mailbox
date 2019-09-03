@@ -20,7 +20,6 @@ class m190903_115610_add_mailbox_permissions extends PermissionsMigration
         return [
             'mailboxManagement' => [
                 'links' => [
-                    '/admin/mailbox/*',
                     '/admin/mailbox/default/*',
                 ],
                 'viewMail' => [
