@@ -8,6 +8,7 @@ use artsoft\mailbox\models\Mailbox;
 use artsoft\helpers\Html;
 use artsoft\grid\GridPageSize;
 use yii\helpers\ArrayHelper;
+use yii\timeago\TimeAgo;
 
 /* @var $this yii\web\View */
 /* @var $searchModel artsoft\mailbox\models\search\MailboxSearch */
@@ -112,9 +113,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format' => 'html',
                     ],
                     [
-                        'attribute' => 'posted_at',
-                        'value' => 'postedDate',
-                        'label' => Yii::t('art/mailbox', 'Posted At'),
+                        'attribute' => 'created_at',
+                        'value' => function($model) {
+                                return $model->createdDatetime . ' (' . TimeAgo::widget(
+                                        [
+                                            'timestamp' => $model->created_at, 
+                                            'language' => Yii::$app->art->getDisplayLanguageShortcode(Yii::$app->language)
+                                        ]) . ')';
+                                },
+                        'label' => Yii::t('art', 'Created'),
                         'format' => 'raw',
                     ],
 //                    [

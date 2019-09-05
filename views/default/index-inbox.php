@@ -8,6 +8,7 @@ use artsoft\mailbox\models\Mailbox;
 use artsoft\mailbox\models\MailboxInbox;
 use artsoft\helpers\Html;
 use artsoft\grid\GridPageSize;
+use yii\timeago\TimeAgo;
 
 /* @var $this yii\web\View */
 /* @var $searchModel artsoft\mailbox\models\search\MailboxInboxSearch */
@@ -138,12 +139,24 @@ $this->params['breadcrumbs'][] = $this->title;
                                     },
                                 'format' => 'html',
                             ],
+//                            [
+//                                'attribute' => 'mailboxPostedDate',
+//                                'value' => 'mailbox.postedDatetime',
+//                                'label' => Yii::t('art/mailbox', 'Posted At'),
+//                                'format' => 'raw',
+//                            ],
                             [
-                                'attribute' => 'mailboxPostedDate',
-                                'value' => 'mailbox.postedDatetime',
-                                'label' => Yii::t('art/mailbox', 'Posted At'),
-                                'format' => 'raw',
-                            ],
+                            'attribute' => 'mailboxPostedDate',
+                            'value' => function($model) {
+                                    return $model->mailbox->postedDatetime . ' (' . TimeAgo::widget(
+                                            [
+                                                'timestamp' => $model->mailbox->posted_at, 
+                                                'language' => Yii::$app->art->getDisplayLanguageShortcode(Yii::$app->language)
+                                            ]) . ')';
+                                    },
+                            'label' => Yii::t('art/mailbox', 'Posted At'),
+                            'format' => 'raw',
+                        ],
                         // 'reading_at',
                         // 'deleted_at',
                         ],
