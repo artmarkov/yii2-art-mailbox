@@ -21,7 +21,6 @@ use artsoft\fileinput\models\FileManager;
  * @property int $status_del
  * @property int $created_at
  * @property int $updated_at
- * @property int $posted_at
  * @property int $deleted_at
  *
  * @property User $sender
@@ -82,7 +81,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
     {
         return [            
             ['receivers_ids', 'required', 'on' => self::SCENARIO_COMPOSE, 'enableClientValidation' => false],
-            [['status_post', 'status_del', 'posted_at', 'deleted_at'], 'integer'],
+            [['status_post', 'status_del', 'deleted_at'], 'integer'],
             [['sender_id', 'created_at', 'updated_at'], 'safe'],
             ['receivers_ids', 'each', 'rule' => ['integer']],
             [['content'], 'string'],
@@ -106,7 +105,6 @@ class Mailbox extends \artsoft\db\ActiveRecord
             'status_del' => Yii::t('art/mailbox', 'Status Del'),
             'created_at' => Yii::t('art', 'Created'),
             'updated_at' => Yii::t('art', 'Updated'),
-            'posted_at' => Yii::t('art/mailbox', 'Posted At'),
             'deleted_at' => Yii::t('art/mailbox', 'Deleted At'),
             'gridReceiverSearch' => Yii::t('art/mailbox', 'Receivers'),
         ];
@@ -131,7 +129,6 @@ class Mailbox extends \artsoft\db\ActiveRecord
         switch ($status_post) {
             case self::STATUS_POST_SENT : {
                     $this->scenario = self::SCENARIO_COMPOSE;
-                    $this->posted_at = time();
                 } break;
             case self::STATUS_POST_DRAFT : {
                     $this->deleted_at = NULL;
@@ -195,7 +192,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
     */
     public function getReplyContent($model)
     {
-        return "<blockquote>" . $model->postedDatetime . "&nbsp;from&nbsp;" . $model->senderName . ":<br><br>" . $model->content . "</blockquote>";
+        return "<blockquote>" . $model->createdDatetime . "&nbsp;from&nbsp;" . $model->senderName . ":<br><br>" . $model->content . "</blockquote>";
        
     }
 
@@ -266,26 +263,11 @@ class Mailbox extends \artsoft\db\ActiveRecord
         ];
     }
 
-    public function getPostedDate() {
-        return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $this->posted_at);
-    }
-
-    public function getdeletedDate() {
-        return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $this->deleted_at);
-    }
-
-    public function getPostedTime() {
-        return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $this->posted_at);
-    }
-
     public function getRemotedTime() {
         return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $this->deleted_at);
     }
 
-    public function getPostedDatetime() {
-        return "{$this->postedDate} {$this->postedTime}";
-    }
-
+    
     public function getdeletedDatetime() {
         return "{$this->deletedDate} {$this->remotedTime}";
     }
@@ -422,13 +404,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
                         ->where(['OR', ['=', 'mailbox.status_del', self::STATUS_DEL_TRASH], ['=', 'mailbox_inbox.status_del', self::STATUS_DEL_TRASH]])
                         ->asArray()->column();
     } 
-    /**
-     * @return type array int
-     */
-    public static function getDeletedOwnMail() {
-        return self::find()->where(['status_del' => self::STATUS_DEL_DELETE, 'sender_id' => Yii::$app->user->identity->id])->asArray()->column();
-    }
-
+    
     /**
      * @return type array int
      */

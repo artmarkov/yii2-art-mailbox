@@ -5,11 +5,8 @@ namespace artsoft\mailbox\controllers;
 use Yii;
 use artsoft\controllers\admin\BaseController;
 use yii\web\NotFoundHttpException;
-use artsoft\helpers\ArtHelper;
-use artsoft\models\OwnerAccess;
 use yii\helpers\StringHelper;
 use yii\helpers\ArrayHelper;
-use yii\filters\VerbFilter;
 
 /**
  * Controller implements the CRUD actions for Block model.
@@ -177,7 +174,6 @@ class DefaultController extends BaseController {
         $model_reply = self::findModel($id);
         $model = new $this->modelClass;
         $model->getReplyData($model_reply);
-        $model->status_post = $this->modelClass::STATUS_POST_DRAFT;
         $model->save(false);
 
         return $this->redirect(['update', 'id' => $model->id]);
@@ -347,8 +343,6 @@ class DefaultController extends BaseController {
             $whereVia = ['mailbox_id' => $id, 'receiver_id' => Yii::$app->user->identity->id, 'status_del' => $this->modelClass::STATUS_DEL_TRASH];
             $this->modelViaClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_DELETE, 'deleted_at' => time()], $whereVia);
 
-            $this->modelClass::clianDeletedMail($this->modelClass::getDeletedOwnMail());
-
             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your cart has been emptied.'));
         } else {
             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'Your cart is empty.'));
@@ -372,12 +366,12 @@ class DefaultController extends BaseController {
             $whereVia = ['mailbox_id' => $id, 'status_del' => $this->modelClass::STATUS_DEL_TRASH];
             $this->modelViaClass::updateAll(['status_del' => $this->modelClass::STATUS_DEL_DELETE, 'deleted_at' => time()], $whereVia);
 
-            $this->modelClass::clianDeletedMail($this->modelClass::getDeletedMail());
-
             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'All carts has been emptied.'));
         } else {
             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'All carts is empty.'));
         }
+        
+        $this->modelClass::clianDeletedMail($this->modelClass::getDeletedMail()); // удаляет все письма физически
 
         return $this->redirect($this->getRedirectPage('index', $this->modelClass));
     }

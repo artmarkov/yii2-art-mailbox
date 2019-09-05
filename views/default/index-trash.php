@@ -130,9 +130,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format' => 'html',
                     ],
                     [
-                        'attribute' => 'created_at',
+                        'class' => 'artsoft\grid\columns\DateRangeFilterColumn',
+                        'attribute' => 'dateSearch_1',
+                        'attribute2' => 'dateSearch_2',
                         'value' => function($model) {
-                                return $model->createdDatetime . ' (' . TimeAgo::widget(
+                                return $model->createdDatetime . '<br />(' . TimeAgo::widget(
                                         [
                                             'timestamp' => $model->created_at, 
                                             'language' => Yii::$app->art->getDisplayLanguageShortcode(Yii::$app->language)
@@ -140,10 +142,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 },
                         'label' => Yii::t('art', 'Created'),
                         'format' => 'raw',
-                    ],
+                        'options' => ['style' => 'width:230px'],
+                    ],   
             // 'created_at',
             // 'updated_at',
-            // 'posted_at',
             // 'deleted_at',
 
                 ],

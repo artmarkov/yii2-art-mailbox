@@ -20,7 +20,6 @@ class m190717_132824_create_mailbox_table extends Migration
             'status_del' => $this->tinyInteger()->notNull()->defaultValue('0'),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
-            'posted_at' => $this->integer(),
             'deleted_at' => $this->integer(),
         ], $tableOptions);
 
@@ -33,7 +32,6 @@ class m190717_132824_create_mailbox_table extends Migration
             'receiver_id' => $this->integer()->notNull(),
             'status_read' => $this->tinyInteger()->defaultValue('0'),
             'status_del' => $this->tinyInteger()->defaultValue('0'),
-            'reading_at' => $this->integer(),
             'deleted_at' => $this->integer(),
         ], $tableOptions);
 

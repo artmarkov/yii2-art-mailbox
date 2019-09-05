@@ -33,7 +33,6 @@ class m190903_110915_i18n_art_mailbox_source extends SourceMessagesMigration
             'Move to Trash' => 1,
             'Mark Read' => 1,
             'Mark Unread' => 1,
-            'Posted At' => 1,
             'Print' => 1,
             'Receivers' => 1,
             'Reading At' => 1,

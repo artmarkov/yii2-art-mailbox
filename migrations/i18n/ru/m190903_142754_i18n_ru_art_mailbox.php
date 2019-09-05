@@ -38,7 +38,6 @@ class m190903_142754_i18n_ru_art_mailbox extends TranslatedMessagesMigration
             'Move to Trash' => 'В Корзину',
             'Mark Read' => 'Пометить прочитанным',
             'Mark Unread' => 'Пометить непрочитанным',
-            'Posted At' => 'Отправлено',
             'Print' => 'Печать',
             'Receivers' => 'Получатели',
             'Reading At' => 'Прочитано',

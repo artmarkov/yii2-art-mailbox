@@ -138,26 +138,22 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return $model->mailbox->clip;
                                     },
                                 'format' => 'html',
-                            ],
-//                            [
-//                                'attribute' => 'mailboxPostedDate',
-//                                'value' => 'mailbox.postedDatetime',
-//                                'label' => Yii::t('art/mailbox', 'Posted At'),
-//                                'format' => 'raw',
-//                            ],
+                            ],                            
                             [
-                            'attribute' => 'mailboxPostedDate',
-                            'value' => function($model) {
-                                    return $model->mailbox->postedDatetime . ' (' . TimeAgo::widget(
-                                            [
-                                                'timestamp' => $model->mailbox->posted_at, 
-                                                'language' => Yii::$app->art->getDisplayLanguageShortcode(Yii::$app->language)
-                                            ]) . ')';
-                                    },
-                            'label' => Yii::t('art/mailbox', 'Posted At'),
-                            'format' => 'raw',
-                        ],
-                        // 'reading_at',
+                                'class' => 'artsoft\grid\columns\DateRangeFilterColumn',
+                                'attribute' => 'dateSearch_1',
+                                'attribute2' => 'dateSearch_2',
+                                'value' => function($model) {
+                                        return $model->mailbox->createdDatetime . '<br />(' . TimeAgo::widget(
+                                                [
+                                                    'timestamp' => $model->mailbox->created_at, 
+                                                    'language' => Yii::$app->art->getDisplayLanguageShortcode(Yii::$app->language)
+                                                ]) . ')';
+                                        },
+                                'label' => Yii::t('art', 'Created'),
+                                'format' => 'raw',
+                                'options' => ['style' => 'width:230px'],
+                            ],  
                         // 'deleted_at',
                         ],
                     ]);

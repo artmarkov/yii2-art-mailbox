@@ -12,15 +12,20 @@ use artsoft\mailbox\models\MailboxInbox;
  */
 class MailboxInboxSearch extends MailboxInbox
 {
+    public $dateSearch_1;
+    public $dateSearch_2;
+    
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'mailbox_id', 'receiver_id', 'reading_at', 'deleted_at', 'status_del', 'status_read', 'mailboxStatusPost'], 'integer'],
+            [['id', 'mailbox_id', 'receiver_id', 'deleted_at', 'status_del', 'status_read', 'mailboxStatusPost'], 'integer'],
             [['mailboxTitle', 'mailboxContent'], 'string'],
-            [['mailboxSenderId', 'mailboxPostedDate'], 'integer'],
+            [['dateSearch_1', 'dateSearch_2'], 'safe'],
+            [['mailboxSenderId'], 'integer'],
+            [['dateSearch_1', 'dateSearch_2'], 'date', 'format' => 'php:d.m.Y'],
         ];
     }
 
@@ -49,16 +54,11 @@ class MailboxInboxSearch extends MailboxInbox
             'pagination' => [
                 'pageSize' => Yii::$app->request->cookies->getValue('_grid_page_size', 20),
             ],
-//            'sort' => [
-//                'defaultOrder' => [
-//                    'mailbox.posted_at' => SORT_DESC,
-//                ],
-//            ],
         ]);
 
         $dataProvider->setSort([
             'defaultOrder' => [
-                    'mailboxPostedDate' => SORT_DESC,
+                    'dateSearch_1' => SORT_DESC,
                ],
             'attributes' => [
                 
@@ -77,9 +77,9 @@ class MailboxInboxSearch extends MailboxInbox
                     'desc' => ['mailbox.content' => SORT_DESC],
                 ],
                 
-                'mailboxPostedDate' => [
-                    'asc' => ['mailbox.posted_at' => SORT_ASC],
-                    'desc' => ['mailbox.posted_at' => SORT_DESC],
+                'dateSearch_1' => [
+                    'asc' => ['mailbox.created_at' => SORT_ASC],
+                    'desc' => ['mailbox.created_at' => SORT_DESC],
                 ],
                 'id',
                 'status_read',
@@ -107,22 +107,25 @@ class MailboxInboxSearch extends MailboxInbox
             'id' => $this->id,
             'mailbox_id' => $this->mailbox_id,
             'receiver_id' => $this->receiver_id,
-            'reading_at' => $this->reading_at,
             'deleted_at' => $this->deleted_at,
-            'mailbox.posted_at' => $this->mailboxPostedDate,
             'mailbox.sender_id' => $this->mailboxSenderId,
             'mailbox.status_post' => $this->mailboxStatusPost,
             'mailbox_inbox.status_del' => $this->status_del,
             'status_read' => $this->status_read,
         ]);
 
+        
         $query->joinWith(['mailbox' => function ($q) {
             $q->where('mailbox.title LIKE "%' . $this->mailboxTitle . '%"');
         }]);
         $query->joinWith(['mailbox' => function ($q) {
             $q->where('mailbox.content LIKE "%' . $this->mailboxContent . '%"');
         }]);
-        
+        $query->joinWith(['mailbox' => function ($q) {
+                $q->andFilterWhere(['>=', 'mailbox.created_at', $this->dateSearch_1 ? strtotime($this->dateSearch_1 . ' 00:00:00') : null])
+                        ->andFilterWhere(['<=', 'mailbox.created_at', $this->dateSearch_2 ? strtotime($this->dateSearch_2 . ' 23:59:59') : null]);
+            }]);
+
         return $dataProvider;
     }
 }

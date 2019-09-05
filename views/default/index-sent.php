@@ -122,24 +122,21 @@ $this->params['breadcrumbs'][] = $this->title;
                             },
                         'format' => 'html',
                     ],
-//                    [
-//                        'attribute' => 'posted_at',
-//                        'value' => 'postedDatetime',
-//                        'label' => Yii::t('art/mailbox', 'Posted At'),
-//                        'format' => 'raw',
-//                    ],
                     [
-                        'attribute' => 'posted_at',
+                        'class' => 'artsoft\grid\columns\DateRangeFilterColumn',
+                        'attribute' => 'dateSearch_1',
+                        'attribute2' => 'dateSearch_2',
                         'value' => function($model) {
-                                return $model->postedDatetime . ' (' . TimeAgo::widget(
+                                return $model->createdDatetime . '<br />(' . TimeAgo::widget(
                                         [
-                                            'timestamp' => $model->posted_at, 
+                                            'timestamp' => $model->created_at, 
                                             'language' => Yii::$app->art->getDisplayLanguageShortcode(Yii::$app->language)
                                         ]) . ')';
                                 },
-                        'label' => Yii::t('art/mailbox', 'Posted At'),
+                        'label' => Yii::t('art', 'Created'),
                         'format' => 'raw',
-                    ],
+                        'options' => ['style' => 'width:230px'],
+                    ],   
 //                    [
 //                        'attribute' => 'sender_id',
 //                        'label' => Yii::t('art/mailbox', 'Sender'),
@@ -150,7 +147,6 @@ $this->params['breadcrumbs'][] = $this->title;
 //                    ],
             // 'created_at',
             // 'updated_at',
-            // 'posted_at',
             // 'deleted_at',
 
                 ],

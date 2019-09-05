@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div id = "print_info" class="mailbox-read-info">
                         <h3><?= $model->title; ?></h3>
                         <h5><?= Yii::t('art/mailbox', 'From:') . ' ' . $model->senderName; ?>
-                            <span class="mailbox-read-time pull-right"><?= $model->postedDatetime; ?></span></h5>
+                            <span class="mailbox-read-time pull-right"><?= $model->createdDatetime; ?></span></h5>
                     </div>   
                 <div class="mailbox-controls with-border text-center">
                     <div class="btn-group">
