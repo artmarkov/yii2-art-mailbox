@@ -9,6 +9,7 @@ use artsoft\models\User;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
 use artsoft\fileinput\models\FileManager;
+use artsoft\mailbox\traits\DateTimeTrait;
 
 /**
  * This is the model class for table "{{%mailbox}}".
@@ -28,6 +29,9 @@ use artsoft\fileinput\models\FileManager;
  */
 class Mailbox extends \artsoft\db\ActiveRecord
 {
+    
+    use DateTimeTrait;
+    
     public $gridReceiverSearch;
     public $statusDelTrash;
 
@@ -261,40 +265,7 @@ class Mailbox extends \artsoft\db\ActiveRecord
             [self::STATUS_READ_NEW, Yii::t('art/mailbox', 'New'), 'success'],
             [self::STATUS_READ_OLD, Yii::t('art/mailbox', 'Read'), 'default']
         ];
-    }
-
-    public function getRemotedTime() {
-        return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $this->deleted_at);
-    }
-
-    
-    public function getdeletedDatetime() {
-        return "{$this->deletedDate} {$this->remotedTime}";
-    }
-
-    public function getCreatedDate() {
-        return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $this->created_at);
-    }
-
-    public function getUpdatedDate() {
-        return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $this->updated_at);
-    }
-
-    public function getCreatedTime() {
-        return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $this->created_at);
-    }
-
-    public function getUpdatedTime() {
-        return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $this->updated_at);
-    }
-
-    public function getCreatedDatetime() {
-        return "{$this->createdDate} {$this->createdTime}";
-    }
-
-    public function getUpdatedDatetime() {
-        return "{$this->updatedDate} {$this->updatedTime}";
-    }
+    }  
 
     /**
      * 
