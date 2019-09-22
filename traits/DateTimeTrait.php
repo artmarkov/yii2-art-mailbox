@@ -21,7 +21,7 @@ trait DateTimeTrait {
      */
     public function getCreatedDate()
     {
-        return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $this->created_at);
+        return $this->getDate($this->created_at);
     }
 
     /**
@@ -29,7 +29,7 @@ trait DateTimeTrait {
      */
     public function getCreatedTime()
     {
-        return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $this->created_at);
+        return $this->getTime($this->created_at);
     }
 
     /**
@@ -45,7 +45,7 @@ trait DateTimeTrait {
      */
     public function getUpdatedDate()
     {
-        return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $this->updated_at);
+        return $this->getDate($this->created_at);
     }
 
     /**
@@ -53,7 +53,7 @@ trait DateTimeTrait {
      */
     public function getUpdatedTime()
     {
-        return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $this->updated_at);
+        return $this->getTime($this->updated_at);
     }
 
     /**
@@ -67,25 +67,16 @@ trait DateTimeTrait {
     /**
      * @return type string
      */
-    public function getDeletedDate()
+    public function getDate($timestamp) 
     {
-        return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $this->deleted_at);
+        return Yii::$app->formatter->asDate(($this->isNewRecord) ? time() : $timestamp);
     }
 
     /**
      * @return type string
      */
-    public function getDeletedTime()
+    public function getTime($timestamp) 
     {
-        return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $this->deleted_at);
+        return Yii::$app->formatter->asTime(($this->isNewRecord) ? time() : $timestamp);
     }
-
-    /**
-     * @return type string
-     */
-    public function getDeletedDatetime()
-    {
-        return "{$this->deletedDate} {$this->deletedTime}";
-    }
-
 }
