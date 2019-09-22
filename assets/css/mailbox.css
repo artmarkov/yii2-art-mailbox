@@ -99,3 +99,6 @@
 .mailbox-nav ul li {
     border-bottom: 1px solid #f4f4f4;
 }
+.pager li {
+    padding: 0px 2px 0px 2px;
+}
