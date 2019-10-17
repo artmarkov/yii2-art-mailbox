@@ -45,7 +45,7 @@ trait DateTimeTrait {
      */
     public function getUpdatedDate()
     {
-        return $this->getDate($this->created_at);
+        return $this->getDate($this->updated_at);
     }
 
     /**
