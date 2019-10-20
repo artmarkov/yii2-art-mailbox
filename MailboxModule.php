@@ -17,4 +17,7 @@ class MailboxModule extends \yii\base\Module
     
     public $view;
    
+    public $emailTemplates = [
+        'message-new-emails' => '/mail/message-new-emails-html',
+    ];
 }
