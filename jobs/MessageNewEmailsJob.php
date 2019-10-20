@@ -8,16 +8,14 @@ use artsoft\mailbox\models\MailboxInbox;
  */
 class MessageNewEmailsJob extends \yii\base\BaseObject implements \yii\queue\JobInterface
 {
-    public $text;
-
-    public $file;
-
     /**
      * @inheritdoc
      */
     public function execute($queue)
     {
-        
+        foreach ($this->getQtyNewMail() as $model) {
+            sendEmail($model);
+        }
     }
     
     /**
@@ -34,15 +32,10 @@ class MessageNewEmailsJob extends \yii\base\BaseObject implements \yii\queue\Job
                         ->all();
     }
 
-    public function sendEmail($id)
+    public function sendEmail($model)
     {
-        $model = User::find()->where(['id' => $id])->one();
-        if(!$model) {
-            return false;
-        }
-        
         return Yii::$app->mailer->compose(Yii::$app->getModule('queue-schedule')->emailTemplates['message-new-emails'],
-            ['model' => $this->model])
+            ['model' => $model])
             ->setFrom(Yii::$app->art->emailSender)
             ->setTo($model->email)
             ->setSubject(Yii::t('art/mailbox', 'Message from the site') . ' ' . Yii::$app->name)
