@@ -3,8 +3,8 @@
 namespace artsoft\mailbox\jobs;
 use artsoft\mailbox\models\MailboxInbox;
 use Yii;
-//use yii\helpers\Html;
-//use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * Class MessageNewEmailstJob.
@@ -42,15 +42,15 @@ class MessageNewEmailJob extends \yii\base\BaseObject implements \yii\queue\JobI
      */
     public static function sendEmail($model)
     {
-//        $link = Url::to(['/admin/default/mailbox'], true);
+        $link = Url::to(['/admin/default/mailbox'], true);
         
         $textBody = 'Здравствуйте, ' . strip_tags($model['receiver']['username']) . PHP_EOL;
         $textBody .= 'По состоянию на ' . date('d.n.Y H:i', time()) . ' в Ваш почтовый ящик поступило ' . strip_tags($model['qty']) . 'новых писем.' . PHP_EOL . PHP_EOL;
-//        $textBody .=  Html::a(Html::encode($link), $link);
+        $textBody .=  Html::a(Html::encode($link), $link);
 
         $htmlBody = '<p><b>Здравствуйте</b>, ' . strip_tags($model['receiver']['username']) . '</p>';
         $htmlBody .= '<p>По состоянию на ' . date('d.n.Y H:i', time()) . ' в Ваш почтовый ящик поступило ' . strip_tags($model['qty']) . ' новых писем.</p>';        
-//        $htmlBody .= '<p>' . Html::a(Html::encode($link), $link) . '</p>';
+        $htmlBody .= '<p>' . Html::a(Html::encode($link), $link) . '</p>';
         
         return Yii::$app->mailer->compose()
             ->setFrom(Yii::$app->params['adminEmail'])
