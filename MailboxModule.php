@@ -16,8 +16,5 @@ class MailboxModule extends \yii\base\Module
     public $controllerNamespace = 'artsoft\mailbox\controllers';
     
     public $view;
-   
-    public $emailTemplates = [
-        'message-new-emails' => '/mail/message-new-emails-html',
-    ];
+  
 }

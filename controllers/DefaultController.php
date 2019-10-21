@@ -19,7 +19,15 @@ class DefaultController extends BaseController {
     public $modelViaSearchClass = 'artsoft\mailbox\models\search\MailboxInboxSearch';
     public $enableOnlyActions = ['index', 'index-sent', 'index-draft', 'index-trash', 'view-inbox', 'view-sent', 'compose', 'update', 'delete', 'reply', 'forward',
         'trash', 'trash-sent', 'restore', 'bulk-mark-read', 'bulk-mark-unread', 'bulk-trash', 'bulk-trash-sent', 'bulk-delete', 'bulk-restore', 'grid-page-size', 'clian', 'clian-own'];
-
+public function sendEmail($model)
+    {
+        return Yii::$app->mailer->compose(Yii::$app->getModule('mailbox')->emailTemplates['message-new-emails'],
+            ['model' => $model])
+            ->setFrom(Yii::$app->art->emailSender)
+            ->setTo($model['email'])
+            ->setSubject(Yii::t('art/mailbox', 'Message from the site') . ' ' . Yii::$app->name)
+            ->send();
+    }
     /**
      * Lists all models.
      * @return mixed
@@ -27,7 +35,18 @@ class DefaultController extends BaseController {
     public function actionIndex() {
         $searchModel = new $this->modelViaSearchClass;
         $searchName = StringHelper::basename($searchModel::className());
-
+            $model = $searchModel::find()
+                        ->joinWith(['receiver'])
+                        ->select(['receiver_id', 'username', 'email', 'COUNT(*) AS qty'])
+                        ->groupBy('receiver_id')
+                        ->readNew()
+                        ->andWhere(['status' => \artsoft\models\User::STATUS_ACTIVE])
+                        ->asArray()
+                        ->all();
+             foreach ($model as $mod) {
+           // $this->sendEmail($mod);
+             echo '<pre>' . print_r($mod, true) . '</pre>';
+        }
         $params = ArrayHelper::merge(Yii::$app->request->getQueryParams(), [
                     $searchName => [
                         'receiver_id' => Yii::$app->user->identity->id,
