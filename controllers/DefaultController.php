@@ -370,7 +370,7 @@ class DefaultController extends BaseController {
             Yii::$app->session->setFlash('crudMessage', Yii::t('art/mailbox', 'All carts is empty.'));
         }
         
-        $this->modelClass::clianDeletedMail($this->modelClass::getDeletedMail()); // удаляет все письма физически
+        //$this->modelClass::clianDeletedMail($this->modelClass::getDeletedMail()); // удаляет все письма физически
 
         return $this->redirect($this->getRedirectPage('index', $this->modelClass));
     }

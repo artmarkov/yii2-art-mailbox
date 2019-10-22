@@ -42,7 +42,7 @@ class MessageNewEmailJob extends \yii\base\BaseObject implements \yii\queue\JobI
      */
     public static function sendEmail($model)
     {
-        $link = Url::to(['/admin/default/mailbox'], true);
+        $link = Url::to(['/admin/mailbox'], true);
         
         $textBody = 'Здравствуйте, ' . strip_tags($model['receiver']['username']) . PHP_EOL;
         $textBody .= 'По состоянию на ' . date('d.n.Y H:i', time()) . ' в Ваш почтовый ящик поступило ' . strip_tags($model['qty']) . 'новых писем.' . PHP_EOL . PHP_EOL;
