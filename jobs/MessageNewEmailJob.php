@@ -49,7 +49,7 @@ class MessageNewEmailJob extends \yii\base\BaseObject implements \yii\queue\JobI
         $textBody .=  Html::a(Html::encode($link), $link);
 
         $htmlBody = '<p><b>Здравствуйте</b>, ' . strip_tags($model['receiver']['username']) . '</p>';
-        $htmlBody .= '<p>По состоянию на ' . date('d.n.Y H:i', time()) . ' в Ваш почтовый ящик поступило ' . strip_tags($model['qty']) . ' новых писем.</p>';        
+        $htmlBody .= '<p>По состоянию на ' . date('d.n.Y H:i', time()) . ' в Ваш почтовый ящик поступило <b>' . strip_tags($model['qty']) . '</b> новых писем.</p>';        
         $htmlBody .= '<p>' . Html::a(Html::encode($link), $link) . '</p>';
         
         return Yii::$app->mailer->compose()
