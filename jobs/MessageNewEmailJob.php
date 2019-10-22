@@ -25,7 +25,7 @@ class MessageNewEmailJob extends \yii\base\BaseObject implements \yii\queue\JobI
      * 
      * @return type
      */
-    public static function getQtyNewMail() {
+    protected static function getQtyNewMail() {
         return MailboxInbox::find()
                         ->joinWith(['receiver'])
                         ->select(['receiver_id', 'COUNT(*) AS qty'])
@@ -40,7 +40,7 @@ class MessageNewEmailJob extends \yii\base\BaseObject implements \yii\queue\JobI
      * @param type $model
      * @return type
      */
-    public static function sendEmail($model)
+    protected static function sendEmail($model)
     {
         $link = Url::to(['/admin/mailbox'], true);
         
