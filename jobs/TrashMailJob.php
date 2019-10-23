@@ -3,7 +3,7 @@
 namespace artsoft\mailbox\jobs;
 
 /**
- * Class MessageNewEmailstJob.
+ * Class TrashMailJob.
  */
 class TrashMailJob extends \yii\base\BaseObject implements \yii\queue\JobInterface
 {

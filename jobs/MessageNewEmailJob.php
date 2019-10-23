@@ -7,7 +7,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 /**
- * Class MessageNewEmailstJob.
+ * Class MessageNewEmailJob.
  */
 class MessageNewEmailJob extends \yii\base\BaseObject implements \yii\queue\JobInterface
 {

@@ -3,7 +3,7 @@
 namespace artsoft\mailbox\jobs;
 
 /**
- * Class MessageNewEmailstJob.
+ * Class ClianDeletedMailJob.
  */
 class ClianDeletedMailJob extends \yii\base\BaseObject implements \yii\queue\JobInterface
 {
