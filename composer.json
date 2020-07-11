@@ -12,7 +12,7 @@
     "artsoft/yii2-art-core": "dev-master",
     "artsoft/yii2-art-fileinput": "dev-master",
     "artsoft/yii2-art-queue-schedule": "dev-master",
-    "artsoft/yii2-print-this": "~1.0"
+    "artsoft/yii2-print-this": "=1.0.2"
   },
   "extra": {
         "bootstrap": "artsoft\\mailbox\\Bootstrap"
